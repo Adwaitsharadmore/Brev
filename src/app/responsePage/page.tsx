@@ -55,22 +55,36 @@ const ResponsePage = () => {
     if (selectedOption === "Detailed") {
       customPrompt = customPrompt || `
         Create a comprehensive cheat sheet from the provided document. Use the following format:
-
+        
         1. Main Titles: Enclose in curly brackets {}.
         2. Subtopics: Enclose in square brackets [].
         3. Details: Present each detail as a bullet point under the corresponding subtopic.
-
+        
         Ensure all text is in normal font. Follow this structure consistently:
-
+        
         - {Main Title}
           - [Subtopic]
             - Bullet point 1
             - Bullet point 2
-
-        Use clear and simple language for bullet points. Provide additional explanations, context, and insights beyond the document to enhance understanding. Expand on each point to ensure a thorough grasp of the topic.
+      
+        Use clear and simple language for bullet points. Provide additional explanations, context, and insights beyond the document to enhance understanding. Expand on each point to ensure a thorough grasp of the topic. If the uploaded file is a exam study guide with topics of specific chapter numbers, read through each chapter and their contents.
       `;
     } else if (selectedOption === "Precise") {
-      customPrompt = customPrompt || "Please create a precise cheat sheet...";
+      customPrompt = customPrompt || `
+        Please create a concise cheat sheet from the provided document. Use the following format:
+        
+        Main Titles: Enclose in curly brackets {}.
+        Subtopics: Enclose in square brackets [].
+        Details: Present each detail as a bullet point under the corresponding subtopic.
+        Ensure all text is in normal font. Use the format strictly:
+        
+        {Main Title}
+        [Subtopic]
+        Bullet point 1
+        Bullet point 2
+        
+        Keep explanations brief and to the point. Only include essential details for each topic, avoiding any unnecessary expansion.
+      `;
     }
 
     const formData = new FormData();
@@ -82,10 +96,16 @@ const ResponsePage = () => {
         method: "POST",
         body: formData,
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
       setCheatsheetContent(data.generatedText);
     } catch (error) {
       console.error("Error fetching cheatsheet content:", error);
+      setErrorMessage("Failed to generate cheatsheet. Please try again.");
     } finally {
       setLoadingCheatsheet(false);
     }
@@ -99,67 +119,49 @@ const ResponsePage = () => {
 
     setLoadingMnemonics(true);
 
+    const customPrompt = `
+      Please create mnemonics for the provided document to aid in memorizing key concepts. Use the following format and apply the best memory strategy that fits each piece of content:
+
+      Main Titles: Enclose in curly brackets {}.
+      Subtopics: Enclose in square brackets [].
+      Mnemonics: Present each mnemonic as a bullet point under the corresponding subtopic.
+      Use a variety of memory techniques, such as:
+
+      Acronyms: Form words from the first letter of key terms.
+      Acrostics: Create sentences where each word starts with the first letter of the concept.
+      Chunking: Break information into smaller, manageable groups.
+      Association: Link new information to familiar concepts or images.
+      Method of Loci: Visualize placing the information in familiar locations.
+      Songs or Rhymes: Use catchy rhymes or short songs.
+      Choose the most effective strategy for each concept and present it in the following format:
+
+      {Main Title}
+      [Subtopic]
+      Mnemonic 1
+      Mnemonic 2
+
+      Ensure the mnemonics are easy to remember and align with the content.
+    `;
+
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("textPrompt", `
-      Please create effective mnemonics for the uploaded file to help with memorizing key concepts. Follow these specific formatting rules and guidelines:
-
-      Main Titles: Enclose each main topic in curly braces {}.
-      Subtopics: Enclose each subtopic in square brackets [].
-      For each subtopic, generate an appropriate mnemonic using one or more of the following methods:
-
-      Acronyms: Form a memorable word or phrase using the first letters of the key terms. Provide an explanation of how the acronym connects to the concept.
-
-      Example:
-      [Process State Transition]
-      Mnemonic: "RUN IS BLOCKED WAIT."
-      Explanation: The acronym "RIBW" helps recall the states in the process lifecycle—Running, Interrupted, Blocked, Waiting.
-
-      Acrostics: Create a sentence where each word’s first letter represents an important term.
-
-      Example:
-      [Layers of OSI Model]
-      Mnemonic: "Please Do Not Throw Sausage Pizza Away."
-      Explanation: The first letter of each word corresponds to the layers of the OSI model (Physical, Data Link, Network, Transport, Session, Presentation, Application).
-
-      Associations: Link the concept to something familiar or intuitive for easier recall.
-
-      Example:
-      [Interrupt Handling]
-      Mnemonic: "Like answering the phone when someone calls."
-      Explanation: When an interrupt occurs, the CPU stops its current work and answers the interrupt, like answering a ringing phone.
-
-      Chunking: Break down complex concepts into smaller, easier-to-remember parts.
-
-      Example:
-      [Memory Hierarchy]
-      Mnemonic: "L1 Cache -> L2 Cache -> Main Memory -> Disk."
-      Explanation: Breaking the memory hierarchy into levels helps recall the order of memory access speed.
-
-      Method of Loci: Create a vivid journey in which key concepts are associated with specific locations.
-
-      Example:
-      [Database Normalization]
-      Mnemonic: Imagine walking through a house where each room is a normal form, increasing in simplicity and organization.
-
-      Songs/Rhymes: Develop simple, catchy songs or rhymes.
-
-      Example:
-      [Binary Search Algorithm]
-      Mnemonic: "Divide and Conquer, that's the trick, cut in half, it's fast and quick!"
-      Explanation: The rhyme helps recall the divide-and-conquer approach used in binary search.
-    `);
+    formData.append("textPrompt", customPrompt);
 
     try {
       const response = await fetch("http://localhost:3001/upload-and-generate-mnemonics", {
         method: "POST",
         body: formData,
       });
-      const data = await response.json();
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
       setCheatsheetContent(data.generatedMnemonics);
     } catch (error) {
       console.error("Error fetching mnemonics:", error);
+      setErrorMessage("Failed to generate mnemonics. Please try again.");
     } finally {
       setLoadingMnemonics(false);
     }
@@ -172,53 +174,38 @@ const ResponsePage = () => {
   const renderCheatsheetAsList = () => {
     if (!cheatsheetContent) return null;
 
-    const sections = cheatsheetContent.split("\n\n").filter((section) => section.trim() !== "");
+    const lines = cheatsheetContent.split("\n").filter((line) => line.trim() !== "");
 
     return (
       <div className="text-black">
-        {sections.map((section, index) => {
-          const lines = section.split("\n").filter((line) => line.trim() !== "");
-          const title = lines[0].replace(/[\{\}]/g, "").trim(); // Remove curly braces
+        {lines.map((line, index) => {
+          const mainTitleMatch = line.match(/\{(.+?)\}/);
+          const subtopicMatch = line.match(/\[(.+?)\]/);
 
-          return (
-            <div key={index} className="mb-8">
-              <h2 className="text-3xl font-bold mb-4">{title}</h2>
-              {lines.slice(1).map((line, lineIndex) => {
-                let cleanedLine = line.replace(/^\-\s*/, "").trim();
-
-                // Remove all asterisks and square brackets
-                cleanedLine = cleanedLine.replace(/[\*\[\]]/g, "");
-
-                if (cleanedLine.startsWith("Acronym:") || cleanedLine.startsWith("Acrostic:") || cleanedLine.startsWith("Association:")) {
-                  const [mnemonicType, content] = cleanedLine.split(":");
-                  return (
-                    <p key={lineIndex} className="ml-4 mb-2">
-                      <strong>{mnemonicType}:</strong> {content.trim()}
-                    </p>
-                  );
-                } else if (cleanedLine.startsWith("Explanation:")) {
-                  const explanation = cleanedLine.replace("Explanation:", "").trim();
-                  return (
-                    <p key={lineIndex} className="ml-4 mb-2">
-                      <strong>Explanation:</strong> {explanation}
-                    </p>
-                  );
-                } else if (cleanedLine.startsWith("-")) {
-                  return (
-                    <p key={lineIndex} className="ml-8 mb-2">
-                      {cleanedLine}
-                    </p>
-                  );
-                } else {
-                  return (
-                    <h3 key={lineIndex} className="text-xl font-bold mt-4 mb-2">
-                      {cleanedLine}
-                    </h3>
-                  );
-                }
-              })}
-            </div>
-          );
+          if (mainTitleMatch) {
+            // Main Title
+            const mainTitle = mainTitleMatch[1];
+            return (
+              <h2 key={index} className="text-3xl font-bold mb-4">
+                {mainTitle}
+              </h2>
+            );
+          } else if (subtopicMatch) {
+            // Subtopic
+            const subtopic = subtopicMatch[1];
+            return (
+              <h3 key={index} className="text-xl font-semibold ml-4 mb-2">
+                {subtopic}
+              </h3>
+            );
+          } else {
+            // Detail
+            return (
+              <p key={index} className="ml-8 mb-2">
+                {line.replace(/^\-\s*/, "").trim()}
+              </p>
+            );
+          }
         })}
       </div>
     );
@@ -252,13 +239,18 @@ const ResponsePage = () => {
         logging: true,
         letterRendering: true
       },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] } // Add pagebreak options
     };
 
     html2pdf().set(opt).from(element).save().catch(err => {
       console.error('Error generating PDF:', err);
     });
   };
+
+  if (typeof window !== "undefined") {
+    // Code that uses window, document, or self
+  }
 
   return (
     <div className="min-h-screen bg-gradient-preppal text-white">

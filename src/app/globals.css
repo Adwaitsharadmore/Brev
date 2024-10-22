@@ -186,7 +186,7 @@ body {
 }
 /* Add this to globals.css */
 .bg-gradient-preppal {
-  background: radial-gradient(circle, #d15eff33 0%, rgb(0, 0, 0) 100%);
+  background: radial-gradient(circle, #00000033 0%, rgb(0, 0, 0) 100%);
 }
 
 .text-purple-opacity {
@@ -195,4 +195,8 @@ body {
 
 .hover-color{
   color: rgba(235, 255, 92, 1)
+}
+
+.spline-viewer [data-spline-embed] {
+  display: none !important;
 }

@@ -1,519 +1,96 @@
-'use client'
+"use client";
 
-import { useRef, useEffect, useState } from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
-import { BookOpen, Brain, Calendar, FileText, MessageSquare, ChevronDown } from 'lucide-react'
-import { gsap } from 'gsap'
+import Spline from '@splinetool/react-spline/next';
+import React, { useEffect, useState } from 'react';
+import './globals.css'; // Import your global CSS file
 
-// Define the props for the FeatureCard component
-interface FeatureCardProps {
-  icon: JSX.Element;
-  title: string;
-  description: string;
-  index: number;
-}
-
-export default function LandingPage() {
-  const { scrollYProgress } = useScroll()
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001
-  })
-
-  return (
-    <div className="min-h-screen bg-black text-white overflow-x-hidden">
-      <header className="fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-50 backdrop-blur-md">
-        <nav className="container mx-auto px-4 py-6 flex justify-between items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-            className="flex items-center space-x-2"
-          >
-            <BookOpen className="w-8 h-8 text-cyan-400" />
-            <span className="text-xl font-bold">PrepPal</span>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="flex space-x-4"
-          >
-            <Link href="#login" className="px-4 py-2 bg-cyan-600 rounded-full hover:bg-cyan-700 transition-colors">
-              Login
-            </Link>
-          </motion.div>
-        </nav>
-        <motion.div
-          className="h-1 bg-gradient-to-r from-cyan-400 to-blue-500"
-          style={{ scaleX, transformOrigin: "0%" }}
-        />
-      </header>
-
-      <main className="pt-24">
-        <HeroSection />
-        <HorizontalScrollSection />
-        <CubeToFeaturesSection />
-        <FeaturesSection />
-        <DemoSection />
-        <TestimonialSection />
-        <CTASection />
-      </main>
-
-      <footer className="bg-gray-900 py-8 mt-20">
-        <div className="container mx-auto px-4 text-center text-gray-400">
-          © 2024 PrepPal. All rights reserved.
-        </div>
-      </footer>
-    </div>
-  )
-}
-
-function HeroSection() {
-  const ref = useRef(null);
+export default function Home() {
+  const [isAnimationVisible, setAnimationVisible] = useState(true);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Animate the "R" to flip into position
-      gsap.fromTo(".letter-r", 
-        { rotateX: 90, transformOrigin: "bottom center" }, 
-        { rotateX: 0, duration: 1, ease: "power2.out", delay: 0.3 }
-      );
+    const timer = setTimeout(() => {
+      setAnimationVisible(false);
+    }, 3000); // Adjust the delay as needed for the fade-out effect
 
-      // Initially hide the ruler and set the lamp off-screen
-      gsap.set(".ruler-v", { opacity: 0 });
-      gsap.set(".animated-object", { visibility: 'hidden', y: -300, opacity: 0 });
-
-      // Animate the "v" to flip and disappear
-      gsap.to(".letter-v", {
-        rotateY: 180,
-        duration: 1,
-        ease: "power2.out",
-        delay: 0.5,
-        onComplete: () => {
-          gsap.set(".letter-v", { opacity: 0 });
-          gsap.to(".ruler-v", {
-            opacity: 1,
-            duration: 0.5,
-            ease: "power2.out",
-          });
-        },
-      });
-
-      // Lamp drop animation
-      setTimeout(() => {
-        gsap.to(".animated-object", {
-          visibility: 'visible',
-          opacity: 1,
-          y: 0,
-          duration: 1.5,
-          ease: "bounce.out",
-          onStart: () => {
-            gsap.to(".letter-t", { opacity: 0, duration: 0.5, ease: "power1.inOut" });
-          },
-        });
-      }, 700);
-
-      // Swing animation for the "y"
-      gsap.fromTo(".letter-y", 
-        { rotate: -58, transformOrigin: "top left" }, 
-        { rotate: 0, duration: 1, ease: "elastic.out(1, 0.3)", delay: 1 }
-      );
-
-    }, ref);
-
-    return () => ctx.revert();
+    return () => clearTimeout(timer);
   }, []);
 
   return (
-    <motion.section
-      ref={ref}
-      className="min-h-screen flex flex-col justify-center items-center text-center px-4"
-    >
-      <h1 className="text-7xl md:text-[9rem] font-bold mb-6 leading-tight tracking-wide">
-        <span className="hero-text flex -mt-4">
-          <span className="letter-r inline-block">R</span>
-          <span className="inline-block">e</span>
-          <span className="inline-block relative" style={{ width: '100px', height: '120px', display: 'inline-flex', alignItems: 'flex-end' }}>
-            <span className="letter-v absolute text-9xl">v</span>
-            <Image 
-              src="/images/ruler.png" 
-              alt="Ruler" 
-              width={100} 
-              height={120} 
-              className="ruler-v absolute" 
-              style={{
-                top: '70px',
-                left: '0px',
-              }}
-            />
-          </span>
-          <span className="inline-block">olu</span>
-          <span className="inline-block relative" style={{ position: 'relative', width: '80px', display: 'inline-flex', alignItems: 'center' }}>
-            <span className="letter-t inline-block">t</span>
-            <Image
-              src="/images/lamp.png"
-              alt="Lamp"
-              width={80}
-              height={80}
-              className="absolute animated-object"
-              style={{
-                top: '60px',
-                left: '0px',
-                position: 'absolute',
-              }}
-            />
-          </span>
-          <span className="inline-block">ionize</span>
-        </span>
-        <span className="hero-text block mt-4 text-7xl md:text-[9rem] ml-[4rem]">
-          {"Productivit".split("").map((char, index) => (
-            <span key={index} className="letter inline-block">{char}</span>
-          ))}
-          <span className="letter-y inline-block">y</span>
-        </span>
-      </h1>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.4 }}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+    <div className="min-h-screen bg-black text-white font-sans">
+      <div
+        id="spline-animation"
+        className={`fixed inset-0 z-50 flex items-center justify-center bg-black transition-opacity duration-1000 ${isAnimationVisible ? 'opacity-100' : 'opacity-0'}`}
+        style={{
+          width: '100vw',
+          height: '100vh',
+          pointerEvents: isAnimationVisible ? 'auto' : 'none', // Prevent interaction when invisible
+        }}
       >
-        <Link href="/responsePage" className="px-8 py-4 bg-gradient-to-r from-cyan-400 to-blue-500 text-black rounded-full text-lg font-semibold hover:from-cyan-300 hover:to-blue-400 transition-all">
-          Get Started
-        </Link>
-      </motion.div>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1, duration: 1.5, repeat: Infinity, repeatType: "reverse" }}
-        className="absolute bottom-8"
-      >
-        <ChevronDown className="w-8 h-8" />
-      </motion.div>
-    </motion.section>
-  );
-}
-
-function HorizontalScrollSection() {
-  const targetRef = useRef<HTMLDivElement>(null)
-  const contentRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const target = targetRef.current
-    const content = contentRef.current
-
-    if (!target || !content) return
-
-    const updateScroll = () => {
-      const scrollPercentage = target.scrollTop / (target.scrollHeight - target.clientHeight)
-      const moveDistance = content.scrollWidth - target.clientWidth
-      content.style.transform = `translateX(-${scrollPercentage * moveDistance}px)`
-    }
-
-    target.addEventListener('scroll', updateScroll)
-    return () => target.removeEventListener('scroll', updateScroll)
-  }, [])
-
-  return (
-    <div 
-      ref={targetRef} 
-      className="h-screen overflow-y-scroll overflow-x-hidden"
-      style={{ scrollSnapType: 'y mandatory' }}
-    >
-      <div className="h-screen flex items-center sticky top-0">
-        <div 
-          ref={contentRef} 
-          className="flex whitespace-nowrap will-change-transform"
-        >
-          <h2 className="text-6xl md:text-8xl font-bold px-4">
-            Optimize Your Time • Boost Productivity • Achieve More • PrepPal • AI-Powered • Efficiency • Success •&nbsp;
-          </h2>
-          <h2 className="text-6xl md:text-8xl font-bold px-4">
-            Optimize Your Time • Boost Productivity • Achieve More • PrepPal • AI-Powered • Efficiency • Success •&nbsp;
-          </h2>
-        </div>
-      </div>
-      <div className="h-screen"></div>
-    </div>
-  )
-}
-
-function CubeToFeaturesSection() {
-  const containerRef = useRef(null)
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"],
-  })
-
-  // Define the transitions for cube animation and transformation
-  const cubeRotate = useTransform(scrollYProgress, [0, 0.5], [0, 180]) // Cube rotates
-  const cubeScale = useTransform(scrollYProgress, [0, 0.5], [1, 10]) // Cube scales up
-  const cubeOpacity = useTransform(scrollYProgress, [0.4, 0.5], [1, 0]) // Cube fades out
-  const featuresOpacity = useTransform(scrollYProgress, [0.5, 0.6], [0, 1]) // Features fade in
-
-  // Background color that changes after the cube's animation is done
-  const [backgroundColor, setBackgroundColor] = useState("transparent")
-
-  // Watch the scroll progress and update the background color when the cube fades out
-  useEffect(() => {
-    scrollYProgress.onChange((value) => {
-      if (value > 0.5) {
-        // After the cube fades out, change the background color to the cube's color (cyan-400)
-        setBackgroundColor("#22d3ee") // Tailwind's cyan-400 hex code
-      } else {
-        // Before that, keep the background transparent
-        setBackgroundColor("transparent")
-      }
-    })
-  }, [scrollYProgress])
-
-  const features = [
-    { icon: <FileText className="w-12 h-12 text-cyan-400" />, title: "Smart Analysis", description: "AI-powered insights to optimize your workflow." },
-    { icon: <Brain className="w-12 h-12 text-pink-400" />, title: "Adaptive Learning", description: "Personalized suggestions that evolve with your needs." },
-    { icon: <Calendar className="w-12 h-12 text-purple-400" />, title: "Time Management", description: "Efficient scheduling to maximize productivity." },
-    { icon: <MessageSquare className="w-12 h-12 text-green-400" />, title: "Collaborative Tools", description: "Seamless integration with your team's workflow." },
-  ]
-
-  return (
-    <section ref={containerRef} className="min-h-[200vh] relative" style={{ backgroundColor: backgroundColor, transition: "background-color 0.8s ease" }}>
-      <div className="sticky top-0 h-screen flex items-center justify-center">
-        {/* Cube Animation */}
-        <motion.div
+        <Spline
+          scene="https://prod.spline.design/YbvEj6rcezUmzA-H/scene.splinecode" 
           style={{
-            rotateY: cubeRotate,
-            scale: cubeScale,
-            opacity: cubeOpacity,
+            width: '100%',
+            height: '100%',
           }}
-          className="w-40 h-40 relative"
-        >
-          {/* This creates a cube effect */}
-          {[...Array(6)].map((_, index) => (
-            <motion.div
-              key={index}
-              className="absolute w-full h-full bg-cyan-400 opacity-80"
-              style={{
-                rotateX: index < 2 ? index * 180 : 0,
-                rotateY: index >= 2 && index < 4 ? (index - 2) * 180 : 0,
-                rotateZ: index >= 4 ? (index - 4) * 180 : 0,
-                translateZ: '80px',
-              }}
-            />
-          ))}
-        </motion.div>
-
-        {/* Feature Cards that fade in after the cube transforms */}
-        <motion.div
-          style={{ opacity: featuresOpacity }}
-          className="absolute inset-0 flex items-center justify-center"
-        >
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 p-8">
-            {features.map((feature, index) => (
-              <FeatureCard key={index} {...feature} index={index} />
-            ))}
-          </div>
-        </motion.div>
-      </div>
-    </section>
-  )
-}
-
-function FeaturesSection() {
-  const ref = useRef(null)
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"]
-  })
-
-  const y = useTransform(scrollYProgress, [0, 1], ["20%", "0%"])
-
-  const features = [
-    { icon: <FileText className="w-12 h-12 text-cyan-400" />, title: "Smart Analysis", description: "AI-powered insights to optimize your workflow." },
-    { icon: <Brain className="w-12 h-12 text-pink-400" />, title: "Adaptive Learning", description: "Personalized suggestions that evolve with your needs." },
-    { icon: <Calendar className="w-12 h-12 text-purple-400" />, title: "Time Management", description: "Efficient scheduling to maximize productivity." },
-    { icon: <MessageSquare className="w-12 h-12 text-green-400" />, title: "Collaborative Tools", description: "Seamless integration with your team's workflow." },
-  ]
-
-  return (
-    <motion.section 
-      ref={ref}
-      style={{ y }}
-      className="py-20 px-4"
-    >
-      <motion.h2
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="text-4xl font-bold mb-12 text-center"
-      >
-        Powerful Features
-      </motion.h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        {features.map((feature, index) => (
-          <FeatureCard
-            key={index}
-            icon={feature.icon}
-            title={feature.title}
-            description={feature.description}
-            index={index}
-          />
-        ))}
-      </div>
-    </motion.section>
-  )
-}
-
-function FeatureCard({ icon, title, description, index }: FeatureCardProps) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      viewport={{ once: true }}
-      className="bg-gray-800 rounded-lg p-6 hover:bg-gray-700 transition-all"
-    >
-      <div className="flex justify-center mb-4">{icon}</div>
-      <h3 className="text-xl font-semibold mb-2 text-center">{title}</h3>
-      <p className="text-gray-400 text-center">{description}</p>
-    </motion.div>
-  )
-}
-
-function DemoSection() {
-  const ref = useRef(null)
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"]
-  })
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"])
-
-  return (
-    <section ref={ref} className="py-20 px-4 relative overflow-hidden">
-      <motion.div
-        style={{ y }}
-        className="absolute inset-0 bg-gradient-to-b from-cyan-500 to-blue-600 opacity-10"
-      />
-      <motion.h2
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="text-4xl font-bold mb-12 text-center relative z-10"
-      >
-        See PrepPal in Action
-      </motion.h2>
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.8 }}
-        className="relative z-10"
-      >
-        <Image
-          src="/placeholder.svg?height=600&width=800"
-          width={800}
-          height={600}
-          alt="PrepPal Demo"
-          className="rounded-lg shadow-2xl mx-auto"
         />
-      </motion.div>
-    </section>
-  )
-}
+      </div>
 
-function TestimonialSection() {
-  const ref = useRef(null)
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"]
-  })
-
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [0, 1])
-
-  const testimonials = [
-    { name: "Alex Johnson", role: "Project Manager", quote: "PrepPal has transformed how our team collaborates and manages tasks." },
-    { name: "Sarah Lee", role: "Freelance Designer", quote: "The AI-powered insights have helped me optimize my workflow and take on more clients." },
-    { name: "Michael Chen", role: "Software Engineer", quote: "I can't imagine going back to my old productivity tools after using PrepPal." },
-  ]
-
-  return (
-    <motion.section 
-      ref={ref}
-      style={{ opacity }}
-      className="py-20 px-4"
-    >
-      <motion.h2
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="text-4xl font-bold mb-12 text-center"
+      <nav
+        className={`absolute transition-opacity duration-1000 ${isAnimationVisible ? 'opacity-0' : 'opacity-100'}`}
+        style={{
+          top: '38px',
+          left: '189.76px',
+          width: '1063.24px',
+          height: '79.34px',
+        }}
       >
-        What Our Users Say
-      </motion.h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {testimonials.map((testimonial, index) => (
-          <TestimonialCard key={index} {...testimonial} index={index} />
-        ))}
-      </div>
-    </motion.section>
-  )
-}
+        <div className="flex justify-between items-center h-full">
+          <div className="text-3xl font-bold">Brev</div>
+          <ul className="flex space-x-8 text-lg">
+            <li><a href="#about" className="hover:text-gray-400">about</a></li>
+            <li><a href="#pricing" className="hover:text-gray-400">pricing</a></li>
+            <li><a href="#contact" className="hover:text-gray-400">contact</a></li>
+            <li><a href="#nfts" className="hover:text-gray-400">buy nfts</a></li>
+          </ul>
+        </div>
+      </nav>
 
-function TestimonialCard({ name, role, quote, index }: { name: string; role: string; quote: string; index: number }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      viewport={{ once: true }}
-      className="bg-gray-800 rounded-lg p-6"
-    >
-      <p className="text-gray-300 mb-4">"{quote}"</p>
-      <p className="font-semibold">{name}</p>
-      <p className="text-gray-400">{role}</p>
-    </motion.div>
-  )
-}
-
-function CTASection() {
-  return (
-    <motion.section 
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      transition={{ duration: 1 }}
-      viewport={{ once: true }}
-      className="py-20 px-4"
-    >
-      <div className="max-w-4xl mx-auto text-center">
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-4xl font-bold mb-6"
+      <main className={`flex flex-col items-center justify-center text-center mt-16 transition-opacity duration-1000 ${isAnimationVisible ? 'opacity-0' : 'opacity-100'}`}>
+        <h1
+          className="text-5xl font-bold absolute"
+          style={{
+            top: '212px',
+            left: '190px',
+            width: '305px',
+            height: '216px',
+          }}
         >
-          Ready to Boost Your Productivity?
-        </motion.h2>
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-xl mb-8"
+          You got this, brev!
+        </h1>
+        <p
+          className="text-base absolute"
+          style={{
+            top: '379px',
+            left: '190px',
+            width: '396px',
+            height: '83px',
+          }}
         >
-          Join thousands of professionals who have already transformed their workflow with PrepPal.
-        </motion.p>
-        <motion.button
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="px-8 py-4 bg-gradient-to-r from-cyan-400 to-blue-500 text-black rounded-full text-lg font-semibold hover:from-cyan-300 hover:to-blue-400 transition-all"
+          Your go-to tool for smarter learning, helping you stay on top of your game without the stress.
+        </p>
+        <a
+          href="/responsePage"
+          className="bg-blue-600 text-white rounded-full text-base font-medium hover:bg-blue-700 absolute flex items-center justify-center"
+          style={{
+            top: '501px',
+            left: '188px',
+            width: '139px',
+            height: '51px',
+          }}
         >
-          Start Your Free Trial
-        </motion.button>
-      </div>
-    </motion.section>
-  )
+          Start Brewing
+        </a>
+      </main>
+    </div>
+  );
 }
