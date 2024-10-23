@@ -238,7 +238,7 @@ app.post('/api/delete-temp-file', async (req, res) => {
 
 app.post('/api/cleanup', async (req, res) => {
   try {
-     const uploadsDir = path.resolve(__dirname, 'D:\\New folder\\prepal\\pages\\api\\uploads');
+     const uploadsDir = path.resolve(__dirname, 'D:\\main\\prepal\\pages\\api\\uploads');
     const tempDir = path.join(__dirname, '../../temp');
 
     // Delete all files in the uploads directory

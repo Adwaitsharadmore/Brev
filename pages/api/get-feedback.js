@@ -36,7 +36,7 @@ export default async function handler(req, res) {
 
   try {
     // Use an absolute path to the uploads directory
-    const uploadsDir = path.resolve(__dirname, 'D:\\New folder\\prepal\\pages\\api\\uploads');
+    const uploadsDir = path.resolve(__dirname, 'D:\\main\\prepal\\pages\\api\\uploads');
     const filePath = path.join(uploadsDir, originalFileName);
     console.log("Reading file from:", filePath); // Debugging line
 
