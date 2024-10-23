@@ -220,6 +220,13 @@ const QuizPage = () => {
     }
   };
 
+  const handleGenerateFeedback = () => {
+    if (!isLoading) {
+      setIsLoading(true);
+      fetchFeedback();
+    }
+  };
+
   if (!quizContent.length) {
     return (
       <div className="min-h-screen bg-black bg-gradient-preppal text-white flex flex-col items-center justify-center">
@@ -319,6 +326,7 @@ await fetch("http://localhost:3001/api/cleanup", {
           >
             Back to Home
           </button>
+  
         </div>
       )}
 
@@ -332,21 +340,23 @@ await fetch("http://localhost:3001/api/cleanup", {
         </div>
       )}
 
-      {isCorrect && (
+      {!showFinalFeedback && isCorrect && (
         <button
           onClick={
             currentQuestion < quizContent.length - 1
               ? handleNextQuestion
-              : generatePracticeQuestions
+              : handleGenerateFeedback
           }
           className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-4"
         >
           {currentQuestion < quizContent.length - 1
             ? "Next Question"
-            : "Practice More"}
+            : "Generate Feedback"}
         </button>
       )}
-      {!isCorrect && currentQuestion === quizContent.length - 1 && (
+
+      {/*  
+            {!isCorrect && currentQuestion === quizContent.length - 1 && (
         <button
           onClick={generatePracticeQuestions}
           className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
@@ -362,6 +372,17 @@ await fetch("http://localhost:3001/api/cleanup", {
           Back to Home
         </button>
       )}
+      
+            {showFinalFeedback ? (
+        <button
+          onClick={handleGenerateFeedback}
+          className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded mt-4"
+        >
+          Generate Feedback
+        </button>
+      ) : (
+        <></>
+      )}*/}
     </div>
   );
 };
