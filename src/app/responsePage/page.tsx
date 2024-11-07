@@ -15,8 +15,9 @@ import fs from 'fs';
      const [loadingMnemonics, setLoadingMnemonics] = useState(false);
      const [selectedOption, setSelectedOption] = useState("");
      const [errorMessage, setErrorMessage] = useState("");
-    const [html2pdf, setHtml2pdf] = useState(null);
+    const [html2pdf, setHtml2pdf] = useState(null);   
     const [tempFilePath, setTempFilePath] = useState<string | null>(null);
+    const [hasSpecialCharacters, setHasSpecialCharacters] = useState(false);
 
 
      useEffect(() => {
@@ -35,7 +36,10 @@ import fs from 'fs';
       const reader = new FileReader();
       reader.onload = (e) => {
         const content = e.target.result;
-        if (typeof content === "string" && /[\{\}\[\]\(\)]/.test(content)) {
+        const hasSpecialChars =
+          typeof content === "string" && /[\{\}\[\]\(\)]/.test(content);
+        setHasSpecialCharacters(hasSpecialChars);
+        if (hasSpecialChars) {
           setTextPrompt(
             "Special characters found in document. Adjust prompt accordingly."
           );
@@ -46,6 +50,7 @@ import fs from 'fs';
       alert("No file selected. Please try again.");
     }
   };
+
 
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -142,10 +147,27 @@ import fs from 'fs';
 
       const formData = new FormData();
       formData.append("file", file);
-      formData.append(
-        "textPrompt",
-        "Generate 5 multiple-choice questions based on the document provided. Each question should be enclosed in curly brackets {}. List the four options within square brackets [], with each option labeled with a), b), c), and d) on a new line using \n to separate them. Place the correct option in parentheses () as a letter (a, b, c, or d) on a new line after the options. Ensure the output strictly follows this format: {Question text} [a) Option A\nb) Option B\nc) Option C\nd) Option D] \n(Correct option letter). Please use this format exactly as described."
-      );
+       const quizPrompt = hasSpecialCharacters
+         ? `Generate 5 multiple-choice questions based on the document provided. Format each question as follows:
+         QUESTION: Write the question here
+         OPTION_A: First option
+         OPTION_B: Second option
+         OPTION_C: Third option
+         OPTION_D: Fourth option
+         CORRECT: Write the correct option letter (A, B, C, or D)
+         
+         Please separate each question with three dashes (---).`
+         : `Generate 5 multiple-choice questions based on the document provided. Format each question as follows:
+         QUESTION: Write the question here
+         OPTION_A: First option
+         OPTION_B: Second option
+         OPTION_C: Third option
+         OPTION_D: Fourth option
+         CORRECT: Write the correct option letter (A, B, C, or D)
+         
+         Please separate each question with three dashes (---).`;
+
+       formData.append("textPrompt", quizPrompt);
 
       try {
         const response = await fetch(

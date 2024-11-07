@@ -138,7 +138,7 @@ app.post('/upload-and-generate-quiz', upload.single('file'), async (req, res) =>
           fileUri: uploadResponse.file.uri,
         },
       },
-      { text: "Generate 5 multiple-choice questions based on the document provided. Each question should be enclosed in curly brackets {}. List the four options within square brackets [], with each option labeled with a), b), c), and d) on a new line using \n to separate them. Place the correct option in parentheses () as a letter (a, b, c, or d) on a new line after the options. Ensure the output strictly follows this format: {Question text} [a) Option A\nb) Option B\nc) Option C\nd) Option D] \n(Correct option letter). Please use this format exactly as described." },
+      { text: textPrompt },
     ]);
 
     // Log the generated quiz content

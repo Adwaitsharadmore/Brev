@@ -25,74 +25,86 @@ const QuizPage = () => {
   const [incorrectQuestions, setIncorrectQuestions] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const quiz = urlParams.get("quiz");
-    const fileName = urlParams.get("originalFileName");
+ useEffect(() => {
+   const urlParams = new URLSearchParams(window.location.search);
+   const quiz = urlParams.get("quiz");
+   const fileName = urlParams.get("originalFileName");
 
-    if (quiz && quiz !== "undefined" && quiz.length > 0) {
-      const parsedQuiz = parseQuizContent(quiz);
-      if (parsedQuiz.length > 0) {
-        setQuizContent(parsedQuiz);
-      } else {
-        console.error("Parsed quiz content is empty or invalid.");
-        setQuizContent([]);
-      }
-    } else {
-      console.error("Quiz parameter is missing or invalid.");
-      setQuizContent([]);
-    }
+   if (quiz && quiz !== "undefined" && quiz.length > 0) {
+     const parsedQuiz = parseQuizContent(quiz);
+     if (parsedQuiz.length > 0) {
+       setQuizContent(parsedQuiz);
+     } else {
+       console.error("Parsed quiz content is empty or invalid.");
+       setQuizContent([]);
+     }
+   } else {
+     console.error("Quiz parameter is missing or invalid.");
+     setQuizContent([]);
+   }
 
-    if (fileName && fileName !== "undefined") {
-      setOriginalFileName(fileName);
-    } else {
-      console.error("Original file name is missing or invalid.");
-    }
-  }, []);
+   if (fileName && fileName !== "undefined") {
+     setOriginalFileName(fileName);
+   }
+ }, []);
 
-  useEffect(() => {
-    if (quizContent.length > 0 && attempts.length === 0) {
-      setAttempts(new Array(quizContent.length).fill(0));
-    }
-  }, [quizContent]);
+ useEffect(() => {
+   if (quizContent.length > 0 && attempts.length === 0) {
+     setAttempts(new Array(quizContent.length).fill(0));
+   }
+ }, [quizContent]);
 
-  const parseQuizContent = (quiz: string): QuizQuestion[] => {
-    const questions = quiz.split("{").filter((item) => item.includes("?"));
-    return questions
-      .map((q) => {
-        const parts = q.split("}");
-        if (parts.length < 2) {
-          console.error("Invalid question format:", q);
-          return null;
-        }
+ const parseQuizContent = (quiz: string): QuizQuestion[] => {
+   const questions = quiz.split("---").filter((q) => q.trim());
 
-        const [questionPart, optionsPart] = parts;
-        if (!optionsPart) {
-          console.error("Options part is missing for question:", questionPart);
-          return null;
-        }
+   return questions
+     .map((questionBlock) => {
+       const lines = questionBlock.trim().split("\n");
+       const questionObj: Partial<QuizQuestion> = {
+         options: [],
+       };
 
-        const optionsMatch = optionsPart.match(/\[([^\]]+)\]/);
-        const options = optionsMatch
-          ? optionsMatch[1]
-              .split("\n")
-              .map((opt) => opt.trim())
-              .filter((opt) => opt.length > 0)
-          : [];
+       lines.forEach((line) => {
+         const [key, ...valueParts] = line.split(":");
+         const value = valueParts.join(":").trim();
 
-        const correctAnswerMatch = optionsPart.match(/\(([a-d])\)/);
-        const correctAnswerLetter = correctAnswerMatch
-          ? correctAnswerMatch[1]
-          : null;
+         switch (key.trim()) {
+           case "QUESTION":
+             questionObj.question = value;
+             break;
+           case "OPTION_A":
+             questionObj.options![0] = value;
+             break;
+           case "OPTION_B":
+             questionObj.options![1] = value;
+             break;
+           case "OPTION_C":
+             questionObj.options![2] = value;
+             break;
+           case "OPTION_D":
+             questionObj.options![3] = value;
+             break;
+           case "CORRECT":
+             questionObj.correctAnswer = value;
+             break;
+         }
+       });
 
-        return {
-          question: questionPart.trim(),
-          options: options.slice(0, 4),
-          correctAnswer: correctAnswerLetter,
-        };
-      })
-      .filter((q) => q !== null) as QuizQuestion[];
-  };
+       // Validate question object
+       if (
+         !questionObj.question ||
+         !questionObj.options ||
+         questionObj.options.length !== 4 ||
+         !questionObj.correctAnswer
+       ) {
+         console.error("Invalid question format:", questionObj);
+         return null;
+       }
+
+       return questionObj as QuizQuestion;
+     })
+     .filter((q): q is QuizQuestion => q !== null);
+ };
 
   const fetchFeedback = async () => {
     if (!originalFileName) {
@@ -134,7 +146,7 @@ const QuizPage = () => {
     setSelectedAnswer(index);
     const correct =
       quizContent[currentQuestion].correctAnswer ===
-      String.fromCharCode(97 + index);
+      String.fromCharCode(65 + index); // Using uppercase A,B,C,D
     setFeedback(correct ? "Correct answer!" : "Incorrect answer.");
     setIsCorrect(correct);
 
@@ -144,6 +156,7 @@ const QuizPage = () => {
         quizContent[currentQuestion].question,
       ]);
     }
+
 
     setAttempts((prev) => {
       const newAttempts = prev.map((attempt, idx) =>
@@ -279,25 +292,35 @@ await fetch("http://localhost:3001/api/cleanup", {
 
       {!showFinalFeedback ? (
         <div className="bg-black border border-gray-700 p-6 rounded-lg shadow-lg w-3/4">
-          <h2 className="text-2xl font-semibold mb-4">
+          <div className="flex justify-between mb-4">
+            <span className="text-gray-400">
+              Question {currentQuestion + 1} of {quizContent.length}
+            </span>
+            <span className="text-gray-400">
+              Attempts: {attempts[currentQuestion] || 0}
+            </span>
+          </div>
+
+          <h2 className="text-2xl font-semibold mb-6 whitespace-pre-wrap">
             {quizContent[currentQuestion]?.question}
           </h2>
 
-          <ul>
+          <ul className="space-y-4">
             {quizContent[currentQuestion]?.options.map((option, index) => (
               <li
                 key={index}
-                className={`border p-4 rounded-lg my-2 cursor-pointer 
-                ${
-                  selectedAnswer === index && feedback === "Correct answer!"
-                    ? "bg-green-500"
-                    : selectedAnswer === index
-                    ? "bg-red-500"
-                    : "bg-gray-800"
-                }`}
+                className={`border p-4 rounded-lg cursor-pointer transition-colors duration-200
+                  ${
+                    selectedAnswer === index
+                      ? isCorrect
+                        ? "bg-green-600"
+                        : "bg-red-600"
+                      : "bg-gray-800 hover:bg-gray-700"
+                  }
+                  ${option.includes("\n") ? "whitespace-pre-wrap" : ""}`}
                 onClick={() => handleAnswerSelect(index)}
               >
-                {option}
+                {String.fromCharCode(65 + index)}. {option}
               </li>
             ))}
           </ul>
