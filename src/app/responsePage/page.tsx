@@ -1,31 +1,52 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import html2pdf from 'html2pdf.js';
+import fs from 'fs';
 
-interface FileData {
-  name: string;
-  path: string;
-}
 
-const ResponsePage: React.FC = () => {
-  const [cheatsheetContent, setCheatsheetContent] = useState<string | null>(null);
-  const [file, setFile] = useState<File | null>(null);
-  const [textPrompt, setTextPrompt] = useState<string>("");
-  const [loadingCheatsheet, setLoadingCheatsheet] = useState<boolean>(false);
-  const [loadingQuiz, setLoadingQuiz] = useState<boolean>(false);
-  const [tempFilePath, setTempFilePath] = useState<string | null>(null);
-  const [originalFileName, setOriginalFileName] = useState<string | null>(null);
+  const ResponsePage = () => {
+     const [cheatsheetContent, setCheatsheetContent] = useState(null);
+     const [file, setFile] = useState<File | null>(null);
+     const [textPrompt, setTextPrompt] = useState("");
+     const [loadingCheatsheet, setLoadingCheatsheet] = useState(false);
+     const [loadingQuiz, setLoadingQuiz] = useState(false);
+     const [loadingMnemonics, setLoadingMnemonics] = useState(false);
+     const [selectedOption, setSelectedOption] = useState("");
+     const [errorMessage, setErrorMessage] = useState("");
+    const [html2pdf, setHtml2pdf] = useState(null);
+    const [tempFilePath, setTempFilePath] = useState<string | null>(null);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = event.target.files?.[0];
+
+     useEffect(() => {
+       const loadHtml2Pdf = async () => {
+         const { default: pdf } = await import("html2pdf.js");
+         setHtml2pdf(pdf); // Set the library to state
+       };
+       loadHtml2Pdf();
+     }, []);
+    
+  const handleFileChange = (event) => {
+    const selectedFile = event.target.files[0];
     if (selectedFile) {
       setFile(selectedFile);
-      setOriginalFileName(selectedFile.name); // Store the original file name
+      // Read the file content to check for special characters
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const content = e.target.result;
+        if (typeof content === "string" && /[\{\}\[\]\(\)]/.test(content)) {
+          setTextPrompt(
+            "Special characters found in document. Adjust prompt accordingly."
+          );
+        }
+      };
+      reader.readAsText(selectedFile);
     } else {
       alert("No file selected. Please try again.");
     }
   };
+
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -35,147 +56,266 @@ const ResponsePage: React.FC = () => {
       return;
     }
 
-    setLoadingCheatsheet(true);
-
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("textPrompt", textPrompt);
-
-    try {
-      const response = await fetch("http://localhost:3001/upload-and-generate", {
-        method: "POST",
-        body: formData,
-      });
-      if (!response.ok) {
-        throw new Error("Failed to generate cheatsheet");
-      }
-      const data = await response.json();
-      setCheatsheetContent(data.generatedText);
-    } catch (error) {
-      console.error("Error fetching cheatsheet content:", error);
-    } finally {
-      setLoadingCheatsheet(false);
-    }
-  };
-
-  const handleGenerateQuiz = async () => {
-    if (!file) {
-      alert("Please upload a file");
+    if (!selectedOption) {
+      setErrorMessage("Please select if you want a detailed or precise cheatsheet first");
       return;
     }
 
-    setLoadingQuiz(true);
+    setLoadingCheatsheet(true);
+    setErrorMessage("");
+
+    let customPrompt = textPrompt || "";
+
+    if (selectedOption === "Detailed") {
+      customPrompt = customPrompt || `
+        Create a comprehensive cheat sheet from the provided document. Use the following format:
+        
+        1. Main Titles: Enclose in curly brackets {}.
+        2. Subtopics: Enclose in square brackets [].
+        3. Details: Present each detail as a bullet point under the corresponding subtopic.
+        
+        Ensure all text is in normal font. Follow this structure consistently:
+        
+        - {Main Title}
+          - [Subtopic]
+            - Bullet point 1
+            - Bullet point 2
+      
+        Use clear and simple language for bullet points. Provide additional explanations, context, and insights beyond the document to enhance understanding. Expand on each point to ensure a thorough grasp of the topic. If the uploaded file is a exam study guide with topics of specific chapter numbers, read through each chapter and their contents.
+      `;
+    } else if (selectedOption === "Precise") {
+      customPrompt = customPrompt || `
+        Please create a concise cheat sheet from the provided document. Use the following format:
+        
+        Main Titles: Enclose in curly brackets {}.
+        Subtopics: Enclose in square brackets [].
+        Details: Present each detail as a bullet point under the corresponding subtopic.
+        Ensure all text is in normal font. Use the format strictly:
+        
+        {Main Title}
+        [Subtopic]
+        Bullet point 1
+        Bullet point 2
+        
+        Keep explanations brief and to the point. Only include essential details for each topic, avoiding any unnecessary expansion.
+      `;
+    }
 
     const formData = new FormData();
     formData.append("file", file);
-    formData.append(
-      "textPrompt",
-      "Generate 5 multiple-choice questions based on the document provided. Each question should be enclosed in curly brackets {}. List the four options within square brackets [], with each option labeled with a), b), c), and d) on a new line using \n to separate them. Place the correct option in parentheses () as a letter (a, b, c, or d) on a new line after the options. Ensure the output strictly follows this format: {Question text} [a) Option A\nb) Option B\nc) Option C\nd) Option D] \n(Correct option letter). Please use this format exactly as described."
-    );
+    formData.append("textPrompt", customPrompt);
 
     try {
       const response = await fetch(
-        "http://localhost:3001/upload-and-generate-quiz",
+        "http://localhost:3001/upload-and-generate",
         {
           method: "POST",
           body: formData,
         }
       );
-      if (!response.ok) {
-        throw new Error("Failed to generate quiz");
-      }
-      const data = await response.json();
 
-      // Store the tempFilePath for later use
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("Cheatsheet content set:", data.generatedText);
+      setCheatsheetContent(data.generatedText);
       setTempFilePath(data.tempFilePath);
-
-      // Redirect to the new quiz page with generated quiz content
-      window.location.href = `/quizPage?quiz=${encodeURIComponent(
-        data.generatedQuiz
-      )}&originalFileName=${encodeURIComponent(file.name)}`;
-
     } catch (error) {
-      console.error("Error fetching quiz content:", error);
+      console.error("Error fetching cheatsheet content:", error);
+      setErrorMessage("Failed to generate cheatsheet. Please try again.");
     } finally {
-      setLoadingQuiz(false);
+      setLoadingCheatsheet(false); // Reset loading state here
     }
   };
 
-  const fetchFeedback = async (questions: string[], attempts: number[]) => {
-    if (!tempFilePath) {
-      console.error("Temporary file path is missing.");
-      return;
-    }
 
-    try {
-      const response = await fetch('/api/get-feedback', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          questions,
-          attempts,
-          tempFilePath,
-        }),
-      });
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch feedback');
+    const handleGenerateQuiz = async () => {
+      if (!file) {
+        alert("Please upload a file");
+        return;
       }
 
-      const data = await response.json();
-      console.log("Feedback received:", data.feedback);
-    } catch (error) {
-      console.error('Error fetching feedback:', error);
+      setLoadingQuiz(true);
+
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append(
+        "textPrompt",
+        "Generate 5 multiple-choice questions based on the document provided. Each question should be enclosed in curly brackets {}. List the four options within square brackets [], with each option labeled with a), b), c), and d) on a new line using \n to separate them. Place the correct option in parentheses () as a letter (a, b, c, or d) on a new line after the options. Ensure the output strictly follows this format: {Question text} [a) Option A\nb) Option B\nc) Option C\nd) Option D] \n(Correct option letter). Please use this format exactly as described."
+      );
+
+      try {
+        const response = await fetch(
+          "http://localhost:3001/upload-and-generate-quiz",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to generate quiz");
+        }
+        const data = await response.json();
+
+        // Store the tempFilePath for later use
+        setTempFilePath(data.tempFilePath);
+
+        // Redirect to the new quiz page with generated quiz content
+        window.location.href = `/quizPage?quiz=${encodeURIComponent(
+          data.generatedQuiz
+        )}&originalFileName=${encodeURIComponent(file.name)}`;
+      } catch (error) {
+        console.error("Error fetching quiz content:", error);
+      } finally {
+        setLoadingQuiz(false);
+      }
+    };
+
+
+const handleGenerateMnemonics = async () => {
+  if (!file) {
+    alert("Please upload a file");
+    return;
+  }
+
+  setLoadingMnemonics(true);
+
+  const customPrompt = `
+      Please create mnemonics for the provided document to aid in memorizing key concepts. Use the following format and apply the best memory strategy that fits each piece of content:
+
+      Main Titles: Enclose in curly brackets {}.
+      Subtopics: Enclose in square brackets [].
+      Mnemonics: Present each mnemonic as a bullet point under the corresponding subtopic.
+      Use a variety of memory techniques, such as:
+
+      Acronyms: Form words from the first letter of key terms.
+      Acrostics: Create sentences where each word starts with the first letter of the concept.
+      Chunking: Break information into smaller, manageable groups.
+      Association: Link new information to familiar concepts or images.
+      Method of Loci: Visualize placing the information in familiar locations.
+      Songs or Rhymes: Use catchy rhymes or short songs.
+      Choose the most effective strategy for each concept and present it in the following format:
+
+      {Main Title}
+      [Subtopic]
+      Mnemonic 1
+      Mnemonic 2
+
+      Ensure the mnemonics are easy to remember and align with the content.
+    `;
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("textPrompt", customPrompt);
+
+  try {
+    const response = await fetch(
+      "http://localhost:3001/upload-and-generate-mnemonics",
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-  };
+
+    const data = await response.json();
+    setCheatsheetContent(data.generatedMnemonics);
+  } catch (error) {
+    console.error("Error fetching mnemonics:", error);
+    setErrorMessage("Failed to generate mnemonics. Please try again.");
+  } finally {
+    setLoadingMnemonics(false);
+  }
+};
+
 
   const renderCheatsheetAsList = () => {
     if (!cheatsheetContent) return null;
 
-    const sections = cheatsheetContent.split("\n\n").filter((section) => section.trim() !== "");
+    const lines = cheatsheetContent.split("\n").filter((line) => line.trim() !== "");
+
 
     return (
-      <div>
-        {sections.map((section, index) => {
-          const lines = section.split("\n").filter((line) => line.trim() !== "");
+      <div className="text-black">
+        {lines.map((line, index) => {
+          const mainTitleMatch = line.match(/\{(.+?)\}/);
+          const subtopicMatch = line.match(/\[(.+?)\]/);
 
-          return (
-            <div key={index} className="mb-6">
-              {lines.map((line, lineIndex) => {
-                const cleanedLine = line.replace(/^\-\s*/, "").trim();
-
-                if (cleanedLine.startsWith("{") && cleanedLine.endsWith("}")) {
-                  const mainTitle = cleanedLine.replace(/^\{(.*?)\}$/, "$1");
-                  return (
-                    <h1 key={lineIndex} className="font-semibold text-3xl text-white mb-4">
-                      {mainTitle}
-                    </h1>
-                  );
-                } else if (cleanedLine.startsWith("[") && cleanedLine.endsWith("]")) {
-                  const subtopic = cleanedLine.replace(/^\[(.*?)\]$/, "$1");
-                  return (
-                    <h2 key={lineIndex} className="font-semibold text-xl text-white mb-2">
-                      {subtopic}
-                    </h2>
-                  );
-                } else {
-                  return (
-                    <ul key={lineIndex} className="list-disc pl-5">
-                      <li className="text-lg text-white mb-2">
-                        {cleanedLine}
-                      </li>
-                    </ul>
-                  );
-                }
-              })}
-            </div>
-          );
+          if (mainTitleMatch) {
+            // Main Title
+            const mainTitle = mainTitleMatch[1];
+            return (
+              <h2 key={index} className="text-3xl font-bold mb-4">
+                {mainTitle}
+              </h2>
+            );
+          } else if (subtopicMatch) {
+            // Subtopic
+            const subtopic = subtopicMatch[1];
+            return (
+              <h3 key={index} className="text-xl font-semibold ml-4 mb-2">
+                {subtopic}
+              </h3>
+            );
+          } else {
+            // Detail
+            return (
+              <p key={index} className="ml-8 mb-2">
+                {line.replace(/^\-\s*/, "").trim()}
+              </p>
+            );
+          }
         })}
       </div>
     );
   };
+
+  // Define the toggleSelection function to handle option changes
+  const toggleSelection = (option) => {
+    // If the clicked option is already selected, deselect it; otherwise, select the new option.
+    if (selectedOption === option) {
+      setSelectedOption(""); // Deselect if it's the current option
+    } else {
+      setSelectedOption(option); // Select the clicked option
+    }
+  };
+
+  const handleDownloadPDF = () => {
+    const element = document.getElementById('cheatsheet-content');
+    
+    if (!element) {
+      console.error('Cheatsheet content element not found');
+      return;
+    }
+
+    const opt = {
+      margin: 10,
+      filename: 'cheatsheet.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { 
+        scale: 2,
+        useCORS: true,
+        logging: true,
+        letterRendering: true
+      },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] } // Add pagebreak options
+    };
+
+    html2pdf().set(opt).from(element).save().catch(err => {
+      console.error('Error generating PDF:', err);
+    });
+  };
+
+  if (typeof window !== "undefined") {
+    // Code that uses window, document, or self
+  }
 
   return (
     <div className="min-h-screen bg-gradient-preppal text-white">
@@ -244,36 +384,75 @@ const ResponsePage: React.FC = () => {
               />
             </div>
 
-            <button
-              type="submit"
-              className="bg-white text-black px-4 py-2 rounded-full"
-              disabled={loadingCheatsheet}
-            >
-              {loadingCheatsheet ? "Generating..." : "Generate Cheatsheet"}
-            </button>
-            <button
-              type="button"
-              className="bg-white text-black px-4 py-2 rounded-full ml-4"
-              onClick={handleGenerateQuiz}
-              disabled={loadingQuiz}
-            >
-              {loadingQuiz ? "Generating..." : "Generate Quiz"}
-            </button>
+            <div className="mb-4">
+              <label className="block text-lg font-medium text-white mb-2">Select an option:</label>
+              <div className="flex justify-start gap-4">
+                <button
+                  type="submit"
+                  className={`bg-${loadingCheatsheet ? "yellow-500" : "white"} text-black px-4 py-2 rounded-full`}
+                  disabled={loadingCheatsheet}
+                >
+                  {loadingCheatsheet ? "Generating..." : "Generate Cheatsheet"}
+                </button>
+                <button
+                  type="button"
+                  className={`bg-${loadingMnemonics ? "yellow-500" : "white"} text-black px-4 py-2 rounded-full ml-4`}
+                  onClick={handleGenerateMnemonics}
+                  disabled={loadingMnemonics}
+                >
+                  {loadingMnemonics ? "Generating..." : "Generate Mnemonics"}
+                </button>
+                <button
+                  type="button"
+                  className={`bg-${loadingQuiz ? "yellow-500" : "white"} text-black px-4 py-2 rounded-full ml-4`}
+                  onClick={handleGenerateQuiz}
+                  disabled={loadingQuiz}
+                >
+                  {loadingQuiz ? "Generating..." : "Generate Quiz"}
+                </button>
+              </div>
+            </div>
+
+            {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
+
+            <div className="mb-4">
+              <div className="flex justify-start gap-4">
+                <button
+                  type="button"
+                  className={`px-3 py-1 rounded-full ${selectedOption === "Detailed" ? "bg-yellow-500 text-black" : "bg-white text-black"}`}
+                  onClick={() => toggleSelection("Detailed")}
+                >
+                  Detailed
+                </button>
+                <button
+                  type="button"
+                  className={`px-3 py-1 rounded-full ${selectedOption === "Precise" ? "bg-yellow-500 text-black" : "bg-white text-black"}`}
+                  onClick={() => toggleSelection("Precise")}
+                >
+                  Precise
+                </button>
+              </div>
+            </div>
           </form>
 
-          <div className="w-full max-w-4xl bg-black border border-gray-700 shadow-md rounded-lg p-6 mt-6">
-            <div className="text-lg text-white">
+          <div className="w-full max-w-4xl bg-white shadow-md rounded-lg p-6 mt-6">
+            <div id="cheatsheet-content" className="text-lg text-black min-h-[500px]">
               {cheatsheetContent ? (
                 renderCheatsheetAsList()
               ) : (
-                <p>
-                  {loadingCheatsheet
-                    ? "Generating your cheatsheet..."
-                    : "Your cheatsheet content will be displayed here once generated."}
-                </p>
+                <p>{loadingCheatsheet ? "Generating your cheatsheet..." : "Your cheatsheet content will be displayed here once generated."}</p>
               )}
             </div>
           </div>
+
+          {cheatsheetContent && (
+            <button
+              onClick={handleDownloadPDF}
+              className="mt-4 px-4 py-2 bg-white text-black rounded-full hover:bg-gray-200 transition-colors"
+            >
+              Download as PDF
+            </button>
+          )}
 
           <div className="flex gap-4 mt-8">
             <Link href="/">

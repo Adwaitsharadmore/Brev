@@ -229,7 +229,7 @@ const QuizPage = () => {
 
   if (!quizContent.length) {
     return (
-      <div className="min-h-screen bg-black bg-gradient-preppal text-white flex flex-col items-center justify-center">
+      <div className="min-h-screen bg-black bg-gradient-preppal text-{#1D5DB6} flex flex-col items-center justify-center">
         <h1 className="text-4xl font-semibold mb-6">Loading...</h1>
       </div>
     );
@@ -250,7 +250,7 @@ await fetch("http://localhost:3001/api/cleanup", {
 
   if (!quizContent.length) {
     return (
-      <div className="min-h-screen bg-black bg-gradient-preppal text-white flex flex-col items-center justify-center">
+      <div className="min-h-screen bg-black bg-gradient-preppal text-{#1D5DB6} flex flex-col items-center justify-center">
         <h1 className="text-4xl font-semibold mb-6">Loading...</h1>
       </div>
     );
@@ -307,9 +307,35 @@ await fetch("http://localhost:3001/api/cleanup", {
           <h2 className="text-2xl font-semibold mb-4">Quiz Completed!</h2>
           {apiFeedback ? (
             <div className="mt-2 text-white">
-              {apiFeedback.split("\n").map((part, index) => (
-                <p key={index}>{part}</p>
-              ))}
+              {apiFeedback.split("\n").map((part, index) => {
+                // Check for titles and format accordingly
+                if (part.startsWith("{") && part.endsWith("}")) {
+                  return (
+                    <div key={index}>
+                      <br />
+                      <h2 className="font-bold">{part.slice(1, -1)}</h2>
+                    </div>
+                  );
+                } else if (part.startsWith("[") && part.endsWith("]")) {
+                  return (
+                    <div>
+                      <br />
+                      <h3 key={index} className="font-semibold">
+                        {part.slice(1, -1)}
+                      </h3>
+                    </div>
+                  );
+                } else if (part.trim().startsWith("-")) {
+                  // Render bullet points in normal font
+                  return (
+                    <p key={index} className="ml-4">
+                      {part}
+                    </p>
+                  );
+                } else {
+                  return <p key={index}>{part}</p>;
+                }
+              })}
             </div>
           ) : (
             <div>No additional feedback required!</div>
@@ -326,11 +352,10 @@ await fetch("http://localhost:3001/api/cleanup", {
           >
             Back to Home
           </button>
-  
         </div>
       )}
 
-      {feedback && (
+      {showFinalFeedback && feedback && (
         <div
           className={`mt-4 text-lg font-semibold ${
             feedback.includes("Correct") ? "text-green-500" : "text-red-500"

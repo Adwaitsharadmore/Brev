@@ -36,7 +36,7 @@ export default async function handler(req, res) {
 
   try {
     // Use an absolute path to the uploads directory
-    const uploadsDir = path.resolve(__dirname, 'D:\\main\\prepal\\pages\\api\\uploads');
+    const uploadsDir = path.resolve(__dirname, 'D:\\soohum\\prepal\\pages\\api\\uploads');
     const filePath = path.join(uploadsDir, originalFileName);
     console.log("Reading file from:", filePath); // Debugging line
 
@@ -54,7 +54,19 @@ export default async function handler(req, res) {
       return res.json({ feedback: ["No additional feedback is needed. All questions were answered correctly in one attempt."] });
     }
 
-    const prompt = `Generate a feedback on the user's performance in the quiz and provide suggestions for improvement from the document from which the questions were extracted:
+    const prompt = `Generate a performance feedback report based on the user's quiz attempts, strictly following this format without bold or italic text. Use only hyphens (-) for bullet points, as shown in the format below. Focus on providing concise feedback for each question where multiple attempts were required. The format must be adhered to exactly as specified:
+
+{Performance Review} [Strengths]
+
+Bullet point 1
+Bullet point 2
+[Areas for Improvement]
+
+Question: "Question text here" (Number of attempts)
+Feedback: Explanation here.
+Ensure that no formatting such as bold or italics is used. Use regular text only, as shown in the format above.
+
+Include each question with its number of attempts, and provide specific feedback only for questions that required multiple attempts:
       ${questionsWithMultipleAttempts.map((q, index) => `Question: "${q}" (${attempts[index]} attempts)`).join("\n")}`;
 
     const result = await model.generateContent([

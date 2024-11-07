@@ -2,15 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
+ 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 
 
 
-/* Applying Aspekta font globally */
+
 body {
   font-family: 'Aspekta', sans-serif;
-  color: white;
-  background-color: #000;
+  color: #ffffff;
+  background-color: #000000;
 }
 
 .poppins-thin {
@@ -123,7 +126,7 @@ body {
 
 
 body {
-  @apply text-white bg-black text-xl; /* Adjusted font size to be bigger but not overly large */
+  @apply text-white bg-black text-xl;
 }
 
 body {
@@ -140,11 +143,11 @@ body {
 
 .green-glow {
   text-shadow: 0 0 5px #00ff00b1, 0 0 10px #00c300, 0 0 15px #00ff00be, 0 0 20px #00ff00;
-  color: #00ff00; /* Ensures the text itself is green */
+  color: #00ff00; 
 }
 
 .custom-shadow {
-  box-shadow: 0 4px 15px rgba(167, 236, 227, 0.6); /* Shadow with color #a7ece3 */
+  box-shadow: 0 4px 15px rgba(167, 236, 227, 0.6); 
 }
 
 @layer base {
@@ -184,9 +187,21 @@ body {
   left: 0;
   z-index: -1;
 }
-/* Add this to globals.css */
+
+
+
+
+
+
+
+
+
+
+
+
+
 .bg-gradient-preppal {
-  background: radial-gradient(circle, #d15eff33 0%, rgb(0, 0, 0) 100%);
+  background: radial-gradient(circle, #00000033 0%, rgb(0, 0, 0) 100%);
 }
 
 .text-purple-opacity {
@@ -196,3 +211,9 @@ body {
 .hover-color{
   color: rgba(235, 255, 92, 1)
 }
+
+.spline-viewer [data-spline-embed] {
+  display: none !important;
+}
+
+

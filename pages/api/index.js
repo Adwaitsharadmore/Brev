@@ -45,18 +45,15 @@ const upload = multer({
   }),
 });
 
-// Function to upload a file with retries
 async function uploadFileWithRetry(filePath, options, retries = 3) {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
-      console.log(`Uploading file attempt ${attempt}...`);
       const uploadResponse = await fileManager.uploadFile(filePath, options);
-      console.log(`File uploaded successfully on attempt ${attempt}`);
-      return uploadResponse; // Return response if successful
+      return uploadResponse;
     } catch (error) {
       console.error(`Attempt ${attempt} failed:`, error);
-      if (attempt === retries) throw error; // Re-throw after final attempt
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait 2 seconds before retrying
+      if (attempt === retries) throw error;
+      await new Promise((resolve) => setTimeout(resolve, 2000));
     }
   }
 }
@@ -65,7 +62,9 @@ async function uploadFileWithRetry(filePath, options, retries = 3) {
 app.post('/upload-and-generate', upload.single('file'), async (req, res) => {
   const { file } = req;
   const { textPrompt } = req.body;
-  console.log("Received upload-and-generate request");
+
+  console.log("File received:", file);
+  console.log("Text prompt:", textPrompt);
 
   if (!file) {
     console.error("No file uploaded");
@@ -73,9 +72,9 @@ app.post('/upload-and-generate', upload.single('file'), async (req, res) => {
   }
 
   try {
-    const filePath = path.join(__dirname, 'uploads', file.originalname);
+    const filePath = file.path;
+    console.log("File path:", filePath);
 
-    // Upload the file with retries
     const uploadResponse = await uploadFileWithRetry(filePath, {
       mimeType: "application/pdf",
       displayName: file.originalname,
@@ -83,7 +82,6 @@ app.post('/upload-and-generate', upload.single('file'), async (req, res) => {
 
     console.log(`Uploaded file: ${uploadResponse.file.displayName} as ${uploadResponse.file.uri}`);
 
-    // Generate content using the uploaded file and the text prompt
     const result = await model.generateContent([
       {
         fileData: {
@@ -91,21 +89,15 @@ app.post('/upload-and-generate', upload.single('file'), async (req, res) => {
           fileUri: uploadResponse.file.uri,
         },
       },
-      { text: textPrompt || "Please create a cheat sheet based on the provided document..." },
+      { text: textPrompt },
     ]);
 
-    console.log("Generated content successfully");
+    console.log("Content generated successfully");
 
-    // Return the generated text as response
     res.json({
       message: "Content generated successfully",
-      generatedText: result.response.text(), // Output the generated text
+      generatedText: result.response.text(),
     });
-
-    // Delete the uploaded file from local storage
-    await fs.unlink(filePath);
-    console.log("Uploaded file deleted from local storage");
-
   } catch (error) {
     console.error("Error during file upload or content generation:", error);
     res.status(500).json({ error: "File upload or content generation failed" });
@@ -238,7 +230,7 @@ app.post('/api/delete-temp-file', async (req, res) => {
 
 app.post('/api/cleanup', async (req, res) => {
   try {
-     const uploadsDir = path.resolve(__dirname, 'D:\\main\\prepal\\pages\\api\\uploads');
+     const uploadsDir = path.resolve(__dirname, 'D:\\soohum\\prepal\\pages\\api\\uploads');
     const tempDir = path.join(__dirname, '../../temp');
 
     // Delete all files in the uploads directory
@@ -261,6 +253,45 @@ app.post('/api/cleanup', async (req, res) => {
   }
 });
 
+app.post('/upload-and-generate-mnemonics', upload.single('file'), async (req, res) => {
+  const { file } = req;
+  const { textPrompt } = req.body;
+
+  if (!file) {
+    return res.status(400).json({ error: "No file uploaded" });
+  }
+
+  try {
+    const filePath = file.path;
+    const uploadResponse = await uploadFileWithRetry(filePath, {
+      mimeType: "application/pdf",
+      displayName: file.originalname,
+    });
+
+    const result = await model.generateContent([
+      {
+        fileData: {
+          mimeType: uploadResponse.file.mimeType,
+          fileUri: uploadResponse.file.uri,
+        },
+      },
+      { text: textPrompt },
+    ]);
+
+    const generatedText = result.response.text();
+    console.log("Generated mnemonics content:", generatedText);
+
+    res.json({
+      message: "Mnemonics generated successfully",
+      generatedMnemonics: generatedText,
+    });
+
+    
+  } catch (error) {
+    console.error("Error during mnemonics generation:", error);
+    res.status(500).json({ error: "File upload or mnemonics generation failed" });
+  }
+});
 
 // Start the server
 app.listen(port, () => {
