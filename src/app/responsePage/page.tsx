@@ -28,30 +28,14 @@ import fs from 'fs';
        loadHtml2Pdf();
      }, []);
     
-  const handleFileChange = (event) => {
-    const selectedFile = event.target.files[0];
-    if (selectedFile) {
-      setFile(selectedFile);
-      // Read the file content to check for special characters
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const content = e.target.result;
-        const hasSpecialChars =
-          typeof content === "string" && /[\{\}\[\]\(\)]/.test(content);
-        setHasSpecialCharacters(hasSpecialChars);
-        if (hasSpecialChars) {
-          setTextPrompt(
-            "Special characters found in document. Adjust prompt accordingly."
-          );
-        }
-      };
-      reader.readAsText(selectedFile);
-    } else {
-      alert("No file selected. Please try again.");
-    }
-  };
-
-
+ const handleFileChange = (event) => {
+   const selectedFile = event.target.files[0];
+   if (selectedFile) {
+     setFile(selectedFile);
+   } else {
+     alert("No file selected. Please try again.");
+   }
+ };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();

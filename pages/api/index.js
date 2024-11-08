@@ -63,17 +63,12 @@ app.post('/upload-and-generate', upload.single('file'), async (req, res) => {
   const { file } = req;
   const { textPrompt } = req.body;
 
-  console.log("File received:", file);
-  console.log("Text prompt:", textPrompt);
-
   if (!file) {
-    console.error("No file uploaded");
     return res.status(400).json({ error: "No file uploaded" });
   }
 
   try {
     const filePath = file.path;
-    console.log("File path:", filePath);
 
     const uploadResponse = await uploadFileWithRetry(filePath, {
       mimeType: "application/pdf",
@@ -92,12 +87,11 @@ app.post('/upload-and-generate', upload.single('file'), async (req, res) => {
       { text: textPrompt },
     ]);
 
-    console.log("Content generated successfully");
-
     res.json({
       message: "Content generated successfully",
       generatedText: result.response.text(),
     });
+
   } catch (error) {
     console.error("Error during file upload or content generation:", error);
     res.status(500).json({ error: "File upload or content generation failed" });
