@@ -91,6 +91,7 @@ app.post('/upload-and-generate', upload.single('file'), async (req, res) => {
       message: "Content generated successfully",
       generatedText: result.response.text(),
     });
+    console.log(result.response.text());
 
   } catch (error) {
     console.error("Error during file upload or content generation:", error);

@@ -56,21 +56,14 @@ import fs from 'fs';
     let customPrompt = textPrompt || "";
 
     if (selectedOption === "Detailed") {
-      customPrompt = customPrompt || `
-        Create a comprehensive cheat sheet from the provided document. Use the following format:
-        
-        1. Main Titles: Enclose in curly brackets {}.
-        2. Subtopics: Enclose in square brackets [].
-        3. Details: Present each detail as a bullet point under the corresponding subtopic.
-        
-        Ensure all text is in normal font. Follow this structure consistently:
-        
-        - {Main Title}
-          - [Subtopic]
-            - Bullet point 1
-            - Bullet point 2
-      
-        Use clear and simple language for bullet points. Provide additional explanations, context, and insights beyond the document to enhance understanding. Expand on each point to ensure a thorough grasp of the topic. If the uploaded file is a exam study guide with topics of specific chapter numbers, read through each chapter and their contents.
+      customPrompt =
+        customPrompt ||
+        `Generate a comprehensive cheat sheet based on the provided document. Structure each section as follows:
+        TITLE: Main title goes here
+        SUBTOPIC: Subtopic title goes here
+        DETAIL_1: First detail
+        DETAIL_2: Second detail (add additional details as needed)
+        Provide explanations, context, and insights to enhance understanding. Use clear and simple language for each detail to ensure a thorough grasp of the topic. If the document is an exam study guide with topics organized by chapters, reference each chapter and summarize its contents. Separate each main title with three dashes (---).
       `;
     } else if (selectedOption === "Precise") {
       customPrompt = customPrompt || `
@@ -241,46 +234,68 @@ const handleGenerateMnemonics = async () => {
 };
 
 
-  const renderCheatsheetAsList = () => {
-    if (!cheatsheetContent) return null;
+const renderCheatsheetAsList = () => {
+  if (!cheatsheetContent) return null;
 
-    const lines = cheatsheetContent.split("\n").filter((line) => line.trim() !== "");
+  // Split by `---` to get sections and then iterate over each line for parsing
+  const sections = cheatsheetContent.split("---").filter((section) => section.trim());
+
+  return (
+    <div id="cheatsheet-content" className="text-black">
+      {sections.map((section, index) => {
+        // Split each section into lines
+        const lines = section.trim().split("\n").filter((line) => line.trim());
+
+        return (
+          <div key={index} className="mb-6">
+            {lines.map((line, lineIndex) => {
+              const titleMatch = line.match(/^## (.+)/); // Main Title
+              const subtopicMatch = line.match(/^\*\*SUBTOPIC:\s*(.+)\*\*/); // Subtopic
+              const detailMatch = line.match(/^\*\*DETAIL_\d+:\s*(.+)/); // Detail
+
+              if (titleMatch) {
+                // Render Main Title as bold, large font
+                return (
+                  <h2 key={lineIndex} className="text-3xl font-bold mb-4">
+                    {titleMatch[1]}
+                  </h2>
+                );
+              } else if (subtopicMatch) {
+                // Render Subtopic as semi-bold, medium font
+                return (
+                  <h3
+                    key={lineIndex}
+                    className="text-xl font-semibold ml-4 mb-2"
+                  >
+                    {subtopicMatch[1]}
+                  </h3>
+                );
+              } else if (detailMatch) {
+                // Render Detail as bullet point
+                return (
+                  <ul key={lineIndex} className="ml-8 list-disc">
+                    <li className="mb-2">{detailMatch[1]}</li>
+                  </ul>
+                );
+              } else {
+                // Render any unformatted text as fallback
+                return (
+                  <p key={lineIndex} className="ml-8 mb-2">
+                    {line.trim()}
+                  </p>
+                );
+              }
+            })}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
 
 
-    return (
-      <div className="text-black">
-        {lines.map((line, index) => {
-          const mainTitleMatch = line.match(/\{(.+?)\}/);
-          const subtopicMatch = line.match(/\[(.+?)\]/);
 
-          if (mainTitleMatch) {
-            // Main Title
-            const mainTitle = mainTitleMatch[1];
-            return (
-              <h2 key={index} className="text-3xl font-bold mb-4">
-                {mainTitle}
-              </h2>
-            );
-          } else if (subtopicMatch) {
-            // Subtopic
-            const subtopic = subtopicMatch[1];
-            return (
-              <h3 key={index} className="text-xl font-semibold ml-4 mb-2">
-                {subtopic}
-              </h3>
-            );
-          } else {
-            // Detail
-            return (
-              <p key={index} className="ml-8 mb-2">
-                {line.replace(/^\-\s*/, "").trim()}
-              </p>
-            );
-          }
-        })}
-      </div>
-    );
-  };
+
 
   // Define the toggleSelection function to handle option changes
   const toggleSelection = (option) => {
@@ -323,31 +338,59 @@ const handleGenerateMnemonics = async () => {
     // Code that uses window, document, or self
   }
 
-  return (
-    <div className="min-h-screen bg-gradient-preppal text-white">
+    
+    return (
       <div>
-        <Link href="/">
-          <Image
-            src="/images/logo.JPG"
-            alt="PrepPal Logo"
-            width={100}
-            height={100}
-            className="object-cover rounded-full"
-          />
-        </Link>
-      </div>
+        <div className="flex-1 flex flex-col items-center w-full h-screen relative bg-black">
+          <div className="w-3/4 mx-auto flex flex-col items-start">
+            {/* Nav Bar */}
+            <div className="w-full flex justify-between items-center pt-10 pb-5">
+              <div className="text-white text-4xl font-extrabold font-['Inter'] capitalize">
+                Brev
+              </div>
+              <div className="flex gap-8">
+                <div className="text-white text-lg font-normal font-['Inter']">
+                  About
+                </div>
+                <div className="text-white text-lg font-normal font-['Inter']">
+                  Pricing
+                </div>
+                <div className="text-white text-lg font-normal font-['Inter']">
+                  Contact
+                </div>
+              </div>
+            </div>
 
-      <div className="flex-1 flex flex-col justify-center items-center">
-        <div className="min-h-screen flex-1 flex justify-center items-center flex-col">
-          <div className="font-semibold text-6xl text-white font-inter mb-6">
-            Here's your
-            <span className="font-semibold text-6xl" style={{ color: "rgba(235, 255, 92, 1)" }}>
-              {" "}
-              cheatsheet!
-            </span>
-          </div>
-          <div className="font text-2xl pb-5 pt-2 text-white">
-            Your file has been converted to the following cheatsheet:
+            {/* Phrases Section */}
+            <div className="w-full pt-[20px] mx-auto my-10">
+              <div className="w-full">
+                <span className="text-white text-[4vw] md:text-[69px] font-semibold leading-tight font-['Inter']">
+                  Don’t worry,{" "}
+                </span>
+                <span className="text-[#2d64dd] text-[4vw] md:text-[69px] font-semibold leading-tight font-['Inter']">
+                  {" "}
+                  Brev’s
+                </span>
+                <span className="text-white text-[4vw] md:text-[69px] font-semibold leading-tight font-['Inter']">
+                  {" "}
+                  got your back.
+                </span>
+              </div>
+              <div className="text-white text-[2vw] md:text-6xl font-light leading-tight font-['Inter'] mt-4">
+                Just upload a file
+              </div>
+              <div className="text-white text-[2vw] md:text-6xl font-light leading-tight font-['Inter'] mt-4">
+                and choose your
+              </div>
+              <div className="text-white text-[2vw] md:text-6xl font-light leading-tight font-['Inter'] mt-4 flex items-center">
+                <span>desired </span>
+                <img
+                  className="w-[40vw] max-w-[254px] h-auto ml-2"
+                  src="https://via.placeholder.com/254x85"
+                  alt="Message GIF"
+                />
+              </div>
+            </div>
           </div>
 
           <form
@@ -372,7 +415,8 @@ const handleGenerateMnemonics = async () => {
               </label>
               {file && (
                 <p className="text-white mt-2">
-                  Selected file: <span className="font-semibold">{file.name}</span>
+                  Selected file:{" "}
+                  <span className="font-semibold">{file.name}</span>
                 </p>
               )}
             </div>
@@ -391,18 +435,24 @@ const handleGenerateMnemonics = async () => {
             </div>
 
             <div className="mb-4">
-              <label className="block text-lg font-medium text-white mb-2">Select an option:</label>
+              <label className="block text-lg font-medium text-white mb-2">
+                Select an option:
+              </label>
               <div className="flex justify-start gap-4">
                 <button
                   type="submit"
-                  className={`bg-${loadingCheatsheet ? "yellow-500" : "white"} text-black px-4 py-2 rounded-full`}
+                  className={`bg-${
+                    loadingCheatsheet ? "yellow-500" : "white"
+                  } text-black px-4 py-2 rounded-full`}
                   disabled={loadingCheatsheet}
                 >
                   {loadingCheatsheet ? "Generating..." : "Generate Cheatsheet"}
                 </button>
                 <button
                   type="button"
-                  className={`bg-${loadingMnemonics ? "yellow-500" : "white"} text-black px-4 py-2 rounded-full ml-4`}
+                  className={`bg-${
+                    loadingMnemonics ? "yellow-500" : "white"
+                  } text-black px-4 py-2 rounded-full ml-4`}
                   onClick={handleGenerateMnemonics}
                   disabled={loadingMnemonics}
                 >
@@ -410,7 +460,9 @@ const handleGenerateMnemonics = async () => {
                 </button>
                 <button
                   type="button"
-                  className={`bg-${loadingQuiz ? "yellow-500" : "white"} text-black px-4 py-2 rounded-full ml-4`}
+                  className={`bg-${
+                    loadingQuiz ? "yellow-500" : "white"
+                  } text-black px-4 py-2 rounded-full ml-4`}
                   onClick={handleGenerateQuiz}
                   disabled={loadingQuiz}
                 >
@@ -419,20 +471,30 @@ const handleGenerateMnemonics = async () => {
               </div>
             </div>
 
-            {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
+            {errorMessage && (
+              <p className="text-red-500 mt-2">{errorMessage}</p>
+            )}
 
             <div className="mb-4">
               <div className="flex justify-start gap-4">
                 <button
                   type="button"
-                  className={`px-3 py-1 rounded-full ${selectedOption === "Detailed" ? "bg-yellow-500 text-black" : "bg-white text-black"}`}
+                  className={`px-3 py-1 rounded-full ${
+                    selectedOption === "Detailed"
+                      ? "bg-yellow-500 text-black"
+                      : "bg-white text-black"
+                  }`}
                   onClick={() => toggleSelection("Detailed")}
                 >
                   Detailed
                 </button>
                 <button
                   type="button"
-                  className={`px-3 py-1 rounded-full ${selectedOption === "Precise" ? "bg-yellow-500 text-black" : "bg-white text-black"}`}
+                  className={`px-3 py-1 rounded-full ${
+                    selectedOption === "Precise"
+                      ? "bg-yellow-500 text-black"
+                      : "bg-white text-black"
+                  }`}
                   onClick={() => toggleSelection("Precise")}
                 >
                   Precise
@@ -442,11 +504,18 @@ const handleGenerateMnemonics = async () => {
           </form>
 
           <div className="w-full max-w-4xl bg-white shadow-md rounded-lg p-6 mt-6">
-            <div id="cheatsheet-content" className="text-lg text-black min-h-[500px]">
+            <div
+              id="cheatsheet-content"
+              className="text-lg text-black min-h-[500px]"
+            >
               {cheatsheetContent ? (
                 renderCheatsheetAsList()
               ) : (
-                <p>{loadingCheatsheet ? "Generating your cheatsheet..." : "Your cheatsheet content will be displayed here once generated."}</p>
+                <p>
+                  {loadingCheatsheet
+                    ? "Generating your cheatsheet..."
+                    : "Your cheatsheet content will be displayed here once generated."}
+                </p>
               )}
             </div>
           </div>
@@ -469,8 +538,7 @@ const handleGenerateMnemonics = async () => {
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
 };
 
 export default ResponsePage;

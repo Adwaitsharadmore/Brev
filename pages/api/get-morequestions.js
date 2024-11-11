@@ -5,8 +5,6 @@ import path from 'path';
 // Remove dotenv import and config if you're using Next.js built-in environment variables
 // import dotenv from 'dotenv';
 // dotenv.config();
-
-
 // Remove this line completely
 // console.log(process.env.API_KEY);
 
