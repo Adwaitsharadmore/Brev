@@ -2,160 +2,49 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
-
- 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
-
-
-
-
-body {
-  font-family: 'Aspekta', sans-serif;
-  color: #ffffff;
-  background-color: #000000;
+@layer base {
+  body {
+    @apply font-inter;
+  }
 }
 
-.poppins-thin {
-  font-family: "Poppins", sans-serif;
-  font-weight: 100;
-  font-style: normal;
-}
-
-.poppins-extralight {
-  font-family: "Poppins", sans-serif;
-  font-weight: 200;
-  font-style: normal;
-}
-
-.poppins-light {
-  font-family: "Poppins", sans-serif;
-  font-weight: 300;
-  font-style: normal;
-}
-
-.poppins-regular {
-  font-family: "Poppins", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-}
-
-.poppins-medium {
-  font-family: "Poppins", sans-serif;
-  font-weight: 500;
-  font-style: normal;
-}
-
-.poppins-semibold {
-  font-family: "Poppins", sans-serif;
-  font-weight: 600;
-  font-style: normal;
-}
-
-.poppins-bold {
-  font-family: "Poppins", sans-serif;
-  font-weight: 700;
-  font-style: normal;
-}
-
-.poppins-extrabold {
-  font-family: "Poppins", sans-serif;
-  font-weight: 800;
-  font-style: normal;
-}
-
-.poppins-black {
-  font-family: "Poppins", sans-serif;
-  font-weight: 900;
-  font-style: normal;
-}
-
-.poppins-thin-italic {
-  font-family: "Poppins", sans-serif;
-  font-weight: 100;
-  font-style: italic;
-}
-
-.poppins-extralight-italic {
-  font-family: "Poppins", sans-serif;
-  font-weight: 200;
-  font-style: italic;
-}
-
-.poppins-light-italic {
-  font-family: "Poppins", sans-serif;
-  font-weight: 300;
-  font-style: italic;
-}
-
-.poppins-regular-italic {
-  font-family: "Poppins", sans-serif;
-  font-weight: 400;
-  font-style: italic;
-}
-
-.poppins-medium-italic {
-  font-family: "Poppins", sans-serif;
-  font-weight: 500;
-  font-style: italic;
-}
-
-.poppins-semibold-italic {
-  font-family: "Poppins", sans-serif;
-  font-weight: 600;
-  font-style: italic;
-}
-
-.poppins-bold-italic {
-  font-family: "Poppins", sans-serif;
-  font-weight: 700;
-  font-style: italic;
-}
-
-.poppins-extrabold-italic {
-  font-family: "Poppins", sans-serif;
-  font-weight: 800;
-  font-style: italic;
-}
-
-.poppins-black-italic {
-  font-family: "Poppins", sans-serif;
-  font-weight: 900;
-  font-style: italic;
-}
-
-
-body {
-  @apply text-white bg-black text-xl;
-}
-
+/* Apply Inter font globally */
 body {
   font-family: 'Inter', sans-serif;
+  color: white;
+  background-color: #000;
+  line-height: 1.5;
+  letter-spacing: -0.05em; /* Consistent letter spacing */
 }
 
+/* Adjust heading and text element styles */
+h1, h2, h3, h4, h5, h6, p, a, li {
+  font-family: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+}
+
+/* Additional classes for customized text and background effects */
 .customcolor {
   color: #a7ece3;
 }
 
 .custom_background_color {
-  color: #f6f1eb;
+  background-color: #f6f1eb;
 }
 
 .green-glow {
   text-shadow: 0 0 5px #00ff00b1, 0 0 10px #00c300, 0 0 15px #00ff00be, 0 0 20px #00ff00;
-  color: #00ff00; 
+  color: #00ff00;
 }
 
 .custom-shadow {
-  box-shadow: 0 4px 15px rgba(167, 236, 227, 0.6); 
+  box-shadow: 0 4px 15px rgba(167, 236, 227, 0.6);
 }
 
-@layer base {
-  :root {
-    --radius: 0.5rem;
-  }
-}
-
+/* Animation classes for appearance effects */
 .section {
   opacity: 0;
   transform: translateY(50px);
@@ -188,18 +77,6 @@ body {
   z-index: -1;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 .bg-gradient-preppal {
   background: radial-gradient(circle, #00000033 0%, rgb(0, 0, 0) 100%);
 }
@@ -208,12 +85,13 @@ body {
   color: #d15eff33;
 }
 
-.hover-color{
-  color: rgba(235, 255, 92, 1)
+.hover-color {
+  color: rgba(235, 255, 92, 1);
 }
 
-.spline-viewer [data-spline-embed] {
-  display: none !important;
+/* Font-related styles for Inter with additional effects */
+.animate-appear {
+  animation: appear 0.5s ease-in-out;
+  animation-delay: 0.2s;
+  animation-fill-mode: forwards;
 }
-
-

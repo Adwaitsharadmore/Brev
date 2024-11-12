@@ -8,6 +8,10 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'], // Set Inter as the default sans-serif font
+        inter: ['Inter', 'sans-serif'], // Define a custom font-inter class
+      },
       colors: {
         cyan: {
           400: '#22d3ee',

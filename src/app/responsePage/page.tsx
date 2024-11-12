@@ -58,12 +58,38 @@ import fs from 'fs';
     if (selectedOption === "Detailed") {
       customPrompt =
         customPrompt ||
-        `Generate a comprehensive cheat sheet based on the provided document. Structure each section as follows:
-        TITLE: Main title goes here
-        SUBTOPIC: Subtopic title goes here
-        DETAIL_1: First detail
-        DETAIL_2: Second detail (add additional details as needed)
-        Provide explanations, context, and insights to enhance understanding. Use clear and simple language for each detail to ensure a thorough grasp of the topic. If the document is an exam study guide with topics organized by chapters, reference each chapter and summarize its contents. Separate each main title with three dashes (---).
+        `Generate a comprehensive cheat sheet based on the provided document. Use the following format strictly:
+
+## Main formatting rules:
+1. Start main titles with "TITLE: " (include the space after colon)
+2. Start subtopics with "SUBTOPIC: " (include the space after colon)
+3. Start details with "DETAIL_N: " where N is a number (include the space after colon)
+4. Use three dashes (---) to separate different sections
+5. Do not use any markdown symbols, asterisks, or other formatting characters
+6. Maintain consistent indentation
+7. Keep all text in normal font
+
+Example format:
+TITLE: Your Main Title
+SUBTOPIC: Your Subtopic
+DETAIL_1: Your first detail point
+DETAIL_2: Your second detail point
+DETAIL_3: Your third detail point
+---
+TITLE: Your Next Section
+[and so on...]
+
+Guidelines for content:
+- Provide clear explanations and context for each topic
+- Use simple, straightforward language
+- If working with an exam study guide, reference chapters clearly
+- Include relevant examples where appropriate
+- Break down complex topics into digestible details
+- Ensure each detail provides meaningful information
+- Keep formatting consistent throughout the document
+
+Please structure the content following this format exactly as it matches the frontend rendering system.
+Provide explanations, context, and insights to enhance understanding. Use clear and simple language for each detail to ensure a thorough grasp of the topic. If the document is an exam study guide with topics organized by chapters, reference each chapter and summarize its contents. Separate each main title with three dashes (---).
       `;
     } else if (selectedOption === "Precise") {
       customPrompt = customPrompt || `
@@ -238,50 +264,122 @@ const renderCheatsheetAsList = () => {
   if (!cheatsheetContent) return null;
 
   // Split by `---` to get sections and then iterate over each line for parsing
-  const sections = cheatsheetContent.split("---").filter((section) => section.trim());
+  const sections = cheatsheetContent
+    .split("---")
+    .filter((section) => section.trim());
+
+  // Helper function to format mathematical notation
+  const formatMathText = (text) => {
+    // Format subscripts (e.g., a₀, n₁)
+    let formattedText = text.replace(/([a-z])(\d)/gi, "$1₍$2₎");
+
+    // Format superscripts (e.g., x², 2ⁿ)
+    formattedText = formattedText.replace(/\^(\d+)/g, "⁽$1⁾");
+
+    // Format special symbols
+    const symbolMap = {
+      ">=": "≥",
+      "<=": "≤",
+      "!=": "≠",
+      phi: "φ",
+      sqrt: "√",
+      "->": "→",
+      in: "∈",
+      N0: "ℕ₀",
+      N: "ℕ",
+      Z: "ℤ",
+    };
+
+    Object.entries(symbolMap).forEach(([key, value]) => {
+      formattedText = formattedText.replace(new RegExp(key, "g"), value);
+    });
+
+    return formattedText;
+  };
+
+  // Helper function to handle code-like blocks
+  const formatCodeBlock = (text) => {
+    if (text.includes("{") || text.includes("if") || text.includes("→")) {
+      return (
+        <pre className="bg-gray-100 p-4 rounded-md font-mono text-sm my-2 whitespace-pre-wrap">
+          {text}
+        </pre>
+      );
+    }
+    return formatMathText(text);
+  };
 
   return (
-    <div id="cheatsheet-content" className="text-black">
+    <div id="cheatsheet-content" className="text-black max-w-4xl mx-auto">
       {sections.map((section, index) => {
-        // Split each section into lines
-        const lines = section.trim().split("\n").filter((line) => line.trim());
+        const lines = section
+          .trim()
+          .split("\n")
+          .filter((line) => line.trim());
 
         return (
-          <div key={index} className="mb-6">
+          <div key={index} className="mb-8 bg-white rounded-lg shadow-md p-6">
             {lines.map((line, lineIndex) => {
-              const titleMatch = line.match(/^## (.+)/); // Main Title
-              const subtopicMatch = line.match(/^\*\*SUBTOPIC:\s*(.+)\*\*/); // Subtopic
-              const detailMatch = line.match(/^\*\*DETAIL_\d+:\s*(.+)/); // Detail
+              const titleMatch1 = line.match(/^TITLE:\s(.+)/);
+              const subtopicMatch = line.match(/^SUBTOPIC:\s(.+)/);
+              const detailMatch = line.match(/^DETAIL_\d+:\s(.+)/);
 
-              if (titleMatch) {
-                // Render Main Title as bold, large font
+              if (titleMatch1) {
                 return (
-                  <h2 key={lineIndex} className="text-3xl font-bold mb-4">
-                    {titleMatch[1]}
+                  <h2
+                    key={lineIndex}
+                    className="text-3xl font-bold mb-4 text-blue-900 border-b pb-2"
+                  >
+                    {formatMathText(titleMatch1[1])}
                   </h2>
                 );
               } else if (subtopicMatch) {
-                // Render Subtopic as semi-bold, medium font
                 return (
                   <h3
                     key={lineIndex}
-                    className="text-xl font-semibold ml-4 mb-2"
+                    className="text-xl font-semibold mb-3 text-blue-700 mt-4"
                   >
-                    {subtopicMatch[1]}
+                    {formatMathText(subtopicMatch[1])}
                   </h3>
                 );
               } else if (detailMatch) {
-                // Render Detail as bullet point
+                const detailContent = detailMatch[1].trim();
                 return (
-                  <ul key={lineIndex} className="ml-8 list-disc">
-                    <li className="mb-2">{detailMatch[1]}</li>
-                  </ul>
+                  <div key={lineIndex} className="ml-4 mb-3">
+                    <div className="flex">
+                      <div className="mr-2 text-blue-500">•</div>
+                      <div className="flex-1">
+                        {detailContent.includes("\n") ||
+                        detailContent.includes("    ") ? (
+                          <div className="font-normal">
+                            {detailContent
+                              .split("\n")
+                              .map((part, partIndex) => (
+                                <div
+                                  key={partIndex}
+                                  className={
+                                    part.startsWith("    ")
+                                      ? "ml-4 font-mono"
+                                      : ""
+                                  }
+                                >
+                                  {formatCodeBlock(part.trim())}
+                                </div>
+                              ))}
+                          </div>
+                        ) : (
+                          <div className="font-normal">
+                            {formatMathText(detailContent)}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 );
               } else {
-                // Render any unformatted text as fallback
                 return (
-                  <p key={lineIndex} className="ml-8 mb-2">
-                    {line.trim()}
+                  <p key={lineIndex} className="ml-4 mb-2 font-normal">
+                    {formatMathText(line.trim())}
                   </p>
                 );
               }
@@ -292,10 +390,6 @@ const renderCheatsheetAsList = () => {
     </div>
   );
 };
-
-
-
-
 
   // Define the toggleSelection function to handle option changes
   const toggleSelection = (option) => {
@@ -345,17 +439,17 @@ const renderCheatsheetAsList = () => {
           <div className="w-3/4 mx-auto flex flex-col items-start">
             {/* Nav Bar */}
             <div className="w-full flex justify-between items-center pt-10 pb-5">
-              <div className="text-white text-4xl font-extrabold font-['Inter'] capitalize">
+              <div className="text-white text-4xl font-extrabold font-inter capitalize">
                 Brev
               </div>
               <div className="flex gap-8">
-                <div className="text-white text-lg font-normal font-['Inter']">
+                <div className="text-white text-lg font-normal font-inter">
                   About
                 </div>
-                <div className="text-white text-lg font-normal font-['Inter']">
+                <div className="text-white text-lg font-normal font-Inter">
                   Pricing
                 </div>
-                <div className="text-white text-lg font-normal font-['Inter']">
+                <div className="text-white text-lg font-normal font-Inter">
                   Contact
                 </div>
               </div>
@@ -364,25 +458,25 @@ const renderCheatsheetAsList = () => {
             {/* Phrases Section */}
             <div className="w-full pt-[20px] mx-auto my-10">
               <div className="w-full">
-                <span className="text-white text-[4vw] md:text-[69px] font-semibold leading-tight font-['Inter']">
+                <span className="text-white text-[4vw] md:text-[69px] font-semibold leading-tight font-Inter">
                   Don’t worry,{" "}
                 </span>
-                <span className="text-[#2d64dd] text-[4vw] md:text-[69px] font-semibold leading-tight font-['Inter']">
+                <span className="text-[#2d64dd] text-[4vw] md:text-[69px] font-semibold leading-tight font-Inter">
                   {" "}
                   Brev’s
                 </span>
-                <span className="text-white text-[4vw] md:text-[69px] font-semibold leading-tight font-['Inter']">
+                <span className="text-white text-[4vw] md:text-[69px] font-semibold leading-tight font-Inter">
                   {" "}
                   got your back.
                 </span>
               </div>
-              <div className="text-white text-[2vw] md:text-6xl font-light leading-tight font-['Inter'] mt-4">
+              <div className="text-white text-[2vw] md:text-6xl font-light leading-tight font-Inter mt-4">
                 Just upload a file
               </div>
-              <div className="text-white text-[2vw] md:text-6xl font-light leading-tight font-['Inter'] mt-4">
+              <div className="text-white text-[2vw] md:text-6xl font-light leading-tight font-Inter mt-4">
                 and choose your
               </div>
-              <div className="text-white text-[2vw] md:text-6xl font-light leading-tight font-['Inter'] mt-4 flex items-center">
+              <div className="text-white text-[2vw] md:text-6xl font-light leading-tight font-Inter mt-4 flex items-center">
                 <span>desired </span>
                 <img
                   className="w-[40vw] max-w-[254px] h-auto ml-2"
