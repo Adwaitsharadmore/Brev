@@ -8,7 +8,7 @@ import fs from 'fs';
 
 
   const ResponsePage = () => {
-     const [cheatsheetContent, setCheatsheetContent] = useState(null);
+     const [cheatsheetContent, setCheatsheetContent] = useState<string | null>(null);
      const [file, setFile] = useState<File | null>(null);
      const [textPrompt, setTextPrompt] = useState("");
      const [loadingCheatsheet, setLoadingCheatsheet] = useState(false);
@@ -16,9 +16,11 @@ import fs from 'fs';
      const [loadingMnemonics, setLoadingMnemonics] = useState(false);
      const [selectedOption, setSelectedOption] = useState("");
      const [errorMessage, setErrorMessage] = useState("");
-    const [html2pdf, setHtml2pdf] = useState(null);   
+
     const [tempFilePath, setTempFilePath] = useState<string | null>(null);
     const [hasSpecialCharacters, setHasSpecialCharacters] = useState(false);
+    const [mnemonicsContent, setMnemonicsContent] = useState<string | null>(null);
+    const [html2pdf, setHtml2pdf] = useState<typeof import("html2pdf.js") | null>(null);   
 
 
      useEffect(() => {
@@ -29,8 +31,8 @@ import fs from 'fs';
        loadHtml2Pdf();
      }, []);
     
- const handleFileChange = (event) => {
-   const selectedFile = event.target.files[0];
+ const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+   const selectedFile = event.target.files?.[0];
    if (selectedFile) {
      setFile(selectedFile);
    } else {
@@ -227,28 +229,44 @@ const handleGenerateMnemonics = async () => {
 
   setLoadingMnemonics(true);
 
-  const customPrompt = `
-      Please create mnemonics for the provided document to aid in memorizing key concepts. Use the following format and apply the best memory strategy that fits each piece of content:
+  const customPrompt = `Please create mnemonics for the provided document to aid in memorizing key concepts. Use the following format strictly:
+Main formatting rules:
 
-      Main Titles: Enclose in curly brackets {}.
-      Subtopics: Enclose in square brackets [].
-      Mnemonics: Present each mnemonic as a bullet point under the corresponding subtopic.
-      Use a variety of memory techniques, such as:
+Start mnemonic titles with "TITLE: " (include the space after colon)
+Start subtopics with "SUBTOPIC: " (include the space after colon)
+Start each mnemonic with "MNEMONIC_N: " where N is a number (include the space after colon)
+Use three dashes (---) to separate different sections
+After each mnemonic, add "TYPE: " followed by the memory technique used
+Keep all text in normal font
+Maintain consistent indentation
 
-      Acronyms: Form words from the first letter of key terms.
-      Acrostics: Create sentences where each word starts with the first letter of the concept.
-      Chunking: Break information into smaller, manageable groups.
-      Association: Link new information to familiar concepts or images.
-      Method of Loci: Visualize placing the information in familiar locations.
-      Songs or Rhymes: Use catchy rhymes or short songs.
-      Choose the most effective strategy for each concept and present it in the following format:
+Example format:
+TITLE: Key Chemistry Concepts
+SUBTOPIC: Periodic Table Groups
+MNEMONIC_1: Happy Henry Lives Beside Boron's Castle Near Other Fluorine Neighbors
+TYPE: Acrostic (for H, He, Li, Be, B, C, N, O, F, Ne)
+MNEMONIC_2: HOMES
+TYPE: Acronym (for Great Lakes: Huron, Ontario, Michigan, Erie, Superior)
+TITLE: Next Concept
+[and so on...]
+Memory Techniques Available:
 
-      {Main Title}
-      [Subtopic]
-      Mnemonic 1
-      Mnemonic 2
+Acronyms: First letters forming words
+Acrostics: Sentences where first letters represent concepts
+Chunking: Grouping information
+Association: Linking to familiar concepts
+Method of Loci: Visual placement in locations
+Songs/Rhymes: Musical or rhyming patterns
 
-      Ensure the mnemonics are easy to remember and align with the content.
+Guidelines:
+
+Choose the most effective technique for each concept
+Keep mnemonics simple and memorable
+Explain the connection clearly
+Include what the mnemonic helps remember
+Use clear, engaging language
+
+Please structure the mnemonics following this format exactly as it matches the frontend rendering system.
     `;
 
   const formData = new FormData();
@@ -276,6 +294,78 @@ const handleGenerateMnemonics = async () => {
   } finally {
     setLoadingMnemonics(false);
   }
+    };
+    
+const renderMnemonicsAsList = () => {
+  if (!mnemonicsContent) return null;
+
+  // Split content into sections by '---'
+  const sections = mnemonicsContent
+    .split("---")
+    .filter((section) => section.trim());
+
+  return (
+    <div id="mnemonics-content" className="text-black max-w-4xl mx-auto">
+      {sections.map((section, index) => {
+        const lines = section
+          .trim()
+          .split("\n")
+          .filter((line) => line.trim());
+
+        return (
+          <div key={index} className="mb-8 bg-white rounded-lg shadow-md p-6">
+            {lines.map((line, lineIndex) => {
+              const titleMatch = line.match(/^TITLE:\s(.+)/);
+              const subtopicMatch = line.match(/^SUBTOPIC:\s(.+)/);
+              const mnemonicMatch = line.match(/^MNEMONIC_\d+:\s(.+)/);
+              const typeMatch = line.match(/^TYPE:\s(.+)/);
+
+              if (titleMatch) {
+                return (
+                  <h2
+                    key={lineIndex}
+                    className="text-3xl font-bold mb-4 text-blue-900 border-b pb-2"
+                  >
+                    {titleMatch[1]}
+                  </h2>
+                );
+              } else if (subtopicMatch) {
+                return (
+                  <h3
+                    key={lineIndex}
+                    className="text-xl font-semibold mb-3 text-blue-700 mt-4"
+                  >
+                    {subtopicMatch[1]}
+                  </h3>
+                );
+              } else if (mnemonicMatch) {
+                return (
+                  <div key={lineIndex} className="ml-4 mb-2">
+                    <div className="flex">
+                      <div className="mr-2 text-blue-500">•</div>
+                      <div className="flex-1 font-normal">
+                        {mnemonicMatch[1]}
+                      </div>
+                    </div>
+                  </div>
+                );
+              } else if (typeMatch) {
+                return (
+                  <div
+                    key={lineIndex}
+                    className="ml-8 mb-3 text-gray-600 italic text-sm"
+                  >
+                    {typeMatch[1]}
+                  </div>
+                );
+              }
+              return null;
+            })}
+          </div>
+        );
+      })}
+    </div>
+  );
 };
 
 
@@ -288,7 +378,7 @@ const renderCheatsheetAsList = () => {
     .filter((section) => section.trim());
 
   // Helper function to format mathematical notation
-  const formatMathText = (text) => {
+  const formatMathText = (text:string) => {
     // Format subscripts (e.g., a₀, n₁)
     let formattedText = text.replace(/([a-z])(\d)/gi, "$1₍$2₎");
 
@@ -316,7 +406,7 @@ const renderCheatsheetAsList = () => {
   };
 
   // Helper function to handle code-like blocks
-  const formatCodeBlock = (text) => {
+  const formatCodeBlock = (text: string) => {
     if (text.includes("{") || text.includes("if") || text.includes("→")) {
       return (
         <pre className="bg-gray-100 p-4 rounded-md font-mono text-sm my-2 whitespace-pre-wrap">
@@ -329,7 +419,7 @@ const renderCheatsheetAsList = () => {
 
   return (
     <div id="cheatsheet-content" className="text-black max-w-4xl mx-auto">
-      {sections.map((section, index) => {
+      {sections.map((section: string, index: number) => {
         const lines = section
           .trim()
           .split("\n")
@@ -337,10 +427,12 @@ const renderCheatsheetAsList = () => {
 
         return (
           <div key={index} className="mb-8 bg-white rounded-lg shadow-md p-6">
-            {lines.map((line, lineIndex) => {
+            {lines.map((line: string, lineIndex: number) => {
               const titleMatch1 = line.match(/^TITLE:\s(.+)/);
               const subtopicMatch = line.match(/^SUBTOPIC:\s(.+)/);
               const detailMatch = line.match(/^DETAIL_\d+:\s(.+)/);
+              const mnemonicMatch = line.match(/^MNEMONIC_\d+:\s(.+)/);
+              const typeMatch = line.match(/^TYPE:\s(.+)/);
 
               if (titleMatch1) {
                 return (
@@ -360,6 +452,15 @@ const renderCheatsheetAsList = () => {
                     {formatMathText(subtopicMatch[1])}
                   </h3>
                 );
+              } else if (mnemonicMatch) {
+                return (
+                  <h3
+                    key={lineIndex}
+                    className="text-xl font-semibold mb-3 text-blue-700 mt-4"
+                  >
+                    {formatMathText(mnemonicMatch[1])}
+                  </h3>
+                );
               } else if (detailMatch) {
                 const detailContent = detailMatch[1].trim();
                 return (
@@ -372,7 +473,41 @@ const renderCheatsheetAsList = () => {
                           <div className="font-normal">
                             {detailContent
                               .split("\n")
-                              .map((part, partIndex) => (
+                              .map((part: string, partIndex: number) => (
+                                <div
+                                  key={partIndex}
+                                  className={
+                                    part.startsWith("    ")
+                                      ? "ml-4 font-mono"
+                                      : ""
+                                  }
+                                >
+                                  {formatCodeBlock(part.trim())}
+                                </div>
+                              ))}
+                          </div>
+                        ) : (
+                          <div className="font-normal">
+                            {formatMathText(detailContent)}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              } else if (typeMatch) {
+                const detailContent = typeMatch[1].trim();
+                return (
+                  <div key={lineIndex} className="ml-4 mb-3">
+                    <div className="flex">
+                      <div className="mr-2 text-blue-500">•</div>
+                      <div className="flex-1">
+                        {detailContent.includes("\n") ||
+                        detailContent.includes("    ") ? (
+                          <div className="font-normal">
+                            {detailContent
+                              .split("\n")
+                              .map((part: string, partIndex: number) => (
                                 <div
                                   key={partIndex}
                                   className={
@@ -410,7 +545,7 @@ const renderCheatsheetAsList = () => {
 };
 
   // Define the toggleSelection function to handle option changes
-  const toggleSelection = (option) => {
+  const toggleSelection = (option:string) => {
     // If the clicked option is already selected, deselect it; otherwise, select the new option.
     if (selectedOption === option) {
       setSelectedOption(""); // Deselect if it's the current option
@@ -453,13 +588,19 @@ const handleDownloadPDF = async () => {
     pagebreak: { mode: ["avoid-all", "css", "legacy"] },
   };
 
-  html2pdf()
-    .set(opt)
-    .from(element)
-    .save()
-    .catch((err) => {
-      console.error("Error generating PDF:", err);
-    });
+  // Check if html2pdf is not null before invoking it
+  if (html2pdf) {
+    const pdf = html2pdf as typeof import("html2pdf.js").default; // Cast to the correct type
+    pdf()
+      .set(opt)
+      .from(element)
+      .save()
+      .catch((err: unknown) => {
+        console.error("Error generating PDF:", err);
+      });
+  } else {
+    console.error("html2pdf is not initialized");
+  }
 };
 
   if (typeof window !== "undefined") {
