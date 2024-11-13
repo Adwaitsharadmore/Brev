@@ -3,6 +3,7 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import Head from "next/head";
+import Link from "next/link";
 
 
 const HomePage = () => {
@@ -20,23 +21,77 @@ const HomePage = () => {
           rel="stylesheet"
         />
       </Head>
+      <div className="w-full h-screen relative bg-black">
+        <div className="w-3/4 mx-auto flex flex-col items-start">
+          <div className="w-full flex justify-between items-center pt-10 pb-5">
+            <div className="text-white text-4xl font-extrabold font-inter capitalize">
+              <Link href="/">Brev</Link>
+            </div>
+            <div className="flex gap-8">
+              <div className="text-white text-lg font-normal font-inter">
+                About
+              </div>
+              <div className="text-white text-lg font-normal font-Inter">
+                Pricing
+              </div>
+              <div className="text-white text-lg font-normal font-Inter">
+                Contact
+              </div>
+            </div>
+          </div>
+          <div className="w-full pt-[20px] mx-auto my-10">
+            <div className="text-white text-[4vw] md:text-[69px] font-semibold leading-tight font-Inter">
+              You got,{" "}
+            </div>
+            <div className="text-white text-[4vw] md:text-[69px] font-semibold leading-tight font-Inter">
+              {" "}
+              this, Brev!
+            </div>
+            <img
+              className="Meeet11470x8331"
+              style={{
+                width: "459px",
+                height: "544px",
+                left: "800px",
+                top: "115px",
+                position: "absolute",
+              }}
+              src="/images/sphere.png"
+              alt="Meeet"
+            />
+            <div className="text-white text-[2vw] md:text-3xl font-light leading-tight font-Inter mt-4">
+              Your go-to tool for smarter learning,
+            </div>
+            <div className="text-white text-[2vw] md:text-3xl font-light leading-tight font-Inter mt-4">
+              helping you achieve{" "}
+              <span className="bg-white text-[#313eff] italic">
+                more with less
+              </span>
+            </div>
+            <div className="text-white text-[2vw] md:text-3xl font-light leading-tight font-Inter mt-4 flex items-center">
+              <span>stress and stay on top of your game.</span>
+            </div>
+            <div className="pt-5">
+              <button
+                className="px-8 py-4"
+                onClick={handleStartBreving}
+                style={{
+                  background: "#1D5DB6",
+                  borderRadius: "31px",
+                  color: "white",
+                  fontSize: "18px",
+                  font: "Inter",
+                  lineHeight: "27.50px",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
+                Start Breving
+              </button>
+            </div>
+          </div>
+        </div>
 
-      <div
-        className="Desktop1"
-        style={{
-          width: "100%",
-          height: "100%",
-          paddingTop: "48px",
-          paddingBottom: "48px",
-          paddingLeft: "139px",
-          paddingRight: "46px",
-          background: "black",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          display: "inline-flex",
-        }}
-      >
         <div
           className="Group42"
           style={{ width: "1158px", height: "4217px", position: "relative" }}
@@ -50,7 +105,7 @@ const HomePage = () => {
               position: "absolute",
               color: "white",
               fontSize: "170px",
-              fontFamily: "inter",
+              font: "Inter",
               fontWeight: 10,
               wordWrap: "break-word",
               letterSpacing: "-4px",
@@ -80,114 +135,6 @@ const HomePage = () => {
               }}
             >
               <div
-                className="NavBar"
-                style={{
-                  width: "853px",
-                  height: "38.80px",
-                  left: "25px",
-                  top: "0px",
-                  position: "absolute",
-                }}
-              >
-                <div
-                  className="Brev"
-                  style={{
-                    width: "88.02px",
-                    height: "35.23px",
-                    left: "0px",
-                    top: "3.57px",
-                    position: "absolute",
-                    color: "white",
-                    fontSize: "40px",
-                    fontFamily: "Inter",
-                    fontWeight: 800,
-                    textTransform: "capitalize",
-                    lineHeight: "27.50px",
-                    wordWrap: "break-word",
-                  }}
-                >
-                  Brev
-                </div>
-                <div
-                  className="About"
-                  style={{
-                    left: "441px",
-                    top: "0px",
-                    position: "absolute",
-                    color: "white",
-                    fontSize: "20px",
-                    fontFamily: "Inter",
-                    fontWeight: 400,
-                    lineHeight: "27.50px",
-                    wordWrap: "break-word",
-                  }}
-                >
-                  about
-                </div>
-                <div
-                  className="Pricing"
-                  style={{
-                    left: "610px",
-                    top: "0px",
-                    position: "absolute",
-                    color: "white",
-                    fontSize: "20px",
-                    fontFamily: "Inter",
-                    fontWeight: 400,
-                    lineHeight: "27.50px",
-                    wordWrap: "break-word",
-                  }}
-                >
-                  pricing
-                </div>
-                <div
-                  className="Contact"
-                  style={{
-                    left: "787px",
-                    top: "0px",
-                    position: "absolute",
-                    color: "white",
-                    fontSize: "20px",
-                    fontFamily: "Inter",
-                    fontWeight: 400,
-                    lineHeight: "27.50px",
-                    wordWrap: "break-word",
-                  }}
-                >
-                  contact
-                </div>
-              </div>
-              <img
-                className="Meeet11470x8331"
-                style={{
-                  width: "459px",
-                  height: "544px",
-                  left: "800px",
-                  top: "115px",
-                  position: "absolute",
-                }}
-                src="/images/sphere.png"
-                alt="Meeet"
-              />
-              <div
-                className="YouGotThisBrev"
-                style={{
-                  width: "305px",
-                  height: "216px",
-                  left: "2px",
-                  top: "237px",
-                  position: "absolute",
-                  color: "white",
-                  fontSize: "69px",
-                  fontFamily: "Inter",
-                  fontWeight: 600,
-                  lineHeight: "61px",
-                  wordWrap: "break-word",
-                }}
-              >
-                You got this, brev!
-              </div>
-              <div
                 className="CheckoutHowToUseBrev"
                 style={{
                   width: "305px",
@@ -197,7 +144,7 @@ const HomePage = () => {
                   position: "absolute",
                   color: "white",
                   fontSize: "69px",
-                  fontFamily: "Inter",
+                  font: "Inter",
                   fontWeight: 600,
                   lineHeight: "61px",
                   wordWrap: "break-word",
@@ -215,7 +162,7 @@ const HomePage = () => {
                   position: "absolute",
                   color: "white",
                   fontSize: "69px",
-                  fontFamily: "Inter",
+                  font: "Inter",
                   fontWeight: 600,
                   lineHeight: "61px",
                   wordWrap: "break-word",
@@ -233,7 +180,7 @@ const HomePage = () => {
                   position: "absolute",
                   color: "white",
                   fontSize: "65px",
-                  fontFamily: "Inter",
+                  font: "Inter",
                   fontWeight: 600,
                   lineHeight: "61px",
                   wordWrap: "break-word",
@@ -241,53 +188,7 @@ const HomePage = () => {
               >
                 Follow us on our socials to learn more!
               </div>
-              <div
-                className="YourGoToToolForSmarterLearningHelpingYouStayOnTopOfYourGameWithoutTheStress"
-                style={{
-                  width: "396px",
-                  left: "2px",
-                  top: "404px",
-                  position: "absolute",
-                  color: "white",
-                  fontSize: "20px",
-                  fontFamily: "Inter",
-                  fontWeight: 200,
-                  lineHeight: "27.50px",
-                  wordWrap: "break-word",
-                }}
-              >
-                Your go-to tool for smarter learning, helping you stay on top of
-                your game without the stress.
-              </div>
-              <div
-                className="Group34"
-                style={{
-                  width: "139px",
-                  height: "51px",
-                  left: "0px",
-                  top: "526px",
-                  position: "absolute",
-                }}
-              >
-                <button
-                  onClick={handleStartBreving}
-                  style={{
-                    width: "125px",
-                    height: "51px",
-                    background: "#1D5DB6",
-                    borderRadius: "31px",
-                    color: "white",
-                    fontSize: "18px",
-                    fontFamily: "Inter",
-                    fontWeight: 600,
-                    lineHeight: "27.50px",
-                    border: "none",
-                    cursor: "pointer",
-                  }}
-                >
-                  Start Breving
-                </button>
-              </div>
+
               <div
                 className="Group39"
                 style={{

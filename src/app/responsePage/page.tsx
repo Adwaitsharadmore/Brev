@@ -453,13 +453,38 @@ const renderCheatsheetAsList = () => {
                   </h3>
                 );
               } else if (mnemonicMatch) {
+                const detailContent = mnemonicMatch[1].trim();
                 return (
-                  <h3
-                    key={lineIndex}
-                    className="text-xl font-semibold mb-3 text-blue-700 mt-4"
-                  >
-                    {formatMathText(mnemonicMatch[1])}
-                  </h3>
+                  <div key={lineIndex} className="ml-4 mb-3">
+                    <div className="flex">
+                      <div className="mr-2 text-blue-500">•</div>
+                      <div className="flex-1">
+                        {detailContent.includes("\n") ||
+                        detailContent.includes("    ") ? (
+                          <div className="font-normal">
+                            {detailContent
+                              .split("\n")
+                              .map((part: string, partIndex: number) => (
+                                <div
+                                  key={partIndex}
+                                  className={
+                                    part.startsWith("    ")
+                                      ? "ml-4 font-mono"
+                                      : ""
+                                  }
+                                >
+                                  {formatCodeBlock(part.trim())}
+                                </div>
+                              ))}
+                          </div>
+                        ) : (
+                          <div className="font-normal">
+                            {formatMathText(detailContent)}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 );
               } else if (detailMatch) {
                 const detailContent = detailMatch[1].trim();
@@ -615,7 +640,7 @@ const handleDownloadPDF = async () => {
             {/* Nav Bar */}
             <div className="w-full flex justify-between items-center pt-10 pb-5">
               <div className="text-white text-4xl font-extrabold font-inter capitalize">
-                Brev
+                <Link href="/">Brev</Link>
               </div>
               <div className="flex gap-8">
                 <div className="text-white text-lg font-normal font-inter">
