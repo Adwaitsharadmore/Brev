@@ -6,6 +6,7 @@ import html2pdf from 'html2pdf.js';
 import fs from 'fs';
 
 
+
   const ResponsePage = () => {
      const [cheatsheetContent, setCheatsheetContent] = useState(null);
      const [file, setFile] = useState<File | null>(null);
@@ -58,14 +59,14 @@ import fs from 'fs';
     if (selectedOption === "Detailed") {
       customPrompt =
         customPrompt ||
-        `Generate a comprehensive cheat sheet based on the provided document. Use the following format strictly:
+        `Generate a comprehensive cheat sheet based on the provided document.Provide explanations, context, and insights to enhance understanding. Use clear and simple language for each detail to ensure a thorough grasp of the topic. If the document is an exam study guide with topics organized by chapters, reference each chapter and summarize its contents. Use the following format strictly:
 
 ## Main formatting rules:
 1. Start main titles with "TITLE: " (include the space after colon)
 2. Start subtopics with "SUBTOPIC: " (include the space after colon)
 3. Start details with "DETAIL_N: " where N is a number (include the space after colon)
 4. Use three dashes (---) to separate different sections
-5. Do not use any markdown symbols, asterisks, or other formatting characters
+5. Do not use any markdown symbols, asterisks, double asterisks or other formatting characters
 6. Maintain consistent indentation
 7. Keep all text in normal font
 
@@ -89,23 +90,41 @@ Guidelines for content:
 - Keep formatting consistent throughout the document
 
 Please structure the content following this format exactly as it matches the frontend rendering system.
-Provide explanations, context, and insights to enhance understanding. Use clear and simple language for each detail to ensure a thorough grasp of the topic. If the document is an exam study guide with topics organized by chapters, reference each chapter and summarize its contents. Separate each main title with three dashes (---).
       `;
     } else if (selectedOption === "Precise") {
-      customPrompt = customPrompt || `
-        Please create a concise cheat sheet from the provided document. Use the following format:
-        
-        Main Titles: Enclose in curly brackets {}.
-        Subtopics: Enclose in square brackets [].
-        Details: Present each detail as a bullet point under the corresponding subtopic.
-        Ensure all text is in normal font. Use the format strictly:
-        
-        {Main Title}
-        [Subtopic]
-        Bullet point 1
-        Bullet point 2
-        
-        Keep explanations brief and to the point. Only include essential details for each topic, avoiding any unnecessary expansion.
+      customPrompt =
+        customPrompt ||
+        `
+       Please create a precise cheat sheet from the provided document. Use the following format strictly:
+
+## Main formatting rules:
+1. Start main titles with "TITLE: " (include the space after colon)
+2. Start subtopics with "SUBTOPIC: " (include the space after colon)
+3. Start details with "DETAIL_N: " where N is a number (include the space after colon)
+4. Use three dashes (---) to separate different sections
+5. Do not use any markdown symbols, asterisks, double asterisks or other formatting characters
+6. Maintain consistent indentation
+7. Keep all text in normal font
+
+Example format:
+TITLE: Your Main Title
+SUBTOPIC: Your Subtopic
+DETAIL_1: Your first detail point
+DETAIL_2: Your second detail point
+DETAIL_3: Your third detail point
+---
+TITLE: Your Next Section
+[and so on...]
+
+Guidelines for content:
+- Keep explanations brief and concise
+- Include only essential information
+- Use clear, simple language
+- Break down complex topics into digestible points
+- Maintain consistent formatting throughout
+
+
+Please structure the content following this format exactly as it matches the frontend rendering system.
       `;
     }
 
@@ -284,7 +303,6 @@ const renderCheatsheetAsList = () => {
       phi: "φ",
       sqrt: "√",
       "->": "→",
-      in: "∈",
       N0: "ℕ₀",
       N: "ℕ",
       Z: "ℤ",
@@ -401,32 +419,48 @@ const renderCheatsheetAsList = () => {
     }
   };
 
-  const handleDownloadPDF = () => {
-    const element = document.getElementById('cheatsheet-content');
-    
-    if (!element) {
-      console.error('Cheatsheet content element not found');
-      return;
-    }
-
-    const opt = {
-      margin: 10,
-      filename: 'cheatsheet.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { 
-        scale: 2,
-        useCORS: true,
-        logging: true,
-        letterRendering: true
-      },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] } // Add pagebreak options
-    };
-
-    html2pdf().set(opt).from(element).save().catch(err => {
-      console.error('Error generating PDF:', err);
+const handleDownloadPDF = async () => {
+  // Wait for images to load
+  await document.fonts.ready;
+  const images = document.images;
+  const promises = Array.from(images).map((img) => {
+    if (img.complete) return Promise.resolve();
+    return new Promise((resolve) => {
+      img.onload = resolve;
+      img.onerror = resolve;
     });
+  });
+  await Promise.all(promises);
+
+  // Then generate PDF
+  const element = document.getElementById("cheatsheet-content");
+  if (!element) {
+    console.error("Cheatsheet content element not found");
+    return;
+  }
+
+  const opt = {
+    margin: 10,
+    filename: "cheatsheet.pdf",
+    image: { type: "jpeg", quality: 0.98 },
+    html2canvas: {
+      scale: 2,
+      useCORS: true,
+      logging: true,
+      letterRendering: true,
+    },
+    jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+    pagebreak: { mode: ["avoid-all", "css", "legacy"] },
   };
+
+  html2pdf()
+    .set(opt)
+    .from(element)
+    .save()
+    .catch((err) => {
+      console.error("Error generating PDF:", err);
+    });
+};
 
   if (typeof window !== "undefined") {
     // Code that uses window, document, or self
