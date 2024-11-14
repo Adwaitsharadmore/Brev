@@ -8,6 +8,7 @@ import Navbar from "./Navbar";
 import { FaXTwitter } from "react-icons/fa6";
 import { FaInstagram } from "react-icons/fa";
 import { FaYoutube } from "react-icons/fa";
+import { FaLinkedin } from "react-icons/fa";
 
 
 
@@ -26,7 +27,7 @@ const HomePage = () => {
           rel="stylesheet"
         />
       </Head>
-      <div className="w-full h-screen relative bg-black">
+      <div className="w-full h-screen relative bg-black scroll-smooth">
         <div className="w-3/4 mx-auto flex flex-col items-start">
           <div className="w-full bg-black flex justify-between items-center pt-10 pb-5">
             <div className="text-white text-4xl font-extrabold font-inter capitalize">
@@ -44,11 +45,11 @@ const HomePage = () => {
               </div>
             </div>
           </div>
-          <div className="w-full pt-[80px] mx-auto my-50 pb-50">
-            <div className="text-white text-[4vw] md:text-[69px] font-semibold leading-tight font-Inter">
+          <div className="w-full pt-[200px] mx-auto my-50 pb-50">
+            <div className="text-white text-8xl font-semibold leading-tight font-Inter">
               You got{" "}
             </div>
-            <div className="text-white text-[4vw] md:text-[69px] font-semibold leading-tight font-Inter">
+            <div className="text-white text-8xl font-semibold leading-tight font-Inter">
               {" "}
               this, Brev!
             </div>
@@ -294,7 +295,7 @@ const HomePage = () => {
               </button>
             </div>
           </div>
-          <div className="pt-[200px] text-center font-bold font-inter text-7xl w-full items-center flex-col justify-center">
+          <div className="pt-[260px] text-center font-bold font-inter text-7xl w-full items-center flex-col justify-center">
             Follow us on our socials.
           </div>
           <div className="w-full flex justify-between pt-[100px]">
@@ -306,6 +307,9 @@ const HomePage = () => {
             </Link>
             <Link href="">
               <FaYoutube className="text-9xl hover:text-[#0023FF]" />
+            </Link>
+            <Link href="">
+              <FaLinkedin className="text-9xl hover:text-[#0023FF]" />
             </Link>
           </div>
           <div className="pt-[150px] flex justify-center w-full pb-[150px]">
