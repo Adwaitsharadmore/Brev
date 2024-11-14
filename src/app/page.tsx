@@ -4,6 +4,11 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import Head from "next/head";
 import Link from "next/link";
+import Navbar from "./Navbar";
+import { FaXTwitter } from "react-icons/fa6";
+import { FaInstagram } from "react-icons/fa";
+import { FaYoutube } from "react-icons/fa";
+
 
 
 const HomePage = () => {
@@ -23,25 +28,25 @@ const HomePage = () => {
       </Head>
       <div className="w-full h-screen relative bg-black">
         <div className="w-3/4 mx-auto flex flex-col items-start">
-          <div className="w-full flex justify-between items-center pt-10 pb-5">
+          <div className="w-full bg-black flex justify-between items-center pt-10 pb-5">
             <div className="text-white text-4xl font-extrabold font-inter capitalize">
               <Link href="/">Brev</Link>
             </div>
             <div className="flex gap-8">
-              <div className="text-white text-lg font-normal font-inter">
+              <div className="text-white text-lg font-normal font-inter hover:text-[#0023FF] cursor-pointer">
                 About
               </div>
-              <div className="text-white text-lg font-normal font-Inter">
+              <div className="text-white text-lg font-normal font-Inter hover:text-[#0023FF] cursor-pointer">
                 Pricing
               </div>
-              <div className="text-white text-lg font-normal font-Inter">
+              <div className="text-white text-lg font-normal font-Inter  hover:text-[#0023FF] cursor-pointer">
                 Contact
               </div>
             </div>
           </div>
-          <div className="w-full pt-[20px] mx-auto my-10">
+          <div className="w-full pt-[80px] mx-auto my-50 pb-50">
             <div className="text-white text-[4vw] md:text-[69px] font-semibold leading-tight font-Inter">
-              You got,{" "}
+              You got{" "}
             </div>
             <div className="text-white text-[4vw] md:text-[69px] font-semibold leading-tight font-Inter">
               {" "}
@@ -64,7 +69,7 @@ const HomePage = () => {
             </div>
             <div className="text-white text-[2vw] md:text-3xl font-light leading-tight font-Inter mt-4">
               helping you achieve{" "}
-              <span className="bg-white text-[#313eff] italic">
+              <span className="bg-white text-[#0023FF] italic">
                 more with less
               </span>
             </div>
@@ -73,10 +78,9 @@ const HomePage = () => {
             </div>
             <div className="pt-5">
               <button
-                className="px-8 py-4"
+                className="px-8 py-4 hover:bg-[#3526ff] bg-[#0023FF]"
                 onClick={handleStartBreving}
                 style={{
-                  background: "#1D5DB6",
                   borderRadius: "31px",
                   color: "white",
                   fontSize: "18px",
@@ -90,199 +94,146 @@ const HomePage = () => {
               </button>
             </div>
           </div>
-        </div>
 
-        <div
-          className="Group42"
-          style={{ width: "1158px", height: "4217px", position: "relative" }}
-        >
-          <div
-            className="ShhhThereIsMoreToCome"
-            style={{
-              width: "1220px",
-              left: "60px",
-              top: "2860px",
-              position: "absolute",
-              color: "white",
-              fontSize: "170px",
-              font: "Inter",
-              fontWeight: 10,
-              wordWrap: "break-word",
-              letterSpacing: "-4px",
-              lineHeight: "1",
-            }}
-          >
-            SHHH, there is more to come!
+          <div className="w-full pt-[50px] sm:pt-[80px] md:pt-[100px] lg:pt-[150px] mx-auto my-5 sm:my-8 lg:my-10">
+            <div className="flex flex-col -space-y-4 sm:-space-y-6 md:-space-y-7 lg:-space-y-8">
+              <span className="break-words font-bold text-4xl sm:text-6xl md:text-7xl lg:text-9xl italic">
+                KEY
+              </span>
+              <span className="break-words font-bold text-4xl sm:text-6xl md:text-7xl lg:text-9xl">
+                FEATURES
+              </span>
+            </div>
           </div>
-          <div
-            className="Group41"
-            style={{
-              width: "1158px",
-              height: "4217px",
-              left: "0px",
-              top: "0px",
-              position: "absolute",
-            }}
-          >
+
+          <div className="flex justify-between w-full pb-[100px]">
+            <div className="text-[#F8F6EF] font-inter text-2xl">
+              <span className="bg-white text-black font-inter text-4xl font-semibold">
+                Cheat sheet generation--
+              </span>
+              <br />
+              <span className="bg-white text-black font-inter text-4xl font-semibold">
+                precise or detailed
+              </span>
+              <br />
+              Quickly convert lengthy notes into concise, organized <br /> cheat
+              sheets that highlight essential information and core <br />
+              concepts. This feature saves time and provides students <br />{" "}
+              with an efficient way to review high-yield information <br />{" "}
+              before exams.
+              <div>
+                <br />
+                Precise Cheat Sheet: <br /> A concise summary ideal for
+                last-minute review. <br /> <br />
+                Detailed Cheat Sheet: <br />A comprehensive, in-depth version
+                that’s <br /> perfect for studying a subject from scratch,{" "}
+                <br />
+                with all necessary information included to <br />
+                thoroughly cover the topic.
+              </div>
+            </div>
+
+            <div>
+              {" "}
+              <img
+                className="PexelsJeshootsCom1474587146991"
+                style={{
+                  width: "325px",
+                  height: "145px",
+                  left: "747px",
+                  top: "13px",
+                }}
+                src="/images/pexels-jeshoots-com-147458-714699.jpg"
+                alt="Pexels Jeshoots"
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-between w-full pb-[100px]">
+            <div>
+              {" "}
+              <img
+                className="PexelsJeshootsCom1474587146991"
+                style={{
+                  width: "325px",
+                  height: "145px",
+                  left: "747px",
+                  top: "13px",
+                }}
+                src="/images/pexels-jeshoots-com-147458-714699.jpg"
+                alt="Pexels Jeshoots"
+              />
+            </div>
+            <div className="text-[#F8F6EF] font-inter text-2xl text-end">
+              <span className="bg-white text-black font-inter text-4xl font-semibold">
+                Memory Aids & Mnemonics
+              </span>
+              <br />
+              Brev’s AI-powered mnemonic generator creates <br />
+              personalized memory aids that cater to the student’s <br />{" "}
+              learning style, making complex topics easier to retain. <br />{" "}
+              These mnemonics leverage proven memory techniques— <br />
+              like acronyms, visualization, and chunking—to reinforce <br />
+              learning and aid long-term recall.
+            </div>
+          </div>
+
+          <div className="flex justify-between w-full">
+            <div className="text-[#F8F6EF] font-inter text-2xl">
+              <span className="bg-white text-black font-inter text-4xl font-semibold">
+                Targeted Quizzes
+              </span>
+              <br />
+              Brev offers custom quizzes designed to test knowledge in <br />{" "}
+              areas where students need the most practice. Through <br />
+              adaptive question generation, Brev helps reinforce <br />
+              understanding, identify knowledge gaps, and build exam <br />{" "}
+              readiness.
+            </div>
+            <div>
+              {" "}
+              <img
+                className="PexelsJeshootsCom1474587146991"
+                style={{
+                  width: "325px",
+                  height: "145px",
+                  left: "747px",
+                  top: "13px",
+                }}
+                src="/images/pexels-jeshoots-com-147458-714699.jpg"
+                alt="Pexels Jeshoots"
+              />
+            </div>
+          </div>
+          <div>
             <div
-              className="Group39"
+              className="pt-[200px] flex w-full"
               style={{
-                width: "1158px",
-                height: "4217px",
-                left: "0px",
-                top: "0px",
-                position: "absolute",
+                color: "white",
+                fontSize: "69px",
+                font: "Inter",
+                fontWeight: 600,
+                lineHeight: "61px",
+                wordWrap: "break-word",
               }}
             >
-              <div
-                className="CheckoutHowToUseBrev"
-                style={{
-                  width: "305px",
-                  height: "216px",
-                  left: "2px",
-                  top: "1343px",
-                  position: "absolute",
-                  color: "white",
-                  fontSize: "69px",
-                  font: "Inter",
-                  fontWeight: 600,
-                  lineHeight: "61px",
-                  wordWrap: "break-word",
-                }}
-              >
-                Checkout how to use brev.
-              </div>
-              <div
-                className="OurStory"
-                style={{
-                  width: "201px",
-                  height: "143px",
-                  left: "0px",
-                  top: "2156px",
-                  position: "absolute",
-                  color: "white",
-                  fontSize: "69px",
-                  font: "Inter",
-                  fontWeight: 600,
-                  lineHeight: "61px",
-                  wordWrap: "break-word",
-                }}
-              >
-                Our Story.
-              </div>
-              <div
-                className="FollowUsOnOurSocialsToLearnMore"
-                style={{
-                  width: "1153px",
-                  height: "83px",
-                  left: "5px",
-                  top: "3623px",
-                  position: "absolute",
-                  color: "white",
-                  fontSize: "65px",
-                  font: "Inter",
-                  fontWeight: 600,
-                  lineHeight: "61px",
-                  wordWrap: "break-word",
-                }}
-              >
-                Follow us on our socials to learn more!
-              </div>
-
-              <div
-                className="Group39"
-                style={{
-                  width: "188px",
-                  height: "51px",
-                  left: "455px",
-                  top: "3330px",
-                  position: "absolute",
-                }}
-              >
-                <div
-                  className="Rectangle20"
-                  style={{
-                    width: "176px",
-                    height: "51px",
-                    left: "0px",
-                    top: "0px",
-                    position: "absolute",
-                    background: "#1D5DB6",
-                    borderRadius: "31px",
-                  }}
-                />
-                <div
-                  className="WannaKnowMore"
-                  style={{
-                    left: "17px",
-                    top: "12px",
-                    position: "absolute",
-                    color: "white",
-                    fontSize: "18px",
-                    fontFamily: "Inter",
-                    fontWeight: 600,
-                    lineHeight: "27.50px",
-                    wordWrap: "break-word",
-                  }}
-                >
-                  Wanna know more?
-                </div>
-              </div>
-              <div
-                className="Group40"
-                style={{
-                  width: "88px",
-                  height: "51px",
-                  left: "513px",
-                  top: "4166px",
-                  position: "absolute",
-                }}
-              >
-                <div
-                  className="Rectangle20"
-                  style={{
-                    width: "88px",
-                    height: "51px",
-                    left: "0px",
-                    top: "0px",
-                    position: "absolute",
-                    background: "#1D5DB6",
-                    borderRadius: "31px",
-                  }}
-                />
-                <div
-                  className="EmailUs"
-                  style={{
-                    left: "10px",
-                    top: "12px",
-                    position: "absolute",
-                    color: "white",
-                    fontSize: "18px",
-                    fontFamily: "Inter",
-                    fontWeight: 600,
-                    lineHeight: "27.50px",
-                    wordWrap: "break-word",
-                  }}
-                >
-                  Email us!
-                </div>
-              </div>
+              Our Story.
               <div
                 className="BrevBeganAsAnAmbitiousIdeaDuringAHackathonAtArizonaStateUniversityWhatStartedAsAProjectForA24HourChallengeTurnedIntoSomethingMuchBiggerWeWereATeamOfFourPassionateStudentsWhoWorkedTirelesslyDayAndNightToBuildAFullStackWebAppThoughWeWereConfidentInOurCreationAndExcitedAboutItsPotentialTheHackathonDidnTResultInAnyAwardsOrRecognitionButWeDidnTLetThatStopUsInsteadOfGivingUpWeSawThisAsAnOpportunityToTurnBrevIntoSomethingGreaterAFullFledgedStartupWithAMissionToHelpStudentsConquerTheirExamsOurVisionBecameClearToRelieveTheStressAndAnxietyThatComeWithExamPreparationAndCreateTheBestStudyToolOutThereSinceThenWeVePouredCountlessHoursIntoBrevRefiningItToBeTheUltimateStudyCompanionWhatBeganAsASimpleHackathonIdeaIsNowAToolDesignedToHelpStudentsMaximizeTheirStudyTimeReduceStressAndExcelInTheirExamsWeReJustGettingStartedAndWeReExcitedForTheJourneyAhead"
                 style={{
-                  width: "869px",
-                  height: "403px",
-                  left: "198px",
-                  top: "2324px",
-                  position: "absolute",
                   color: "white",
                   fontSize: "20px",
-                  fontFamily: "Inter",
+                  font: "Inter",
                   fontWeight: 200,
                   lineHeight: "27.50px",
                   wordWrap: "break-word",
                 }}
               >
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
                 Brev began as an ambitious idea during a hackathon at Arizona
                 State University. What started as a project for a 24-hour
                 challenge turned into something much bigger. We were a team of
@@ -306,175 +257,75 @@ const HomePage = () => {
                 their study time, reduce stress, and excel in their exams. We’re
                 just getting started, and we’re excited for the journey ahead.
               </div>
-              <div
-                className="Group38"
+            </div>
+          </div>
+
+          <div className="items-center flex-col item-center justify-center w-full">
+            <div
+              className="pt-[200px] text-center"
+              style={{
+                color: "white",
+                fontSize: "170px",
+                font: "Inter",
+                fontWeight: 10,
+                wordWrap: "break-word",
+                letterSpacing: "-4px",
+                lineHeight: "1",
+              }}
+            >
+              SHHH, there is more to come!
+            </div>
+            <div className="pt-5 flex justify-center w-full">
+              <button
+                className="px-8 py-4"
+                onClick={handleStartBreving}
                 style={{
-                  width: "1072px",
-                  height: "433px",
-                  left: "1px",
-                  top: "743px",
-                  position: "absolute",
+                  background: "#0023FF",
+                  borderRadius: "31px",
+                  color: "white",
+                  fontSize: "18px",
+                  font: "Inter",
+                  lineHeight: "27.50px",
+                  border: "none",
+                  cursor: "pointer",
                 }}
               >
-                <div
-                  className="BrevTurnsYourStudyNotesIntoStreamlinedCheatSheetsHelpingYouFocusOnWhatMattersMostWithBrevYouNoLongerHaveToSiftThroughEndlessMaterial"
-                  style={{
-                    width: "268px",
-                    height: "163px",
-                    left: "9px",
-                    top: "270px",
-                    position: "absolute",
-                    color: "white",
-                    fontSize: "20px",
-                    fontFamily: "Inter",
-                    fontWeight: 200,
-                    lineHeight: "27.50px",
-                    wordWrap: "break-word",
-                  }}
-                >
-                  Brev turns your study notes into streamlined cheat sheets,
-                  helping you focus on what matters most. With Brev, you no
-                  longer have to sift through endless material
-                </div>
-                <div
-                  className="BrevCreatesCustomizedQuizzesBasedOnYourStudyMaterialHelpingYouTestYourKnowledgeInRealTimeAfterEachQuizBrevAnalyzesYourPerformanceAndGeneratesPersonalizedFeedback"
-                  style={{
-                    width: "300px",
-                    height: "140px",
-                    left: "377px",
-                    top: "261px",
-                    position: "absolute",
-                    color: "white",
-                    fontSize: "20px",
-                    fontFamily: "Inter",
-                    fontWeight: 200,
-                    lineHeight: "27.50px",
-                    wordWrap: "break-word",
-                  }}
-                >
-                  Brev creates customized quizzes based on your study material,
-                  helping you test your knowledge in real-time. After each quiz,
-                  Brev analyzes your performance and generates personalized
-                  feedback.
-                </div>
-                <div
-                  className="BrevAlsoOffersMnemonicGenerationMakingItEasierToRememberKeyConceptsByUsingCreativeMemoryAidsBrevHelpsYouRetainInformationWithLessEffort"
-                  style={{
-                    width: "300px",
-                    height: "140px",
-                    left: "760px",
-                    top: "261px",
-                    position: "absolute",
-                    color: "white",
-                    fontSize: "20px",
-                    fontFamily: "Inter",
-                    fontWeight: 200,
-                    lineHeight: "27.50px",
-                    wordWrap: "break-word",
-                  }}
-                >
-                  Brev also offers mnemonic generation, making it easier to
-                  remember key concepts. By using creative memory aids, Brev
-                  helps you retain information with less effort.
-                </div>
-                <img
-                  className="PexelsPadrinan7453651"
-                  style={{
-                    width: "256px",
-                    height: "243px",
-                    left: "0px",
-                    top: "0px",
-                    position: "absolute",
-                  }}
-                  src="/images/pexels-padrinan-745365.png"
-                  alt="Pexels Padrinan"
-                />
-                <img
-                  className="PexelsEye4dtail3749181"
-                  style={{
-                    width: "308px",
-                    height: "140px",
-                    left: "367px",
-                    top: "49px",
-                    position: "absolute",
-                  }}
-                  src="/images/pexels-eye4dtail-374918.jpg"
-                  alt="Pexels Eye"
-                />
-                <img
-                  className="PexelsJeshootsCom1474587146991"
-                  style={{
-                    width: "325px",
-                    height: "145px",
-                    left: "747px",
-                    top: "13px",
-                    position: "absolute",
-                  }}
-                  src="/images/pexels-jeshoots-com-147458-714699.jpg"
-                  alt="Pexels Jeshoots"
-                />
-              </div>
-              <img
-                className="NexbotRobotCharacterConcept11366x6331"
-                style={{
-                  width: "180px",
-                  height: "407px",
-                  left: "0px",
-                  top: "1559px",
-                  position: "absolute",
-                }}
-                src="/images/robot.png"
-                alt="Nexbot Robot"
-              />
-              <img
-                className="1"
-                style={{
-                  width: "777px",
-                  height: "430px",
-                  left: "288px",
-                  top: "1559px",
-                  position: "absolute",
-                }}
-                src="/images/10.webp"
-                alt="Image 1"
-              />
+                Wanna know more?
+              </button>
             </div>
-            <img
-              className="Image12"
-              style={{
-                width: "217px",
-                height: "211px",
-                left: "449px",
-                top: "3841px",
-                position: "absolute",
-              }}
-              src="/images/instagram.png"
-              alt="Image 12"
-            />
-            <img
-              className="Image13"
-              style={{
-                width: "202px",
-                height: "241px",
-                left: "5px",
-                top: "3840px",
-                position: "absolute",
-              }}
-              src="/images/x.jpg"
-              alt="Image 13"
-            />
-            <img
-              className="Image14"
-              style={{
-                width: "186px",
-                height: "222px",
-                left: "907px",
-                top: "3836px",
-                position: "absolute",
-              }}
-              src="/images/github.png"
-              alt="Image 14"
-            />
+          </div>
+          <div className="pt-[200px] text-center font-bold font-inter text-7xl w-full items-center flex-col justify-center">
+            Follow us on our socials.
+          </div>
+          <div className="w-full flex justify-between pt-[100px]">
+            <Link href="">
+              <FaXTwitter className="text-9xl hover:text-[#0023FF]" />
+            </Link>
+            <Link href="https://www.instagram.com/meetbrev/">
+              <FaInstagram className="text-9xl hover:text-[#0023FF]" />
+            </Link>
+            <Link href="">
+              <FaYoutube className="text-9xl hover:text-[#0023FF]" />
+            </Link>
+          </div>
+          <div className="pt-[150px] flex justify-center w-full pb-[150px]">
+            <Link href="">
+              <button
+                className="px-8 py-4"
+                style={{
+                  background: "#0023FF",
+                  borderRadius: "31px",
+                  color: "white",
+                  fontSize: "20px",
+                  font: "Inter",
+                  lineHeight: "27.50px",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
+                Email Us!
+              </button>
+            </Link>
           </div>
         </div>
       </div>
