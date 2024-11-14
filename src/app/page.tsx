@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Head from "next/head";
 import Link from "next/link";
@@ -9,10 +9,13 @@ import { FaXTwitter } from "react-icons/fa6";
 import { FaInstagram } from "react-icons/fa";
 import { FaYoutube } from "react-icons/fa";
 import { FaLinkedin } from "react-icons/fa";
+import { useEffect } from "react";
+import { motion } from "framer-motion";
 
 
 
 const HomePage = () => {
+   
   const router = useRouter();
 
   const handleStartBreving = () => {
@@ -45,7 +48,12 @@ const HomePage = () => {
               </div>
             </div>
           </div>
-          <div className="w-full pt-[200px] mx-auto my-50 pb-50">
+          <motion.div
+            className="w-full pt-[200px] mx-auto my-50 pb-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+          >
             <div className="text-white text-8xl font-semibold leading-tight font-Inter">
               You got{" "}
             </div>
@@ -94,7 +102,7 @@ const HomePage = () => {
                 Start Breving
               </button>
             </div>
-          </div>
+          </motion.div>
 
           <div className="w-full pt-[50px] sm:pt-[80px] md:pt-[100px] lg:pt-[150px] mx-auto my-5 sm:my-8 lg:my-10">
             <div className="flex flex-col -space-y-4 sm:-space-y-6 md:-space-y-7 lg:-space-y-8">
