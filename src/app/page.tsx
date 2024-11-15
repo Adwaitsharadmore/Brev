@@ -15,6 +15,30 @@ import { motion } from "framer-motion";
 
 
 const HomePage = () => {
+ const [width, setWidth] = useState(0);
+ const [duplicatedImages, setDuplicatedImages] = useState([]);
+
+  const images = [
+    "/images/Cheatsheetboard.svg",
+    "/images/aariya.JPG",
+    "/images/aariya.JPG",
+    "/images/aariya.JPG",
+    // Add more image paths
+  ];
+  useEffect(() => {
+    // Create an array with enough duplicates to ensure smooth scrolling
+    setDuplicatedImages([...images, ...images, ...images, ...images]);
+  }, []);
+
+  useEffect(() => {
+    // Calculate the total width of the images container
+    const calculateWidth = () => {
+      const imageWidth = 320; // 300px width + 20px margin
+      return duplicatedImages.length * imageWidth;
+    };
+    setWidth(calculateWidth());
+  }, [duplicatedImages]);
+
    
   const router = useRouter();
 
@@ -117,11 +141,11 @@ const HomePage = () => {
 
           <div className="flex justify-between w-full pb-[100px]">
             <div className="text-[#F8F6EF] font-inter text-2xl">
-              <span className="bg-white text-black font-inter text-4xl font-semibold">
+              <span className="bg-[#0023FF] text-white font-inter text-4xl font-semibold">
                 Cheat sheet generation--
               </span>
               <br />
-              <span className="bg-white text-black font-inter text-4xl font-semibold">
+              <span className="bg-[#0023FF] text-white font-inter text-4xl font-semibold">
                 precise or detailed
               </span>
               <br />
@@ -131,14 +155,48 @@ const HomePage = () => {
               with an efficient way to review high-yield information <br />{" "}
               before exams.
               <div>
-                <br />
-                Precise Cheat Sheet: <br /> A concise summary ideal for
-                last-minute review. <br /> <br />
-                Detailed Cheat Sheet: <br />A comprehensive, in-depth version
-                that’s <br /> perfect for studying a subject from scratch,{" "}
-                <br />
-                with all necessary information included to <br />
-                thoroughly cover the topic.
+                <div className="w-full flex ">
+                  <div>
+                    <svg
+                      width="163"
+                      height="175"
+                      viewBox="0 0 163 175"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M45.8684 96.8821C46.5224 100.78 44.0743 116.97 42.7045 117.826C41.5556 118.544 43.9156 122.37 49.8366 117.883C54.753 114.148 57.5392 112.904 64.3827 111.32C67.9318 110.51 68.9781 109.235 66.7475 108.517C65.0275 107.977 59.5398 108.88 55.5582 110.374C53.372 111.201 53.5545 110.756 56.8556 106.747C64.8206 97.1734 72.8276 92.5841 90.6823 87.4319C111.801 81.3581 122.457 73.0428 123.345 61.9278C123.728 57.1332 119.231 57.9978 117.822 63.0193C114.83 73.6681 107.66 78.811 87.0887 85.1222C68.0037 90.9604 60.4929 95.1153 53.0967 103.878C51.8921 105.293 50.8712 106.511 50.8049 106.552C50.7607 106.58 50.8313 105.169 50.9928 103.412C51.4584 98.1099 50.4512 95.2197 47.9893 94.7704C46.1076 94.4139 45.5379 94.9766 45.8684 96.8821Z"
+                        fill="#F8F6EF"
+                      />
+                    </svg>
+                    Precise Cheat Sheet: <br /> A concise summary ideal for{" "}
+                    <br />
+                    last-minute review.
+                  </div>
+                  <div>
+                    <svg
+                      width="255"
+                      height="255"
+                      viewBox="0 0 255 255"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M184.368 153.116C183.625 158.471 188.755 182.472 191 184.164C192.882 185.582 189.419 190.253 179.656 181.816C171.55 174.797 167.022 172.067 156.013 167.468C150.304 165.1 148.542 162.92 152.036 162.652C154.732 162.465 163.532 165.626 169.98 169.121C173.522 171.05 173.197 170.351 167.64 163.489C154.237 147.076 141.147 137.781 112.347 124.326C78.2828 108.44 60.6949 92.9105 58.4337 76.7028C57.4582 69.7112 64.6804 72.4808 67.305 80.1464C72.8778 96.4038 84.6776 106.206 117.888 122.245C148.698 137.101 160.965 145.605 173.401 160.664C175.426 163.1 177.143 165.19 177.251 165.272C177.324 165.327 177.104 163.283 176.713 160.714C175.568 152.968 176.95 149.176 180.832 149.372C183.799 149.503 184.748 150.502 184.368 153.116Z"
+                        fill="#F8F6EF"
+                      />
+                    </svg>
+                    Detailed Cheat Sheet: <br />A comprehensive, in-depth
+                    version that’s <br /> perfect for studying a subject from
+                    scratch, <br />
+                    with all necessary information included to <br />
+                    thoroughly cover the topic.
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -147,12 +205,11 @@ const HomePage = () => {
               <img
                 className="PexelsJeshootsCom1474587146991"
                 style={{
-                  width: "325px",
-                  height: "145px",
-                  left: "747px",
-                  top: "13px",
+                  width: "100%",
+                  maxWidth: "auto",
+                  height: "auto",
                 }}
-                src="/images/pexels-jeshoots-com-147458-714699.jpg"
+                src="/images/Cheatsheetboard.svg"
                 alt="Pexels Jeshoots"
               />
             </div>
@@ -164,12 +221,11 @@ const HomePage = () => {
               <img
                 className="PexelsJeshootsCom1474587146991"
                 style={{
-                  width: "325px",
-                  height: "145px",
-                  left: "747px",
-                  top: "13px",
+                  width: "100%",
+                  maxWidth: "auto",
+                  height: "auto",
                 }}
-                src="/images/pexels-jeshoots-com-147458-714699.jpg"
+                src="/images/memoryaid.svg"
                 alt="Pexels Jeshoots"
               />
             </div>
@@ -187,7 +243,7 @@ const HomePage = () => {
             </div>
           </div>
 
-          <div className="flex justify-between w-full">
+          <div className="flex justify-between w-full pb-[100px]">
             <div className="text-[#F8F6EF] font-inter text-2xl">
               <span className="bg-white text-black font-inter text-4xl font-semibold">
                 Targeted Quizzes
@@ -204,140 +260,150 @@ const HomePage = () => {
               <img
                 className="PexelsJeshootsCom1474587146991"
                 style={{
-                  width: "325px",
-                  height: "145px",
-                  left: "747px",
-                  top: "13px",
+                  width: "100%",
+                  maxWidth: "auto",
+                  height: "auto",
                 }}
-                src="/images/pexels-jeshoots-com-147458-714699.jpg"
+                src="/images/quiz.svg"
                 alt="Pexels Jeshoots"
               />
             </div>
           </div>
-          <div>
-            <div
-              className="pt-[200px] flex w-full"
-              style={{
-                color: "white",
-                fontSize: "69px",
-                font: "Inter",
-                fontWeight: 600,
-                lineHeight: "61px",
-                wordWrap: "break-word",
-              }}
-            >
-              Our Story.
+        </div>
+        <div className="w-full h-screen relative bg-white scroll-smooth">
+          <div className="w-3/4 mx-auto flex flex-col items-start">
+            <div>
               <div
-                className="BrevBeganAsAnAmbitiousIdeaDuringAHackathonAtArizonaStateUniversityWhatStartedAsAProjectForA24HourChallengeTurnedIntoSomethingMuchBiggerWeWereATeamOfFourPassionateStudentsWhoWorkedTirelesslyDayAndNightToBuildAFullStackWebAppThoughWeWereConfidentInOurCreationAndExcitedAboutItsPotentialTheHackathonDidnTResultInAnyAwardsOrRecognitionButWeDidnTLetThatStopUsInsteadOfGivingUpWeSawThisAsAnOpportunityToTurnBrevIntoSomethingGreaterAFullFledgedStartupWithAMissionToHelpStudentsConquerTheirExamsOurVisionBecameClearToRelieveTheStressAndAnxietyThatComeWithExamPreparationAndCreateTheBestStudyToolOutThereSinceThenWeVePouredCountlessHoursIntoBrevRefiningItToBeTheUltimateStudyCompanionWhatBeganAsASimpleHackathonIdeaIsNowAToolDesignedToHelpStudentsMaximizeTheirStudyTimeReduceStressAndExcelInTheirExamsWeReJustGettingStartedAndWeReExcitedForTheJourneyAhead"
+                className="pt-[100px] flex w-full"
                 style={{
-                  color: "white",
-                  fontSize: "20px",
+                  color: "black",
+                  fontSize: "69px",
                   font: "Inter",
-                  fontWeight: 200,
-                  lineHeight: "27.50px",
+                  fontWeight: 600,
+                  lineHeight: "61px",
                   wordWrap: "break-word",
                 }}
               >
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                Brev began as an ambitious idea during a hackathon at Arizona
-                State University. What started as a project for a 24-hour
-                challenge turned into something much bigger. We were a team of
-                four passionate students who worked tirelessly day and night to
-                build a full-stack web app. Though we were confident in our
-                creation and excited about its potential, the hackathon didn’t
-                result in any awards or recognition. But we didn’t let that stop
-                us.
-                <br />
-                <br />
-                Instead of giving up, we saw this as an opportunity to turn Brev
-                into something greater—a full-fledged startup with a mission to
-                help students conquer their exams. Our vision became clear: to
-                relieve the stress and anxiety that come with exam preparation
-                and create the best study tool out there.
-                <br />
-                <br />
-                Since then, we’ve poured countless hours into Brev, refining it
-                to be the ultimate study companion. What began as a simple
-                hackathon idea is now a tool designed to help students maximize
-                their study time, reduce stress, and excel in their exams. We’re
-                just getting started, and we’re excited for the journey ahead.
+                Our Story.
+                <div
+                  className="pt-5 text-black"
+                  style={{
+                    fontSize: "20px",
+                    font: "Inter",
+                    fontWeight: 200,
+                    lineHeight: "27.50px",
+                    wordWrap: "break-word",
+                  }}
+                >
+                  <br />
+                  <br />
+                  <br />
+                  <br />
+                  <br />
+                  <div className="bg-[#0023FF] text-white p-5 rounded-2xl">
+                    Brev began as an ambitious idea during a hackathon at
+                    Arizona State University. What started as a project for a
+                    24-hour challenge turned into something much bigger. We were
+                    a team of four passionate students who worked tirelessly day
+                    and night to build a full-stack web app. Though we were
+                    confident in our creation and excited about its potential,
+                    the hackathon didn’t result in any awards or recognition.
+                    But we didn’t let that stop us.
+                    <br />
+                    <br />
+                    Instead of giving up, we saw this as an opportunity to turn
+                    Brev into something greater—a full-fledged startup with a
+                    mission to help students conquer their exams. Our vision
+                    became clear: to relieve the stress and anxiety that come
+                    with exam preparation and create the best study tool out
+                    there.
+                    <br />
+                    <br />
+                    Since then, we’ve poured countless hours into Brev, refining
+                    it to be the ultimate study companion. What began as a
+                    simple hackathon idea is now a tool designed to help
+                    students maximize their study time, reduce stress, and excel
+                    in their exams. We’re just getting started, and we’re
+                    excited for the journey ahead.
+                  </div>
+                </div>
               </div>
             </div>
           </div>
+   
+        </div>
 
-          <div className="items-center flex-col item-center justify-center w-full">
-            <div
-              className="pt-[200px] text-center"
-              style={{
-                color: "white",
-                fontSize: "170px",
-                font: "Inter",
-                fontWeight: 10,
-                wordWrap: "break-word",
-                letterSpacing: "-4px",
-                lineHeight: "1",
-              }}
-            >
-              SHHH, there is more to come!
-            </div>
-            <div className="pt-5 flex justify-center w-full">
-              <button
-                className="px-8 py-4"
-                onClick={handleStartBreving}
+        <div className="w-full h-screen relative bg-white scroll-smooth">
+          <div className="w-3/4 mx-auto flex flex-col items-start">
+            <div className="items-center flex-col item-center justify-center w-full">
+              <div
+                className="pt-[200px] text-center text-black"
                 style={{
-                  background: "#0023FF",
-                  borderRadius: "31px",
-                  color: "white",
-                  fontSize: "18px",
+                  fontSize: "170px",
                   font: "Inter",
-                  lineHeight: "27.50px",
-                  border: "none",
-                  cursor: "pointer",
+                  fontWeight: 10,
+                  wordWrap: "break-word",
+                  letterSpacing: "-4px",
+                  lineHeight: "1",
                 }}
               >
-                Wanna know more?
-              </button>
+                SHHH, there is more to come!
+              </div>
+              <div className="pt-5 flex justify-center w-full">
+                <button
+                  className="px-8 py-4"
+                  onClick={handleStartBreving}
+                  style={{
+                    background: "#0023FF",
+                    borderRadius: "31px",
+                    color: "white",
+                    fontSize: "18px",
+                    font: "Inter",
+                    lineHeight: "27.50px",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  Wanna know more?
+                </button>
+              </div>
             </div>
-          </div>
-          <div className="pt-[260px] text-center font-bold font-inter text-7xl w-full items-center flex-col justify-center">
-            Follow us on our socials.
-          </div>
-          <div className="w-full flex justify-between pt-[100px]">
-            <Link href="">
-              <FaXTwitter className="text-9xl hover:text-[#0023FF]" />
-            </Link>
-            <Link href="https://www.instagram.com/meetbrev/">
-              <FaInstagram className="text-9xl hover:text-[#0023FF]" />
-            </Link>
-            <Link href="">
-              <FaYoutube className="text-9xl hover:text-[#0023FF]" />
-            </Link>
-            <Link href="">
-              <FaLinkedin className="text-9xl hover:text-[#0023FF]" />
-            </Link>
-          </div>
-          <div className="pt-[150px] flex justify-center w-full pb-[150px]">
-            <Link href="">
-              <button
-                className="px-8 py-4"
-                style={{
-                  background: "#0023FF",
-                  borderRadius: "31px",
-                  color: "white",
-                  fontSize: "20px",
-                  font: "Inter",
-                  lineHeight: "27.50px",
-                  border: "none",
-                  cursor: "pointer",
-                }}
-              >
-                Email Us!
-              </button>
-            </Link>
+            <div className="pt-[260px] text-center font-bold font-inter text-7xl w-full items-center flex-col justify-center">
+              Follow us on our socials.
+            </div>
+            <div className="w-full flex justify-between pt-[100px]">
+              <Link href="">
+                <FaXTwitter className="text-9xl hover:text-[#0023FF]" />
+              </Link>
+              <Link href="https://www.instagram.com/meetbrev/">
+                <FaInstagram className="text-9xl hover:text-[#0023FF]" />
+              </Link>
+              <Link href="">
+                <FaYoutube className="text-9xl hover:text-[#0023FF]" />
+              </Link>
+              <Link href="">
+                <FaLinkedin className="text-9xl hover:text-[#0023FF]" />
+              </Link>
+            </div>
+            <div className="pt-[150px] flex justify-center w-full pb-[150px]">
+              <Link href="">
+                <button
+                  className="px-8 py-4"
+                  style={{
+                    background: "#0023FF",
+                    borderRadius: "31px",
+                    color: "white",
+                    fontSize: "20px",
+                    font: "Inter",
+                    lineHeight: "27.50px",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  Email Us!
+                </button>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
