@@ -73,7 +73,7 @@ const HomePage = () => {
             </div>
           </div>
           <motion.div
-            className="w-full pt-[200px] mx-auto my-50 pb-50"
+            className="w-full pt-[100px] mx-auto my-50 pb-50"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 0.5 }}
@@ -130,11 +130,11 @@ const HomePage = () => {
 
           <div className="w-full pt-[50px] sm:pt-[80px] md:pt-[100px] lg:pt-[150px] mx-auto my-5 sm:my-8 lg:my-10">
             <div className="flex flex-col -space-y-4 sm:-space-y-6 md:-space-y-7 lg:-space-y-8">
-              <span className="break-words font-bold text-4xl sm:text-6xl md:text-7xl lg:text-9xl italic">
-                KEY
+              <span className="break-words font-bold text-4xl sm:text-6xl md:text-7xl lg:text-9xl">
+                Key
               </span>
               <span className="break-words font-bold text-4xl sm:text-6xl md:text-7xl lg:text-9xl">
-                FEATURES
+                Features
               </span>
             </div>
           </div>
@@ -147,6 +147,7 @@ const HomePage = () => {
               <br />
               <span className="bg-[#0023FF] text-white font-inter text-4xl font-semibold">
                 precise or detailed
+                <br />
               </span>
               <br />
               Quickly convert lengthy notes into concise, organized <br /> cheat
@@ -230,8 +231,8 @@ const HomePage = () => {
               />
             </div>
             <div className="text-[#F8F6EF] font-inter text-2xl text-end">
-              <span className="bg-white text-black font-inter text-4xl font-semibold">
-                Memory Aids & Mnemonics
+              <span className="bg-[#0023FF] text-white font-inter text-4xl font-semibold">
+                Memory Aids & Mnemonics <br />
               </span>
               <br />
               Brev’s AI-powered mnemonic generator creates <br />
@@ -245,8 +246,8 @@ const HomePage = () => {
 
           <div className="flex justify-between w-full pb-[100px]">
             <div className="text-[#F8F6EF] font-inter text-2xl">
-              <span className="bg-white text-black font-inter text-4xl font-semibold">
-                Targeted Quizzes
+              <span className="bg-[#0023FF] text-white font-inter text-4xl font-semibold">
+                Targeted Quizzes <br />
               </span>
               <br />
               Brev offers custom quizzes designed to test knowledge in <br />{" "}
@@ -269,8 +270,40 @@ const HomePage = () => {
               />
             </div>
           </div>
+          <div className="flex justify-between w-full pb-[100px]">
+            <div>
+              {" "}
+              <img
+                className="PexelsJeshootsCom1474587146991"
+                style={{
+                  width: "100%",
+                  maxWidth: "auto",
+                  height: "auto",
+                }}
+                src="/images/memoryaid.svg"
+                alt="Pexels Jeshoots"
+              />
+            </div>
+            <div className="text-[#F8F6EF] font-inter text-2xl ">
+              <span className="bg-[#0023FF] text-white font-inter text-end text-4xl font-semibold">
+                Feedback & Progress Tracking <br />
+              </span>
+              <div className="text-[#F8F6EF] font-inter text-2xl">
+                <span className="text-start">
+                  <br />
+                  After each quiz, students receive detailed feedback, with{" "}
+                  <br />
+                  actionable insights into their strengths and areas needing{" "}
+                  <br />
+                  improvement. Brev tracks progress over time, helping <br />
+                  students focus on weaker topics and measure their
+                  <br /> improvement through tailored follow-up quizzes.
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="w-full h-screen relative bg-white scroll-smooth">
+        <div className="w-full h-auto relative bg-white scroll-smooth">
           <div className="w-3/4 mx-auto flex flex-col items-start">
             <div>
               <div
@@ -300,7 +333,7 @@ const HomePage = () => {
                   <br />
                   <br />
                   <br />
-                  <div className="bg-[#0023FF] text-white p-5 rounded-2xl">
+                  <div className="bg-[#0023FF] text-white p-5 rounded-2xl text-3xl">
                     Brev began as an ambitious idea during a hackathon at
                     Arizona State University. What started as a project for a
                     24-hour challenge turned into something much bigger. We were
@@ -330,11 +363,10 @@ const HomePage = () => {
               </div>
             </div>
           </div>
-   
         </div>
 
-        <div className="w-full h-screen relative bg-white scroll-smooth">
-          <div className="w-3/4 mx-auto flex flex-col items-start">
+        <div className="w-full relative bg-white scroll-smooth">
+          <div className="w-3/4 pb-[200px] mx-auto flex flex-col items-start">
             <div className="items-center flex-col item-center justify-center w-full">
               <div
                 className="pt-[200px] text-center text-black"
@@ -368,43 +400,54 @@ const HomePage = () => {
                 </button>
               </div>
             </div>
-            <div className="pt-[260px] text-center font-bold font-inter text-7xl w-full items-center flex-col justify-center">
-              Follow us on our socials.
-            </div>
-            <div className="w-full flex justify-between pt-[100px]">
-              <Link href="">
-                <FaXTwitter className="text-9xl hover:text-[#0023FF]" />
-              </Link>
-              <Link href="https://www.instagram.com/meetbrev/">
-                <FaInstagram className="text-9xl hover:text-[#0023FF]" />
-              </Link>
-              <Link href="">
-                <FaYoutube className="text-9xl hover:text-[#0023FF]" />
-              </Link>
-              <Link href="">
-                <FaLinkedin className="text-9xl hover:text-[#0023FF]" />
-              </Link>
-            </div>
-            <div className="pt-[150px] flex justify-center w-full pb-[150px]">
-              <Link href="">
-                <button
-                  className="px-8 py-4"
-                  style={{
-                    background: "#0023FF",
-                    borderRadius: "31px",
-                    color: "white",
-                    fontSize: "20px",
-                    font: "Inter",
-                    lineHeight: "27.50px",
-                    border: "none",
-                    cursor: "pointer",
-                  }}
-                >
-                  Email Us!
-                </button>
-              </Link>
-            </div>
           </div>
+
+          <footer className="bg-[#0023FF] flex justify-center items-center">
+            <div className="pr-20">
+              <div className="pt-[100px] text-center text-white">
+                <div className="text-7xl font-inter">Brev</div>
+                <div className="text-2xl font-inter">© 2021 Brev, Inc.</div>
+              </div>
+            </div>
+            <div>
+              {" "}
+              <div className="pt-[100px] text-center font-inter text-7xl w-full items-center flex-col justify-center">
+                Follow us on our socials.
+              </div>
+              <div className="flex justify-center items-center gap-20 p-10 ">
+                <Link href="">
+                  <FaXTwitter className="text-7xl hover:text-[#0023FF]" />
+                </Link>
+                <Link href="https://www.instagram.com/meetbrev/">
+                  <FaInstagram className="text-7xl hover:text-[#0023FF]" />
+                </Link>
+                <Link href="">
+                  <FaYoutube className="text-7xl hover:text-[#0023FF]" />
+                </Link>
+                <Link href="">
+                  <FaLinkedin className="text-7xl hover:text-[#0023FF]" />
+                </Link>
+              </div>
+              <div className="flex justify-center w-full pb-[150px]">
+                <Link href="">
+                  <button
+                    className="px-8 py-4 bg-white text-black"
+                    style={{
+                      borderRadius: "31px",
+
+                      fontSize: "20px",
+                      font: "Inter",
+                      lineHeight: "27.50px",
+                      border: "none",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Email Us!
+                  </button>
+                </Link>
+              </div>
+            </div>
+          </footer>
         </div>
       </div>
     </>
