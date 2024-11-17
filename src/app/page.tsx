@@ -16,14 +16,22 @@ import { motion } from "framer-motion";
 
 const HomePage = () => {
  const [width, setWidth] = useState(0);
- const [duplicatedImages, setDuplicatedImages] = useState([]);
+ const [duplicatedImages, setDuplicatedImages] = useState<string[]>([]);
 
   const images = [
-    "/images/Cheatsheetboard.svg",
-    "/images/aariya.JPG",
-    "/images/aariya.JPG",
-    "/images/aariya.JPG",
-    // Add more image paths
+    "/images/work1.jpg",
+    "/images/work2.PNG",
+    "/images/work3.PNG",
+    "/images/work4.png",
+    "/images/work5.png",
+    "/images/work6.png",
+    "/images/work7.png",
+    "/images/work8.png",
+    "/images/work9.png",
+    "/images/work10.png",
+    "/images/work11.png",
+    "/images/work12.png",
+    "/images/work13.png",
   ];
   useEffect(() => {
     // Create an array with enough duplicates to ensure smooth scrolling
@@ -362,6 +370,48 @@ const HomePage = () => {
                 </div>
               </div>
             </div>
+          </div>
+          <div
+            className="pt-20"
+            style={{
+              overflow: "hidden",
+              
+              position: "relative",
+            }}
+          >
+            <motion.div
+            
+              style={{
+                display: "flex",
+                
+              }}
+              animate={{
+                x: [-width / 2, 0],
+              }}
+              transition={{
+                duration: 30,
+                repeat: Infinity,
+                repeatType: "loop",
+                ease: "linear",
+              }}
+            >
+              {duplicatedImages.map((src, index) => (
+                <motion.img
+              
+                  key={index}
+                  src={src}
+                  style={{
+                    width: "500px",
+                    height: "500px", // Same as width to make it square
+                    objectFit: "cover",
+                    marginRight: "20px",
+                    borderRadius: "10px", // Optional: for rounded corners
+                  }}
+                  whileHover={{ scale: 1.1 }}
+                  alt={`Infinite scroll image ${index + 1}`}
+                />
+              ))}
+            </motion.div>
           </div>
         </div>
 
