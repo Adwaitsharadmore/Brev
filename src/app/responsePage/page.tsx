@@ -679,8 +679,8 @@ const handleDownloadPDF = async () => {
               <div className="text-white text-[2vw] md:text-6xl font-light leading-tight font-Inter mt-4 flex items-center">
                 <span>desired </span>
                 <img
-                  className="w-[40vw] max-w-[254px] h-auto ml-2"
-                  src="https://via.placeholder.com/254x85"
+                  className="w-[100vw] max-w-[400px] h-auto ml-2 pt-3"
+                  src="/images/msg1.gif"
                   alt="Message GIF"
                 />
               </div>

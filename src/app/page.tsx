@@ -81,58 +81,64 @@ const HomePage = () => {
             </div>
           </div>
           <motion.div
-            className="w-full pt-[100px] mx-auto my-50 pb-50"
+            className="w-full pt-[100px] flex mx-auto justify-between my-50 pb-50"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 0.5 }}
           >
-            <div className="text-white text-8xl font-semibold leading-tight font-Inter">
-              You got{" "}
-            </div>
-            <div className="text-white text-8xl font-semibold leading-tight font-Inter">
-              {" "}
-              this, Brev!
-            </div>
-            <img
-              className="Meeet11470x8331"
-              style={{
-                width: "459px",
-                height: "544px",
-                left: "800px",
-                top: "115px",
-                position: "absolute",
-              }}
-              src="/images/sphere.png"
-              alt="Meeet"
-            />
-            <div className="text-white text-[2vw] md:text-3xl font-light leading-tight font-Inter mt-4">
-              Your go-to tool for smarter learning,
-            </div>
-            <div className="text-white text-[2vw] md:text-3xl font-light leading-tight font-Inter mt-4">
-              helping you achieve{" "}
-              <span className="bg-white text-[#0023FF] italic">
-                more with less
-              </span>
-            </div>
-            <div className="text-white text-[2vw] md:text-3xl font-light leading-tight font-Inter mt-4 flex items-center">
-              <span>stress and stay on top of your game.</span>
-            </div>
-            <div className="pt-5">
-              <button
-                className="px-8 py-4 hover:bg-[#3526ff] bg-[#0023ff]"
-                onClick={handleStartBreving}
-                style={{
-                  borderRadius: "31px",
-                  color: "white",
-                  fontSize: "18px",
-                  font: "Inter",
-                  lineHeight: "27.50px",
-                  border: "none",
-                  cursor: "pointer",
-                }}
+            <div>
+              <div
+                className="text-white text-8xl font-semibold leading-tight font-Inter"
+                style={{ letterSpacing: "-0.5px" }}
               >
-                Start Breving
-              </button>
+                You got{" "}
+              </div>
+              <div className="text-white text-8xl font-semibold leading-tight font-Inter">
+                {" "}
+                this, Brev!
+              </div>
+
+              <div className="text-white text-[2vw] md:text-3xl font-light leading-tight font-Inter mt-4">
+                Your go-to tool for smarter learning,
+              </div>
+              <div className="text-white text-[2vw] md:text-3xl font-light leading-tight font-Inter mt-4">
+                helping you achieve{" "}
+                <span className="bg-white text-[#0023FF] italic">
+                  more with less
+                </span>
+              </div>
+              <div className="text-white text-[2vw] md:text-3xl font-light leading-tight font-Inter mt-4 flex items-center">
+                <span>stress and stay on top of your game.</span>
+              </div>
+              <div className="pt-5">
+                <button
+                  className="px-8 py-4 hover:bg-[#3526ff] bg-[#0023ff]"
+                  onClick={handleStartBreving}
+                  style={{
+                    borderRadius: "31px",
+                    color: "white",
+                    fontSize: "18px",
+                    font: "Inter",
+                    lineHeight: "27.50px",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  Start Breving
+                </button>
+              </div>
+            </div>
+
+            <div className="items-center justify-center">
+              <img
+                className="meet"
+                style={{
+                  width: "200%",
+                  height: "auto",
+                }}
+                src="/images/mainlogo.svg"
+                alt="Meeet"
+              />
             </div>
           </motion.div>
 
@@ -375,15 +381,13 @@ const HomePage = () => {
             className="pt-20"
             style={{
               overflow: "hidden",
-              
+
               position: "relative",
             }}
           >
             <motion.div
-            
               style={{
                 display: "flex",
-                
               }}
               animate={{
                 x: [-width / 2, 0],
@@ -397,7 +401,6 @@ const HomePage = () => {
             >
               {duplicatedImages.map((src, index) => (
                 <motion.img
-              
                   key={index}
                   src={src}
                   style={{

@@ -16,8 +16,9 @@ body {
   color: white;
   background-color: #000;
   line-height: 1.5;
-  letter-spacing: -0.05em; /* Consistent letter spacing */
+  letter-spacing:-0.5px; /* Consistent letter spacing */
 }
+
 
 /* Adjust heading and text element styles */
 h1, h2, h3, h4, h5, h6, p, a, li {
