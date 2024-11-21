@@ -703,7 +703,7 @@ const handleDownloadPDF = async () => {
               />
               <label
                 htmlFor="file-upload"
-                className="cursor-pointer mt-2 px-4 py-2 bg-white text-black border rounded-full inline-block text-center hover:bg-gray-700 transition-colors"
+                className="cursor-pointer mt-2 px-4 py-2 bg-white text-black border rounded-full inline-block text-center hover:bg-[#0023FF] hover:text-white transition-colors"
               >
                 Choose File
               </label>
@@ -717,7 +717,7 @@ const handleDownloadPDF = async () => {
 
             <div className="mb-4 bg-black rounded-lg">
               <label className="block text-lg font-medium text-white">
-                Text Prompt (Optional)
+                Anything you wanna ask your Notes?
               </label>
               <input
                 type="text"

@@ -21,7 +21,7 @@ const HomePage = () => {
   const images = [
     "/images/work1.jpg",
     "/images/work2.PNG",
-    "/images/work3.PNG",
+    "/images/work3.PNG",  
     "/images/work4.png",
     "/images/work5.png",
     "/images/work6.png",
@@ -119,7 +119,7 @@ const HomePage = () => {
             </div>
             <div className="pt-5">
               <button
-                className="px-8 py-4 hover:bg-[#3526ff] bg-[#0023FF]"
+                className="px-8 py-4 hover:bg-[#3526ff] bg-[#0023ff]"
                 onClick={handleStartBreving}
                 style={{
                   borderRadius: "31px",
