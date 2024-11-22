@@ -763,7 +763,7 @@ const handleDownloadPDF = async () => {
                 <span className="text-white text-[4vw] md:text-[69px] font-semibold leading-tight font-Inter">
                   Don’t worry,{" "}
                 </span>
-                <span className="text-[#0023FF] text-[4vw] md:text-[69px] font-semibold leading-tight font-Inter">
+                <span className="text-[#0023FF] bg-white text-[4vw] md:text-[69px] font-semibold leading-tight font-Inter">
                   {" "}
                   Brev’s
                 </span>

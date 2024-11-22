@@ -175,7 +175,7 @@ const HomePage = () => {
                 src="/images/mainlogo.svg"
                 alt="Meeet"
               />
-              <span className="text-[#0023ff] font-inter font-bold text-3xl">
+              <span className="text-[#0023ff] bg-white px-2 font-inter font-bold text-3xl">
                 learn more, with less
               </span>
             </div>

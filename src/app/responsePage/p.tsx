@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const titles = ["output", "outputedfr", "cheatsheet"];
+const titles = ["mnemonics", "prep", "cheatsheet"];
 
 const Typewriter = () => {
   const [index, setIndex] = useState(0);
