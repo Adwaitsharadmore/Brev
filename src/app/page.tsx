@@ -16,7 +16,12 @@ import { motion } from "framer-motion";
 
 const HomePage = () => {
  const [width, setWidth] = useState(0);
- const [duplicatedImages, setDuplicatedImages] = useState<string[]>([]);
+  const [duplicatedImages, setDuplicatedImages] = useState<string[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
+
+   const toggleMenu = () => {
+     setIsOpen(!isOpen);
+   };
 
   const images = [
     "/images/work1.jpg",
@@ -50,77 +55,110 @@ const HomePage = () => {
    
   const router = useRouter();
 
+
   const handleStartBreving = () => {
     router.push("/responsePage");
   };
 
   return (
     <>
-      <Head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
-          rel="stylesheet"
-        />
-      </Head>
       <div className="w-full h-screen relative bg-black scroll-smooth">
         <div className="w-3/4 mx-auto flex flex-col items-start">
-          <div className="w-full bg-black flex justify-between items-center pt-10 pb-5">
-            <div className="text-white text-4xl font-extrabold font-inter capitalize">
-              <Link href="/">Brev</Link>
+          <div className="w-full bg-black px-4 sm:px-6 md:px-8 py-4 sm:py-6">
+            <div className="flex justify-between items-center">
+              <div className="text-white text-3xl sm:text-4xl font-extrabold font-inter capitalize">
+                <Link href="/">Brev</Link>
+              </div>
+              <div className="sm:hidden">
+                <button
+                  onClick={toggleMenu}
+                  className="text-white hover:text-[#0023FF] transition-colors duration-200"
+                >
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 6h16M4 12h16M4 18h16"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <div className="hidden sm:flex gap-4 sm:gap-6 md:gap-8">
+                <Link href="/about" className="hover:text-[#0023FF]">
+                  About
+                </Link>
+                <Link className="hover:text-[#0023FF]" href="/pricing">
+                  Pricing
+                </Link>
+                <Link className="hover:text-[#0023FF]" href="/contact">
+                  Contact
+                </Link>
+              </div>
             </div>
-            <div className="flex gap-8">
-              <div className="text-white text-lg font-normal font-inter hover:text-[#0023FF] cursor-pointer">
-                About
+            {isOpen && (
+              <div className="sm:hidden mt-4 items-center text-center">
+                <div>
+                  <Link className="hover:text-[#0023FF]" href="/about">
+                    About
+                  </Link>
+                </div>
+                <div>
+                  <Link className="hover:text-[#0023FF]" href="/about">
+                    Contact
+                  </Link>
+                </div>
+                <div>
+                  <Link className="hover:text-[#0023FF]" href="/pricing">
+                    Pricing
+                  </Link>
+                </div>
               </div>
-              <div className="text-white text-lg font-normal font-Inter hover:text-[#0023FF] cursor-pointer">
-                Pricing
-              </div>
-              <div className="text-white text-lg font-normal font-Inter  hover:text-[#0023FF] cursor-pointer">
-                Contact
-              </div>
-            </div>
+            )}
           </div>
           <motion.div
-            className="w-full pt-[100px] flex mx-auto justify-between my-50 pb-50"
+            className="w-full pt-[75px] flex flex-col md:flex-row mx-auto justify-between my-50 pb-50"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 0.5 }}
           >
-            <div>
+            <div className="flex flex-col md:items-start items-center px-4 md:px-8">
               <div
-                className="text-white text-8xl font-semibold leading-tight font-Inter"
+                className="text-white text-6xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-semibold leading-tight font-Inter"
                 style={{ letterSpacing: "-0.5px" }}
               >
                 You got{" "}
               </div>
-              <div className="text-white text-8xl font-semibold leading-tight font-Inter">
+              <div className="text-white text-5xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-semibold leading-tight font-Inter">
                 {" "}
                 this, Brev!
               </div>
 
-              <div className="text-white text-[2vw] md:text-3xl font-light leading-tight font-Inter mt-4">
+              <div className="text-white md:text-start text-center md:items-start items-center md:w-[75%] text-lg md:text-2xl font-light leading-tight font-Inter mt-4">
                 Your go-to tool for smarter learning,
-              </div>
-              <div className="text-white text-[2vw] md:text-3xl font-light leading-tight font-Inter mt-4">
-                helping you achieve{" "}
-                <span className="bg-white text-[#0023FF] italic">
-                  more with less
+                <span className="text-white text-lg md:text-2xl font-light leading-tight font-Inter mt-4">
+                  {" "}
+                  helping you achieve{" "}
+                  <span className="bg-white text-[#0023FF] italic px-1">
+                    more with less
+                  </span>
+                </span>
+                <span className="text-white text-lg md:text-2xl font-light leading-tight font-Inter mt-4">
+                  <span> stress and stay on top of your game.</span>
                 </span>
               </div>
-              <div className="text-white text-[2vw] md:text-3xl font-light leading-tight font-Inter mt-4 flex items-center">
-                <span>stress and stay on top of your game.</span>
-              </div>
+
               <div className="pt-5">
                 <button
-                  className="px-8 py-4 hover:bg-[#3526ff] bg-[#0023ff]"
+                  className="px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 bg-[#0023ff] hover:bg-[#3526ff] text-white rounded-full text-sm sm:text-base md:text-lg lg:text-xl transition-all"
                   onClick={handleStartBreving}
                   style={{
-                    borderRadius: "31px",
-                    color: "white",
-                    fontSize: "18px",
-                    font: "Inter",
-                    lineHeight: "27.50px",
-                    border: "none",
                     cursor: "pointer",
                   }}
                 >
@@ -129,16 +167,16 @@ const HomePage = () => {
               </div>
             </div>
 
-            <div className="items-center justify-center">
+            <div className="items-center hidden md:flex-col md:flex w-full h-full justify-start mt-[-30px] ">
               <img
-                className="meet"
+                className="w-[80%]"
                 style={{
-                  width: "200%",
                   height: "auto",
                 }}
                 src="/images/mainlogo.svg"
                 alt="Meeet"
               />
+              <span className="text-[#0023ff] font-inter font-bold text-3xl">learn more, with less</span>
             </div>
           </motion.div>
 
