@@ -249,22 +249,123 @@ MNEMONIC_2: HOMES
 TYPE: Acronym (for Great Lakes: Huron, Ontario, Michigan, Erie, Superior)
 TITLE: Next Concept
 [and so on...]
-Memory Techniques Available:
+# Mnemonic Creation Framework
 
-Acronyms: First letters forming words
-Acrostics: Sentences where first letters represent concepts
-Chunking: Grouping information
-Association: Linking to familiar concepts
-Method of Loci: Visual placement in locations
-Songs/Rhymes: Musical or rhyming patterns
+## Core Formatting Rules
 
-Guidelines:
+TITLE: [Main Topic/Concept]
+SUBTOPIC: [Specific Area of Focus]
+MNEMONIC_N: [The actual mnemonic]
+TYPE: [Memory technique used + brief explanation]
+---
 
-Choose the most effective technique for each concept
-Keep mnemonics simple and memorable
-Explain the connection clearly
-Include what the mnemonic helps remember
-Use clear, engaging language
+## Memory Techniques Arsenal
+
+1. Acronyms
+- Create meaningful words from first letters
+- Should spell something pronounceable when possible
+- Example: ROY G. BIV for rainbow colors
+
+2. Acrostics
+- Full sentences where first letters represent concepts
+- Should tell a mini-story or be humorous
+- Must be vivid and memorable
+
+3. Chunking
+- Group related items into manageable clusters
+- Use logical patterns or numerical groupings
+- Ideal for numbers, dates, or sequential information
+
+4. Visual Association
+- Link concepts to striking mental images
+- Use unexpected or exaggerated imagery
+- Connect to everyday objects or experiences
+
+5. Method of Loci
+- Place items along a familiar route or location
+- Use vivid spatial relationships
+- Create a clear walking journey
+
+6. Musical/Rhyming
+- Create short rhyming phrases
+- Use familiar tunes
+- Focus on rhythm and repetition
+
+## Enhanced Guidelines
+
+1. Quality Criteria:
+- Memorable: Easy to recall under pressure
+- Relevant: Directly connects to the concept
+- Simple: Avoid complexity
+- Unique: Distinctive enough to avoid confusion
+- Engaging: Creates interest or emotion
+
+2. Structure Requirements:
+- Begin each section with clear TITLE/SUBTOPIC markers
+- Number mnemonics sequentially within each subtopic
+- Include explicit TYPE designation
+- Separate sections with triple dashes (---)
+
+3. Best Practices:
+- Use concrete rather than abstract imagery
+- Incorporate humor when appropriate
+- Create emotional connections
+- Use multi-sensory elements
+- Break complex concepts into smaller chunks
+
+## Example Format:
+
+TITLE: Chemical Bonds
+SUBTOPIC: Types of Chemical Bonds
+MNEMONIC_1: "Ivan Covers Cars" 
+TYPE: Acronym (Ionic, Covalent, Coordinate bonds)
+---
+TITLE: Biological Classification
+SUBTOPIC: Taxonomy Levels
+MNEMONIC_1: "Kings Play Chess On Fancy Glass Stairs"
+TYPE: Acrostic (Kingdom, Phylum, Class, Order, Family, Genus, Species)
+---
+
+## Implementation Notes:
+
+1. Format Consistency:
+- Maintain exact spacing after colons
+- Use proper capitalization
+- Keep consistent indentation
+- Include separator lines
+
+2. Content Quality:
+- Verify accuracy of represented concepts
+- Test memorability with sample users
+- Ensure cultural neutrality
+- Check for unintended meanings
+
+3. Documentation:
+- Include explanation of what each mnemonic represents
+- Note any prerequisites or context needed
+- Document any limitations or special cases
+- Provide examples of practical application
+
+## Usage Recommendations:
+
+1. Creation Process:
+- Identify core concepts requiring memorization
+- Select most appropriate technique for each concept
+- Draft initial mnemonic
+- Test for effectiveness
+- Refine based on feedback
+
+2. Implementation:
+- Present mnemonics in order of concept difficulty
+- Group related mnemonics together
+- Provide clear context for each mnemonic
+- Include practice exercises when possible
+
+3. Evaluation:
+- Test recall after different time intervals
+- Gather user feedback on effectiveness
+- Monitor success rates
+- Iterate and improve based on results
 
 Please structure the mnemonics following this format exactly as it matches the frontend rendering system.
     `;

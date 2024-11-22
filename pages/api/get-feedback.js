@@ -56,15 +56,148 @@ export default async function handler(req, res) {
 
     const prompt = `Generate a performance feedback report based on the user's quiz attempts, strictly following this format without bold or italic text. Use only hyphens (-) for bullet points, as shown in the format below. Focus on providing concise feedback for each question where multiple attempts were required. The format must be adhered to exactly as specified:
 
-{Performance Review} [Strengths]
+Performance Analysis Framework
 
-Bullet point 1
-Bullet point 2
+1. Report Structure
+
+{Performance Summary}
+- Duration: [Time spent]
+- Overall Score: [X/Y]
+- Completion Rate: [Z%]
+- Average Attempts Per Question: [N]
+
+[Core Strengths]
+- Quick correct responses in: [subjects/topics]
+- Strong understanding demonstrated in: [areas]
+- Effective problem-solving shown in: [question types]
+
+[Knowledge Gaps]
+- Areas requiring reinforcement: [topics]
+- Concepts needing review: [specific concepts]
+- Pattern of mistakes in: [common error types]
+
+[Question-by-Question Analysis]
+For each question requiring multiple attempts:
+
+Question ID: [number]
+Prompt: "[exact question text]"
+Attempts: [number]
+Pattern Analysis:
+- First attempt error: [what went wrong]
+- Common misconception: [if applicable]
+- Final understanding: [how they reached correct answer]
+Improvement Strategy:
+- Review: [specific topics/concepts]
+- Practice: [recommended exercises]
+- Focus on: [key learning points]
+
+[Targeted Recommendations]
+- Study Materials: [specific resources]
+- Practice Areas: [types of questions]
+- Review Topics: [concepts to strengthen]
+
+2. Feedback Guidelines
+
+Response Analysis:
+- Time patterns
+  * Quick correct responses
+  * Delayed responses
+  * Time distribution across attempts
+- Error patterns
+  * Consistent mistake types
+  * Misconception indicators
+  * Progress patterns
+
+Feedback Components:
+- Objective observations
+  * Number of attempts
+  * Time taken
+  * Pattern of responses
+- Constructive guidance
+  * Specific improvement areas
+  * Resource recommendations
+  * Practice suggestions
+- Positive reinforcement
+  * Successful strategies used
+  * Progress indicators
+  * Strength areas
+
+3. Implementation Rules
+
+Formatting:
+- Use only plain text
+- Use hyphens (-) for all bullet points
+- Maintain consistent spacing
+- No bold or italic text
+- Clear section separation
+
+Content Structure:
+- Begin with overview
+- Follow with detailed analysis
+- End with actionable recommendations
+- Include specific examples
+- Provide clear next steps
+
+4. Example Format:
+
+{Performance Review: Database Fundamentals Quiz}
+
+[Strengths]
+- Excellent understanding of SQL JOIN operations
+- Quick mastery of database normalization concepts
+- Consistent performance in table design questions
+
 [Areas for Improvement]
 
-Question: "Question text here" (Number of attempts)
-Feedback: Explanation here.
-Ensure that no formatting such as bold or italics is used. Use regular text only, as shown in the format above.
+Question: "Explain the difference between INNER and LEFT JOIN" (3 attempts)
+Feedback: Initial attempts showed confusion between JOIN types. Consider reviewing JOIN operations with visual diagrams and practicing with simple table examples.
+
+5. Quality Metrics
+
+Feedback Quality Checklist:
+- Specific and actionable
+- Evidence-based
+- Forward-looking
+- Balanced perspective
+- Clear improvement path
+- Measurable goals
+- Resource-linked
+- Time-bound suggestions
+
+6. Usage Notes
+
+Report Generation:
+- Focus on patterns across attempts
+- Identify recurring challenges
+- Note improvement trajectories
+- Link to learning resources
+- Suggest practice exercises
+
+Analysis Depth:
+- Surface-level patterns
+- Underlying concepts
+- Knowledge connections
+- Skill application
+- Learning progression
+
+7. Response Categories
+
+Immediate Success:
+- Note speed and accuracy
+- Identify supporting knowledge
+- Highlight effective strategies
+
+Multiple Attempts:
+- Analyze error patterns
+- Track improvement path
+- Identify breakthrough moments
+- Document learning process
+
+Persistent Challenges:
+- Map concept gaps
+- Suggest review materials
+- Recommend practice exercises
+- Outline improvement strategy
 
 Include each question with its number of attempts, and provide specific feedback only for questions that required multiple attempts:
       ${questionsWithMultipleAttempts.map((q, index) => `Question: "${q}" (${attempts[index]} attempts)`).join("\n")}`;
