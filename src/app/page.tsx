@@ -123,33 +123,33 @@ const HomePage = () => {
             )}
           </div>
           <motion.div
-            className="w-full pt-[75px] flex flex-col md:flex-row mx-auto justify-between my-50 pb-50"
+            className="w-full pt-[25px] md:pt-[75px] grid grid-cols-1 grid-flow-col md:grid-cols-3 mx-auto justify-between my-50 pb-50"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 0.5 }}
           >
-            <div className="flex flex-col md:items-start items-center px-4 md:px-8">
+            <div className="flex flex-col col-span-2 md:items-start items-center px-4 md:px-8 md:leading-tight">
               <div
                 className="text-white text-6xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-semibold leading-tight font-Inter"
                 style={{ letterSpacing: "-0.5px" }}
               >
                 You got{" "}
               </div>
-              <div className="text-white text-5xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-semibold leading-tight font-Inter">
+              <div className="text-white text-5xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-semibold leading-none font-Inter">
                 {" "}
                 this, Brev!
               </div>
 
-              <div className="text-white md:text-start text-center md:items-start items-center md:w-[75%] text-lg md:text-2xl font-light leading-tight font-Inter mt-4">
+              <div className="text-white md:flex md:flex-col md:text-start text-center md:items-start items-center md:w-[75%] text-lg md:text-2xl font-light md:leading-none font-Inter mt-4 pb-2">
                 Your go-to tool for smarter learning,
-                <span className="text-white text-lg md:text-2xl font-light leading-tight font-Inter mt-4">
+                <span className="text-white text-lg md:text-2xl font-light md:leading-none font-Inter mt-4">
                   {" "}
                   helping you achieve{" "}
-                  <span className="bg-white text-[#0023FF] italic px-1">
+                  <span className="bg-white md:leading-none text-[#0023FF] italic px-1">
                     more with less
                   </span>
                 </span>
-                <span className="text-white text-lg md:text-2xl font-light leading-tight font-Inter mt-4">
+                <span className="text-white text-lg md:text-2xl font-light md:leading-none font-Inter mt-4">
                   <span> stress and stay on top of your game.</span>
                 </span>
               </div>
@@ -167,48 +167,51 @@ const HomePage = () => {
               </div>
             </div>
 
-            <div className="items-center hidden md:flex-col md:flex w-full h-full justify-start mt-[-30px] ">
+            <div className="items-center hidden md:flex-col md:flex h-full justify-center  mt-[-30px] w-[100%]">
               <img
-                className="w-[80%]"
                 style={{
                   height: "auto",
                 }}
                 src="/images/mainlogo.svg"
                 alt="Meeet"
               />
-              <span className="text-[#0023ff] font-inter font-bold text-3xl">learn more, with less</span>
+              <span className="text-[#0023ff] font-inter font-bold text-3xl">
+                learn more, with less
+              </span>
             </div>
           </motion.div>
-
-          <div className="w-full pt-[50px] sm:pt-[80px] md:pt-[100px] lg:pt-[150px] mx-auto my-5 sm:my-8 lg:my-10">
-            <div className="flex flex-col -space-y-4 sm:-space-y-6 md:-space-y-7 lg:-space-y-8">
-              <span className="break-words font-bold text-4xl sm:text-6xl md:text-7xl lg:text-9xl">
-                Key
-              </span>
-              <span className="break-words font-bold text-4xl sm:text-6xl md:text-7xl lg:text-9xl">
-                Features
-              </span>
+          <div className="w-full pt-8 sm:pt-12 md:pt-16 lg:pt-20 xl:pt-24 mx-auto my-4 sm:my-6 md:my-8 lg:my-10">
+            <div className="md:flex md:flex-col flex text-center md:text-start gap-2 md:gap-0">
+              <div>
+                {" "}
+                <span className="break-words font-bold text-5xl sm:text-4xl md:text-8xl tracking-tight">
+                  Key </span>
+              </div>
+              <div>
+                <span className="break-words font-bold text-5xl sm:text-4xl md:text-8xl tracking-tight">Features </span>
+              </div>
             </div>
           </div>
 
-          <div className="flex justify-between w-full pb-[100px]">
-            <div className="text-[#F8F6EF] font-inter text-2xl">
-              <span className="bg-[#0023FF] text-white font-inter text-4xl font-semibold">
+          <div className="grid grid-cols-1 grid-flow-col md:grid-cols-3 justify-between w-full pb-8 sm:pb-12 md:pb-16 lg:pb-20">
+            <div className="col-span-2 text-[#F8F6EF] font-inter text-base sm:text-lg md:text-xl lg:text-2xl space-y-4">
+              <span className="bg-[#0023FF] text-white font-inter text-2xl md:text-4xl font-semibold">
                 Cheat sheet generation--
               </span>
               <br />
-              <span className="bg-[#0023FF] text-white font-inter text-4xl font-semibold">
+              <span className="bg-[#0023FF] text-white font-inter text-2xl md:text-4xl font-semibold">
                 precise or detailed
                 <br />
               </span>
-              <br />
-              Quickly convert lengthy notes into concise, organized <br /> cheat
-              sheets that highlight essential information and core <br />
-              concepts. This feature saves time and provides students <br />{" "}
-              with an efficient way to review high-yield information <br />{" "}
-              before exams.
-              <div>
-                <div className="w-full flex ">
+              <div className="md:w-[75%]">
+                Quickly convert lengthy notes into concise, organized cheat
+                sheets that highlight essential information and core concepts.
+                This feature saves time and provides students with an efficient
+                way to review high-yield information before exams.
+              </div>
+
+              <div className="hidden md:flex-col md:flex">
+                <div className="md:w-full w-[20%] flex sm:items-start">
                   <div>
                     <svg
                       width="163"
@@ -224,11 +227,13 @@ const HomePage = () => {
                         fill="#F8F6EF"
                       />
                     </svg>
-                    Precise Cheat Sheet: <br /> A concise summary ideal for{" "}
-                    <br />
-                    last-minute review.
+                    Precise Cheat Sheet: <br />
+                    <div className="md:w-[60%]">
+                      {" "}
+                      A concise summary ideal for last-minute review.
+                    </div>
                   </div>
-                  <div>
+                  <div className="md:w-full w-[50%] items-center sm:items-end">
                     <svg
                       width="255"
                       height="255"
@@ -243,17 +248,16 @@ const HomePage = () => {
                         fill="#F8F6EF"
                       />
                     </svg>
-                    Detailed Cheat Sheet: <br />A comprehensive, in-depth
-                    version that’s <br /> perfect for studying a subject from
-                    scratch, <br />
-                    with all necessary information included to <br />
-                    thoroughly cover the topic.
+                    Detailed Cheat Sheet: A comprehensive, in-depth version
+                    that’s perfect for studying a subject from scratch, with all
+                    necessary information included to thoroughly cover the
+                    topic.
                   </div>
                 </div>
               </div>
             </div>
 
-            <div>
+            <div className="hidden md:flex-col md:flex">
               {" "}
               <img
                 className="PexelsJeshootsCom1474587146991"
