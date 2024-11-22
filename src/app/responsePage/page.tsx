@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import html2pdf from 'html2pdf.js';
 import fs from 'fs';
+import Typewriter from "./p";
 
 
 
@@ -777,13 +778,14 @@ const handleDownloadPDF = async () => {
               <div className="text-white text-[2vw] md:text-6xl font-light leading-tight font-Inter mt-4">
                 and choose your
               </div>
-              <div className="text-white text-[2vw] md:text-6xl font-light leading-tight font-Inter mt-4 flex items-center">
-                <span>desired </span>
-                <img
+              <div className="text-white text-[2vw] md:text-6xl gap-4 font-light leading-tight font-Inter mt-4 flex items-center">
+                <span>desired  </span>
+                {/* <img
                   className="w-[100vw] max-w-[400px] h-auto ml-2 pt-3"
                   src="/images/msg1.gif"
                   alt="Message GIF"
-                />
+                /> */}
+                <Typewriter></Typewriter>
               </div>
             </div>
           </div>
