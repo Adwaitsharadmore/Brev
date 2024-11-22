@@ -123,7 +123,7 @@ const HomePage = () => {
             )}
           </div>
           <motion.div
-            className="w-full pt-[25px] md:pt-[75px] grid grid-cols-1 grid-flow-col md:grid-cols-3 mx-auto justify-between my-50 pb-50"
+            className="w-full pt-[25px] md:pt-[75px] grid grid-cols-1 grid-flow-col md:grid-cols-3 mx-auto items-start my-50 pb-50"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 0.5 }}
@@ -167,7 +167,7 @@ const HomePage = () => {
               </div>
             </div>
 
-            <div className="items-center hidden md:flex-col md:flex h-full justify-center  mt-[-30px] w-[100%]">
+            <div className="items-center hidden md:flex-col md:flex justify-center mt-[-30px] w-[100%]">
               <img
                 style={{
                   height: "auto",
@@ -178,7 +178,7 @@ const HomePage = () => {
               <span className="text-[#0023ff] bg-white px-2 font-inter font-bold text-3xl">
                 learn more, with less
               </span>
-            </div>
+            </div>  
           </motion.div>
           <div className="w-full pt-8 sm:pt-12 md:pt-16 lg:pt-20 xl:pt-24 mx-auto my-4 sm:my-6 md:my-8 lg:my-10">
             <div className="md:flex md:flex-col flex text-center md:text-start gap-2 md:gap-0">
