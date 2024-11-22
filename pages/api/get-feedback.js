@@ -200,7 +200,7 @@ Persistent Challenges:
 - Outline improvement strategy
 
 Include each question with its number of attempts, and provide specific feedback only for questions that required multiple attempts:
-      ${questionsWithMultipleAttempts.map((q, index) => `Question: "${q}" (${attempts[index]} attempts)`).join("\n")}`;
+${questionsWithMultipleAttempts.map((q, index) => `Question: "${q}" (${attempts[index]} attempts)`).join("\n")}`;
 
     const result = await model.generateContent([
       {
@@ -213,6 +213,8 @@ Include each question with its number of attempts, and provide specific feedback
     ]);
 
     const generatedFeedback = await result.response.text();
+
+    console.log(result.response.text()); 
 
     res.json({
       feedback: generatedFeedback.split("\n"),
