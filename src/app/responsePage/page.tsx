@@ -231,30 +231,17 @@ const handleGenerateMnemonics = async () => {
   setLoadingMnemonics(true);
 
   const customPrompt = `Please create mnemonics for the provided document to aid in memorizing key concepts. Use the following format strictly:
-Main formatting rules:
 
-Start mnemonic titles with "TITLE: " (include the space after colon)
-Start subtopics with "SUBTOPIC: " (include the space after colon)
-Start each mnemonic with "MNEMONIC_N: " where N is a number (include the space after colon)
-Use three dashes (---) to separate different sections
-After each mnemonic, add "TYPE: " followed by the memory technique used
-Keep all text in normal font
-Maintain consistent indentation
+Each concept in this framework should follow this pattern:
+1. Start with a brief explanation of the concept
+2. Follow with relevant mnemonics using specified formatting
+3. Include memory technique type and explanation
+4. Separate sections with triple dashes
 
-Example format:
-TITLE: Key Chemistry Concepts
-SUBTOPIC: Periodic Table Groups
-MNEMONIC_1: Happy Henry Lives Beside Boron's Castle Near Other Fluorine Neighbors
-TYPE: Acrostic (for H, He, Li, Be, B, C, N, O, F, Ne)
-MNEMONIC_2: HOMES
-TYPE: Acronym (for Great Lakes: Huron, Ontario, Michigan, Erie, Superior)
-TITLE: Next Concept
-[and so on...]
-# Mnemonic Creation Framework
-
-## Core Formatting Rules
+## Basic Format
 
 TITLE: [Main Topic/Concept]
+Explanation: [Brief, clear explanation of the concept]
 SUBTOPIC: [Specific Area of Focus]
 MNEMONIC_N: [The actual mnemonic]
 TYPE: [Memory technique used + brief explanation]
@@ -262,113 +249,104 @@ TYPE: [Memory technique used + brief explanation]
 
 ## Memory Techniques Arsenal
 
+TITLE: Memory Techniques Overview
+Explanation: Memory techniques are systematic methods to enhance recall. Each technique serves a specific purpose and works best for particular types of information.
+SUBTOPIC: Core Memory Methods
+MNEMONIC_1: "A Clever Visitor Makes Real Music"
+TYPE: Acrostic (Acronyms, Chunking, Visual, Method of loci, Rhyming)
+
 1. Acronyms
-- Create meaningful words from first letters
-- Should spell something pronounceable when possible
-- Example: ROY G. BIV for rainbow colors
+Explanation: Create meaningful words using first letters of key terms
+Example Format:
+TITLE: Chemical Elements
+Explanation: First 5 noble gases in order
+MNEMONIC_1: "KHAN" (Krypton, Helium, Argon, Neon)
+TYPE: Acronym
 
 2. Acrostics
-- Full sentences where first letters represent concepts
-- Should tell a mini-story or be humorous
-- Must be vivid and memorable
+Explanation: Create memorable sentences where each word begins with the target letter
+Example Format:
+TITLE: Planet Order
+Explanation: Order of planets from the sun
+MNEMONIC_1: "My Very Educated Mother Just Served Us Noodles"
+TYPE: Acrostic (Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune)
 
 3. Chunking
-- Group related items into manageable clusters
-- Use logical patterns or numerical groupings
-- Ideal for numbers, dates, or sequential information
+Explanation: Group related items into manageable clusters
+Example Format:
+TITLE: Phone Numbers
+Explanation: Breaking down 10-digit numbers
+MNEMONIC_1: "555-867-5309"
+TYPE: Chunking (Three groups of 3-3-4 digits)
 
 4. Visual Association
-- Link concepts to striking mental images
-- Use unexpected or exaggerated imagery
-- Connect to everyday objects or experiences
+Explanation: Link concepts to vivid mental images
+Example Format:
+TITLE: Cell Parts
+Explanation: Visualizing cell membrane function
+MNEMONIC_1: "Cell membrane is like a bouncer at a club"
+TYPE: Visual Association (Controls what enters and exits)
 
 5. Method of Loci
-- Place items along a familiar route or location
-- Use vivid spatial relationships
-- Create a clear walking journey
+Explanation: Associate items with locations along a familiar route
+Example Format:
+TITLE: Grocery List
+Explanation: Items needed using house walkthrough
+MNEMONIC_1: "Front door (milk), Kitchen (bread), Bedroom (eggs)"
+TYPE: Method of Loci
 
 6. Musical/Rhyming
-- Create short rhyming phrases
-- Use familiar tunes
-- Focus on rhythm and repetition
+Explanation: Use rhythm and rhyme for memorization
+Example Format:
+TITLE: History Dates
+Explanation: Remember Columbus's voyage
+MNEMONIC_1: "In fourteen-hundred and ninety-two, Columbus sailed the ocean blue"
+TYPE: Musical/Rhyming
 
-## Enhanced Guidelines
+## Quality Guidelines
 
-1. Quality Criteria:
-- Memorable: Easy to recall under pressure
-- Relevant: Directly connects to the concept
-- Simple: Avoid complexity
-- Unique: Distinctive enough to avoid confusion
-- Engaging: Creates interest or emotion
+TITLE: Mnemonic Quality Standards
+Explanation: Each mnemonic must meet specific criteria to ensure effectiveness
+SUBTOPIC: Quality Criteria
+MNEMONIC_1: "SUPER" 
+TYPE: Acronym (Simple, Unique, Practical, Engaging, Relevant)
 
-2. Structure Requirements:
-- Begin each section with clear TITLE/SUBTOPIC markers
-- Number mnemonics sequentially within each subtopic
-- Include explicit TYPE designation
-- Separate sections with triple dashes (---)
+## Implementation Process
 
-3. Best Practices:
-- Use concrete rather than abstract imagery
-- Incorporate humor when appropriate
-- Create emotional connections
-- Use multi-sensory elements
-- Break complex concepts into smaller chunks
+TITLE: Creating Effective Mnemonics
+Explanation: Follow a structured approach to develop and test mnemonics
+SUBTOPIC: Development Steps
+MNEMONIC_1: "PIPE"
+TYPE: Acronym (Plan, Implement, Practice, Evaluate)
 
-## Example Format:
+Steps for each mnemonic:
+1. Plan: Identify concept and choose the best mnemonic technique
+2. Implement: Create mnemonic that suits the concept and memory type
 
-TITLE: Chemical Bonds
-SUBTOPIC: Types of Chemical Bonds
-MNEMONIC_1: "Ivan Covers Cars" 
-TYPE: Acronym (Ionic, Covalent, Coordinate bonds)
----
-TITLE: Biological Classification
-SUBTOPIC: Taxonomy Levels
-MNEMONIC_1: "Kings Play Chess On Fancy Glass Stairs"
-TYPE: Acrostic (Kingdom, Phylum, Class, Order, Family, Genus, Species)
----
+## Usage Guidelines
 
-## Implementation Notes:
+TITLE: Practical Application
+Explanation: Guidelines for effectively using mnemonics in learning
+SUBTOPIC: Application Principles
+MNEMONIC_1: "TEACH"
+TYPE: Acronym (Test, Explain, Apply, Check, Help)
 
-1. Format Consistency:
-- Maintain exact spacing after colons
-- Use proper capitalization
-- Keep consistent indentation
-- Include separator lines
+## Documentation Requirements
 
-2. Content Quality:
-- Verify accuracy of represented concepts
-- Test memorability with sample users
-- Ensure cultural neutrality
-- Check for unintended meanings
+TITLE: Documentation Standards
+Explanation: Essential elements for documenting mnemonics
+SUBTOPIC: Documentation Elements
+MNEMONIC_1: "CLEAR"
+TYPE: Acronym (Context, Limitations, Examples, Applications, References)
 
-3. Documentation:
-- Include explanation of what each mnemonic represents
-- Note any prerequisites or context needed
-- Document any limitations or special cases
-- Provide examples of practical application
+Required Elements:
+- Full explanation of concept
+- Clear formatting
+- Example usage
+- Limitations noted
+- Related concepts linked
 
-## Usage Recommendations:
-
-1. Creation Process:
-- Identify core concepts requiring memorization
-- Select most appropriate technique for each concept
-- Draft initial mnemonic
-- Test for effectiveness
-- Refine based on feedback
-
-2. Implementation:
-- Present mnemonics in order of concept difficulty
-- Group related mnemonics together
-- Provide clear context for each mnemonic
-- Include practice exercises when possible
-
-3. Evaluation:
-- Test recall after different time intervals
-- Gather user feedback on effectiveness
-- Monitor success rates
-- Iterate and improve based on results
-
-Please structure the mnemonics following this format exactly as it matches the frontend rendering system.
+Remember: Each new mnemonic created should follow this enhanced format with explanation first, then the mnemonic itself, maintaining consistent formatting throughout.
     `;
 
   const formData = new FormData();
@@ -444,7 +422,7 @@ const renderMnemonicsAsList = () => {
                 return (
                   <div key={lineIndex} className="ml-4 mb-2">
                     <div className="flex">
-                      <div className="mr-2 text-blue-500">•</div>
+                      <div className="mr-2 text-blue-500"></div>
                       <div className="flex-1 font-normal">
                         {mnemonicMatch[1]}
                       </div>
@@ -535,6 +513,7 @@ const renderCheatsheetAsList = () => {
               const detailMatch = line.match(/^DETAIL_\d+:\s(.+)/);
               const mnemonicMatch = line.match(/^MNEMONIC_\d+:\s(.+)/);
               const typeMatch = line.match(/^TYPE:\s(.+)/);
+              const explanationMatch = line.match(/^Explanation:\s(.+)/);
 
               if (titleMatch1) {
                 return (
@@ -544,6 +523,15 @@ const renderCheatsheetAsList = () => {
                   >
                     {formatMathText(titleMatch1[1])}
                   </h2>
+                );
+              } else if (explanationMatch) {
+                return (
+                  <div className="ml-4 mb-4 text-gray-700 bg-blue-50 p-4 rounded-lg">
+                    <p className="font-medium text-blue-800 mb-1">
+                      Explanation:
+                    </p>
+                    <p>{explanationMatch[1]}</p>
+                  </div>
                 );
               } else if (subtopicMatch) {
                 return (
@@ -555,35 +543,14 @@ const renderCheatsheetAsList = () => {
                   </h3>
                 );
               } else if (mnemonicMatch) {
-                const detailContent = mnemonicMatch[1].trim();
                 return (
-                  <div key={lineIndex} className="ml-4 mb-3">
-                    <div className="flex">
-                      <div className="mr-2 text-blue-500">•</div>
+                  <div className="ml-4 mb-2">
+                    <div className="flex items-start">
+                      <div className="mr-2 text-blue-500 mt-1"></div>
                       <div className="flex-1">
-                        {detailContent.includes("\n") ||
-                        detailContent.includes("    ") ? (
-                          <div className="font-normal">
-                            {detailContent
-                              .split("\n")
-                              .map((part: string, partIndex: number) => (
-                                <div
-                                  key={partIndex}
-                                  className={
-                                    part.startsWith("    ")
-                                      ? "ml-4 font-mono"
-                                      : ""
-                                  }
-                                >
-                                  {formatCodeBlock(part.trim())}
-                                </div>
-                              ))}
-                          </div>
-                        ) : (
-                          <div className="font-normal">
-                            {formatMathText(detailContent)}
-                          </div>
-                        )}
+                        <div className="font-medium text-gray-800 bg-blue-50 p-3 rounded-lg">
+                          {mnemonicMatch[1]}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -623,36 +590,11 @@ const renderCheatsheetAsList = () => {
                   </div>
                 );
               } else if (typeMatch) {
-                const detailContent = typeMatch[1].trim();
                 return (
-                  <div key={lineIndex} className="ml-4 mb-3">
-                    <div className="flex">
-                      <div className="mr-2 text-blue-500">•</div>
-                      <div className="flex-1">
-                        {detailContent.includes("\n") ||
-                        detailContent.includes("    ") ? (
-                          <div className="font-normal">
-                            {detailContent
-                              .split("\n")
-                              .map((part: string, partIndex: number) => (
-                                <div
-                                  key={partIndex}
-                                  className={
-                                    part.startsWith("    ")
-                                      ? "ml-4 font-mono"
-                                      : ""
-                                  }
-                                >
-                                  {formatCodeBlock(part.trim())}
-                                </div>
-                              ))}
-                          </div>
-                        ) : (
-                          <div className="font-normal">
-                            {formatMathText(detailContent)}
-                          </div>
-                        )}
-                      </div>
+                  <div className="ml-8 mb-4 text-black font-inter">
+                    <div className="flex items-center">
+                      <span className="text-blue-400 mr-2"></span>
+                      {typeMatch[1]}
                     </div>
                   </div>
                 );
