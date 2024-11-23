@@ -230,7 +230,7 @@ const handleGenerateMnemonics = async () => {
 
   setLoadingMnemonics(true);
 
-  const customPrompt = `Please create mnemonics for the provided document to aid in memorizing key concepts. Use the following format strictly:
+  const customPrompt = `Analyze the document and create mnemonics for all the key concepts of the provided document to aid in memorizing key concepts. Use the most effective and suitable mnemonic technique for the respective key concepts. Use the following format strictly:
 
 Each concept in this framework should follow this pattern:
 1. Start with a brief explanation of the concept
@@ -331,20 +331,7 @@ SUBTOPIC: Application Principles
 MNEMONIC_1: "TEACH"
 TYPE: Acronym (Test, Explain, Apply, Check, Help)
 
-## Documentation Requirements
-
-TITLE: Documentation Standards
-Explanation: Essential elements for documenting mnemonics
-SUBTOPIC: Documentation Elements
-MNEMONIC_1: "CLEAR"
-TYPE: Acronym (Context, Limitations, Examples, Applications, References)
-
-Required Elements:
-- Full explanation of concept
-- Clear formatting
-- Example usage
-- Limitations noted
-- Related concepts linked
+Remember: Choose the most effective method based on the content.
 
 Remember: Each new mnemonic created should follow this enhanced format with explanation first, then the mnemonic itself, maintaining consistent formatting throughout.
     `;
