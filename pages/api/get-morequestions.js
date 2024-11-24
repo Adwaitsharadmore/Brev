@@ -34,8 +34,8 @@ export default async function handler(req, res) {
 
   try {
     // Use an absolute path to the uploads directory
-    const uploadsDir = path.resolve(__dirname, 'C:\\soohum\\prepal\\pages\\api\\uploads');
-    const filePath = path.join(uploadsDir, originalFileName);
+  const uploadsDir = path.join(process.cwd(), 'pages', 'api', 'uploads');
+fs.mkdirSync(uploadsDir, { recursive: true });
     console.log("Reading file from:", filePath); // Debugging line
     
 
