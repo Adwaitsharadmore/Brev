@@ -832,7 +832,7 @@ const handleDownloadPDF = async () => {
           <div className="w-full max-w-4xl bg-white shadow-md rounded-lg p-6 mt-6">
             <div
               id="cheatsheet-content"
-              className="text-lg text-black min-h-[500px]"
+              className="text-lg text-black"
             >
               {cheatsheetContent ? (
                 renderCheatsheetAsList()

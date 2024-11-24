@@ -11,7 +11,7 @@ import { FaYoutube } from "react-icons/fa";
 import { FaLinkedin } from "react-icons/fa";
 import { useEffect } from "react";
 import { motion } from "framer-motion";
-
+import Typewriter from "./typewriter";
 
 
 const HomePage = () => {
@@ -176,19 +176,22 @@ const HomePage = () => {
                 alt="Meeet"
               />
               <span className="text-[#0023ff] bg-white px-2 font-inter font-bold text-3xl">
-                learn more, with less
+                <Typewriter></Typewriter>
               </span>
-            </div>  
+            </div>
           </motion.div>
           <div className="w-full pt-8 sm:pt-12 md:pt-16 lg:pt-20 xl:pt-24 mx-auto my-4 sm:my-6 md:my-8 lg:my-10">
             <div className="md:flex md:flex-col flex text-center md:text-start gap-2 md:gap-0">
               <div>
                 {" "}
                 <span className="break-words font-bold text-5xl sm:text-4xl md:text-8xl tracking-tight">
-                  Key </span>
+                  Key{" "}
+                </span>
               </div>
               <div>
-                <span className="break-words font-bold text-5xl sm:text-4xl md:text-8xl tracking-tight">Features </span>
+                <span className="break-words font-bold text-5xl sm:text-4xl md:text-8xl tracking-tight">
+                  Features{" "}
+                </span>
               </div>
             </div>
           </div>

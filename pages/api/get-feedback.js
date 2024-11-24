@@ -1,16 +1,8 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { GoogleAIFileManager } from "@google/generative-ai/server";
 import path from 'path';
+import fs from 'fs';
 
-// Remove dotenv import and config if you're using Next.js built-in environment variables
-// import dotenv from 'dotenv';
-// dotenv.config();
-
-
-// Remove this line completely
-// console.log(process.env.API_KEY);
-
-// Initialize Google Generative AI
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 const fileManager = new GoogleAIFileManager(process.env.GOOGLE_API_KEY);
 const model = genAI.getGenerativeModel({
@@ -36,7 +28,8 @@ export default async function handler(req, res) {
 
   try {
     // Use an absolute path to the uploads directory
-    const uploadsDir = path.resolve(__dirname, 'E:\\soohum\\prepal\\pages\\api\\uploads');
+  const uploadsDir = path.join(process.cwd(), 'pages', 'api', 'uploads');
+fs.mkdirSync(uploadsDir, { recursive: true });
     const filePath = path.join(uploadsDir, originalFileName);
     console.log("Reading file from:", filePath); // Debugging line
 
@@ -61,27 +54,20 @@ Performance Analysis Framework
 1. Report Structure
 
 {Performance Summary}
-- Duration: [Time spent]
-- Overall Score: [X/Y]
-- Completion Rate: [Z%]
-- Average Attempts Per Question: [N]
 
 [Core Strengths]
-- Quick correct responses in: [subjects/topics]
 - Strong understanding demonstrated in: [areas]
 - Effective problem-solving shown in: [question types]
 
 [Knowledge Gaps]
 - Areas requiring reinforcement: [topics]
 - Concepts needing review: [specific concepts]
-- Pattern of mistakes in: [common error types]
 
 [Question-by-Question Analysis]
 For each question requiring multiple attempts:
 
 Question ID: [number]
 Prompt: "[exact question text]"
-Attempts: [number]
 Pattern Analysis:
 - First attempt error: [what went wrong]
 - Common misconception: [if applicable]
@@ -149,7 +135,7 @@ Content Structure:
 
 [Areas for Improvement]
 
-Question: "Explain the difference between INNER and LEFT JOIN" (3 attempts)
+Question: "Explain the difference between INNER and LEFT JOIN"
 Feedback: Initial attempts showed confusion between JOIN types. Consider reviewing JOIN operations with visual diagrams and practicing with simple table examples.
 
 5. Quality Metrics
