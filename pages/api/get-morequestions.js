@@ -1,6 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { GoogleAIFileManager } from "@google/generative-ai/server";
 import path from 'path';
+import fs from 'fs';
 
 // Remove dotenv import and config if you're using Next.js built-in environment variables
 // import dotenv from 'dotenv';
@@ -35,7 +36,8 @@ export default async function handler(req, res) {
   try {
     // Use an absolute path to the uploads directory
   const uploadsDir = path.join(process.cwd(), 'pages', 'api', 'uploads');
-fs.mkdirSync(uploadsDir, { recursive: true });
+    fs.mkdirSync(uploadsDir, { recursive: true });
+      const filePath = path.join(uploadsDir, originalFileName);
     console.log("Reading file from:", filePath); // Debugging line
     
 
