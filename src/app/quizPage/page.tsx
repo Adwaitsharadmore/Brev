@@ -285,10 +285,13 @@ const QuizPage = () => {
 
   const handleBackToHome = async () => {
     try {
-      await fetch("/api/cleanup", { method: "POST" });
-      router.push("/");
+      await fetch("http://localhost:3001/api/cleanup", {
+        method: "POST",
+      });
+      console.log("Cleanup successful");
     } catch (error) {
-      console.error("Cleanup failed:", error);
+      console.error("Error during cleanup:", error);
+    } finally {
       router.push("/");
     }
   };

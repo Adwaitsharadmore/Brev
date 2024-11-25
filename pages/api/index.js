@@ -224,20 +224,20 @@ app.post('/api/delete-temp-file', async (req, res) => {
 });
 
 app.post('/api/cleanup', async (req, res) => {
+  console.log("Received cleanup request");
   try {
-     const uploadsDir = path.resolve(__dirname, 'E:\\soohum\\prepal\\pages\\api\\uploads');
+     const uploadsDir = path.resolve(__dirname, './uploads');
     const tempDir = path.join(__dirname, '../../temp');
 
-    // Delete all files in the uploads directory
     const uploadFiles = await fs.readdir(uploadsDir);
     for (const file of uploadFiles) {
       await fs.unlink(path.join(uploadsDir, file));
     }
 
-    // Delete all files in the temp directory
+
     const tempFiles = await fs.readdir(tempDir);
     for (const file of tempFiles) {
-      await fs.unlink(path.join(tempDir, file));
+      await fs.unlink(path.join(tempDir, file));  
     }
 
     console.log("Uploads and temp folders cleaned up");
