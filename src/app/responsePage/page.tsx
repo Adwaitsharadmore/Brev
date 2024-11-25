@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import html2pdf from 'html2pdf.js';
+import html2pdf from "html2pdf.js";
 import fs from 'fs';
 import Typewriter from "./p";
 
@@ -610,54 +610,55 @@ const renderCheatsheetAsList = () => {
     }
   };
 
-const handleDownloadPDF = async () => {
-  // Wait for images to load
-  await document.fonts.ready;
-  const images = document.images;
-  const promises = Array.from(images).map((img) => {
-    if (img.complete) return Promise.resolve();
-    return new Promise((resolve) => {
-      img.onload = resolve;
-      img.onerror = resolve;
-    });
-  });
-  await Promise.all(promises);
-
-  // Then generate PDF
-  const element = document.getElementById("cheatsheet-content");
-  if (!element) {
-    console.error("Cheatsheet content element not found");
-    return;
-  }
-
-  const opt = {
-    margin: 10,
-    filename: "cheatsheet.pdf",
-    image: { type: "jpeg", quality: 0.98 },
-    html2canvas: {
-      scale: 2,
-      useCORS: true,
-      logging: true,
-      letterRendering: true,
-    },
-    jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-    pagebreak: { mode: ["avoid-all", "css", "legacy"] },
-  };
-
-  // Check if html2pdf is not null before invoking it
-  if (html2pdf) {
-    const pdf = html2pdf as typeof import("html2pdf.js").default; // Cast to the correct type
-    pdf()
-      .set(opt)
-      .from(element)
-      .save()
-      .catch((err: unknown) => {
-        console.error("Error generating PDF:", err);
+  const handleDownloadPDF = async () => {
+    if (typeof window === "undefined") {
+      console.error("Cannot use html2pdf on the server side.");
+      return;
+    }
+  
+    try {
+      // Import html2pdf dynamically
+      const html2pdf = (await import('html2pdf.js')).default;
+      
+      await document.fonts.ready;
+      const images = document.images;
+      const promises = Array.from(images).map((img) => {
+        if (img.complete) return Promise.resolve();
+        return new Promise((resolve) => {
+          img.onload = resolve;
+          img.onerror = resolve;
+        });
       });
-  } else {
-    console.error("html2pdf is not initialized");
-  }
-};
+      await Promise.all(promises);
+    
+      const element = document.getElementById("cheatsheet-content");
+      if (!element) {
+        console.error("Cheatsheet content element not found");
+        return;
+      }
+    
+      const opt = {
+        margin: 10,
+        filename: "cheatsheet.pdf",
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
+          logging: true,
+          letterRendering: true,
+        },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+        pagebreak: { mode: ["avoid-all", "css", "legacy"] },
+      };
+    
+      await html2pdf().set(opt).from(element).save();
+      
+    } catch (err) {
+      console.error("Error generating PDF:", err);
+    }
+  };
+  
+  
 
   if (typeof window !== "undefined") {
     // Code that uses window, document, or self
