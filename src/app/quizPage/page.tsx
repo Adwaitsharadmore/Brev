@@ -362,6 +362,7 @@ const QuizPage = () => {
               <Button
                 onClick={handleNextQuestion}
                 className="mt-6 bg-green-600 hover:bg-green-700"
+                disabled={isLoading}
               >
                 {currentQuestion < quizContent.length - 1
                   ? "Next Question"
