@@ -8,6 +8,7 @@ import path from 'path';
 import cors from 'cors';
 import getFeedback from './get-feedback.js';
 import { fileURLToPath } from 'url';
+import mime from 'mime-types';
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -70,10 +71,13 @@ app.post('/upload-and-generate', upload.single('file'), async (req, res) => {
   try {
     const filePath = file.path;
 
-    const uploadResponse = await uploadFileWithRetry(filePath, {
-      mimeType: "application/pdf",
-      displayName: file.originalname,
-    });
+const mimeType = mime.lookup(file.originalname);
+console.log('Determined MIME type:', mimeType);
+
+const uploadResponse = await uploadFileWithRetry(filePath, {
+  mimeType,
+  displayName: file.originalname,
+});
 
     console.log(`Uploaded file: ${uploadResponse.file.displayName} as ${uploadResponse.file.uri}`);
 

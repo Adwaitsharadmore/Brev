@@ -41,7 +41,7 @@ import Typewriter from "./p";
    }
  };
 
-  const handleSubmit = async (event: React.FormEvent) => {
+const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     if (!file) {

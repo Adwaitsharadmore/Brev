@@ -10,6 +10,11 @@ import { FaLinkedin } from "react-icons/fa";
 import { useEffect } from "react";
 import { motion } from "framer-motion";
 import Typewriter from "./typewriter";
+import Marquee from "@/components/ui/marquee";
+import { MarqueeDemo } from './marque'
+import { BentoDemo } from './bentogrid'
+import ShimmerButton from "@/components/ui/shimmer-button";
+import { ShimmerButtonDemo } from './shimmer'
 
 
 const HomePage = () => {
@@ -152,16 +157,8 @@ const HomePage = () => {
                 </span>
               </div>
 
-              <div className="pt-5">
-                <button
-                  className="px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 bg-[#0023ff] hover:bg-[#3526ff] text-white rounded-full text-sm sm:text-base md:text-lg lg:text-xl transition-all"
-                  onClick={handleStartBreving}
-                  style={{
-                    cursor: "pointer",
-                  }}
-                >
-                  Start Breving
-                </button>
+              <div className="z-10 pt-5">
+                <ShimmerButtonDemo></ShimmerButtonDemo>
               </div>
             </div>
 
@@ -419,8 +416,11 @@ const HomePage = () => {
                 </div>
               </div>
             </div>
+            <div className="pt-[100px]">
+              <BentoDemo></BentoDemo>
+            </div>
           </div>
-          <div
+          {/*<div
             className="pt-20"
             style={{
               overflow: "hidden",
@@ -458,7 +458,8 @@ const HomePage = () => {
                 />
               ))}
             </motion.div>
-          </div>
+          </div> */}
+          <MarqueeDemo></MarqueeDemo>
         </div>
 
         <div className="w-full relative bg-white scroll-smooth">
