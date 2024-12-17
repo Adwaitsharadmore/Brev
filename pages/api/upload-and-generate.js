@@ -75,7 +75,7 @@ export default async function handler(req, res) {
     const fileBuffer = await fs.readFile(file.path);
 
     // Delete the temporary file after reading
-    await fs.unlink(file.path);
+  
 
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
