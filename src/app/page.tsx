@@ -14,7 +14,7 @@ import { MarqueeDemo } from './marque'
 import { BentoDemo } from './bentogrid'
 import ShimmerButton from "@/components/ui/shimmer-button";
 import { ShimmerButtonDemo } from './shimmer'
-
+import Image from "next/image";
 import { motion, useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 
@@ -195,7 +195,7 @@ const HomePage = () => {
             </div>
 
             <div className="items-center hidden md:flex-col md:flex justify-center mt-[-30px] w-[100%]">
-              <img
+              <Image
                 style={{
                   height: "auto",
                 }}
@@ -289,7 +289,7 @@ const HomePage = () => {
 
             <div className="hidden md:flex-col md:flex">
               {" "}
-              <img
+              <Image
                 className="PexelsJeshootsCom1474587146991"
                 style={{
                   width: "100%",
@@ -305,7 +305,7 @@ const HomePage = () => {
           <div className="flex justify-between w-full pb-[100px]">
             <div>
               {" "}
-              <img
+              <Image
                 className="PexelsJeshootsCom1474587146991"
                 style={{
                   width: "100%",
@@ -344,7 +344,7 @@ const HomePage = () => {
             </div>
             <div>
               {" "}
-              <img
+              <Image
                 className="PexelsJeshootsCom1474587146991"
                 style={{
                   width: "100%",
@@ -359,7 +359,7 @@ const HomePage = () => {
           <div className="flex justify-between w-full pb-[100px]">
             <div>
               {" "}
-              <img
+              <Image
                 className="PexelsJeshootsCom1474587146991"
                 style={{
                   width: "100%",
