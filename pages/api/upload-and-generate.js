@@ -18,7 +18,7 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 
 // Configure multer with more robust options
-const storage = multer.diskStorage({
+const storage = multer.memoryStorage()({
 destination: (req, file, cb) => {
       const uploadsDir = path.join(__dirname, 'uploads');
       console.log("Saving file to:", uploadsDir); // Debugging line

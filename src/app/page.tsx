@@ -156,7 +156,7 @@ const HomePage = () => {
               </div>
             )}
           </div>
-          
+
           <motion.div
             className="w-full pt-[25px] md:pt-[75px] grid grid-cols-1 grid-flow-col md:grid-cols-3 mx-auto items-start my-50 pb-50"
             initial={{ opacity: 0 }}
@@ -196,9 +196,8 @@ const HomePage = () => {
 
             <div className="items-center hidden md:flex-col md:flex justify-center mt-[-30px] w-[100%]">
               <Image
-                style={{
-                  height: "auto",
-                }}
+                width={500}
+                height={300}
                 src="/images/mainlogo.svg"
                 alt="Meeet"
               />
