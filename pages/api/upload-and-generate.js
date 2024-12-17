@@ -86,8 +86,8 @@ export default async function handler(req, res) {
       size: file.size
     });
 
-    // Save buffer to a temporary file
-    const tempFilePath = path.join(__dirname, `temp-${Date.now()}-${file.originalname}`);
+    // Save buffer to a temporary file in /tmp
+    const tempFilePath = path.join('/tmp', `temp-${Date.now()}-${file.originalname}`);
     await fs.writeFile(tempFilePath, file.buffer);
 
     try {
