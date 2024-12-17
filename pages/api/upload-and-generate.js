@@ -5,6 +5,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import mime from 'mime-types';
 import multer from 'multer';
+import fs from 'fs/promises'; // Use promises for async file operations
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -14,7 +15,7 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 50 * 1024 * 1024
+    fileSize: 50 * 1024 * 1024 // 50MB limit
   },
   fileFilter: (req, file, cb) => {
     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf', 'text/plain'];
@@ -29,10 +30,10 @@ const upload = multer({
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 const fileManager = new GoogleAIFileManager(process.env.GOOGLE_API_KEY);
 
-async function uploadFileWithRetry(fileBuffer, fileMetadata, maxRetries = 3) {
+async function uploadFileWithRetry(filePath, fileMetadata, maxRetries = 3) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      const uploadResponse = await fileManager.uploadFile(fileBuffer, fileMetadata);
+      const uploadResponse = await fileManager.uploadFile(filePath, fileMetadata);
       return uploadResponse;
     } catch (error) {
       console.error(`Upload attempt ${attempt} failed:`, error);
@@ -85,26 +86,36 @@ export default async function handler(req, res) {
       size: file.size
     });
 
-    const uploadResponse = await uploadFileWithRetry(file.buffer, {
-      mimeType,
-      displayName: file.originalname,
-    });
+    // Save buffer to a temporary file
+    const tempFilePath = path.join(__dirname, `temp-${Date.now()}-${file.originalname}`);
+    await fs.writeFile(tempFilePath, file.buffer);
 
-    const result = await model.generateContent([
-      {
-        fileData: {
-          mimeType: uploadResponse.file.mimeType,
-          fileUri: uploadResponse.file.uri,
+    try {
+      // Upload the temporary file
+      const uploadResponse = await uploadFileWithRetry(tempFilePath, {
+        mimeType,
+        displayName: file.originalname,
+      });
+
+      // Generate content using the uploaded file
+      const result = await model.generateContent([
+        {
+          fileData: {
+            mimeType: uploadResponse.file.mimeType,
+            fileUri: uploadResponse.file.uri,
+          },
         },
-      },
-      { text: textPrompt },
-    ]);
+        { text: textPrompt },
+      ]);
 
-    res.status(200).json({
-      message: "Content generated successfully",
-      generatedText: result.response.text(),
-    });
-
+      res.status(200).json({
+        message: "Content generated successfully",
+        generatedText: result.response.text(),
+      });
+    } finally {
+      // Clean up temporary file
+      await fs.unlink(tempFilePath);
+    }
   } catch (error) {
     console.error("Detailed error:", error);
 
