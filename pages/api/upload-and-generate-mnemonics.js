@@ -85,9 +85,6 @@ export default async function handler(req, res) {
     // Read the file as a buffer
     const fileBuffer = await fs.readFile(file.path);
 
-    // Delete the temporary file after reading
-    await fs.unlink(file.path);
-
     // Initialize Google AI
     const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
     const model = genAI.getGenerativeModel({
