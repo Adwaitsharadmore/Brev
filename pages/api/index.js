@@ -61,6 +61,7 @@ async function uploadFileWithRetry(filePath, options, retries = 3) {
 
 // Route for file upload and cheatsheet generation
 app.post('/upload-and-generate', upload.single('file'), async (req, res) => {
+  
   const { file } = req;
   const { textPrompt } = req.body;
 

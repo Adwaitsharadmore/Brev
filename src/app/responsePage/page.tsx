@@ -6,8 +6,6 @@ import Image from "next/image";
 import fs from 'fs';
 import Typewriter from "./p";
 
-
-
   const ResponsePage = () => {
      const [cheatsheetContent, setCheatsheetContent] = useState<string | null>(null);
      const [file, setFile] = useState<File | null>(null);
@@ -137,7 +135,7 @@ Please structure the content following this format exactly as it matches the fro
 
     try {
       const response = await fetch(
-        "http://localhost:3001/upload-and-generate",
+        "/api/upload-and-generate",
         {
           method: "POST",
           body: formData,
@@ -170,8 +168,7 @@ Please structure the content following this format exactly as it matches the fro
 
       setLoadingQuiz(true);
 
-      const formData = new FormData();
-      formData.append("file", file);
+      
        const quizPrompt = hasSpecialCharacters
          ? `Generate 5 multiple-choice questions based on the document provided. Format each question as follows:
          QUESTION: Write the question here
@@ -192,11 +189,13 @@ Please structure the content following this format exactly as it matches the fro
          
          Please separate each question with three dashes (---).`;
 
-       formData.append("textPrompt", quizPrompt);
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("textPrompt", quizPrompt);
 
       try {
         const response = await fetch(
-          "http://localhost:3001/upload-and-generate-quiz",
+          "/api/upload-and-generate-quiz",
           {
             method: "POST",
             body: formData,
@@ -342,7 +341,7 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
 
   try {
     const response = await fetch(
-      "http://localhost:3001/upload-and-generate-mnemonics",
+      "/api/upload-and-generate-mnemonics",
       {
         method: "POST",
         body: formData,

@@ -8,7 +8,6 @@ import { FaInstagram } from "react-icons/fa";
 import { FaYoutube } from "react-icons/fa";
 import { FaLinkedin } from "react-icons/fa";
 import { useEffect } from "react";
-import { motion } from "framer-motion";
 import Typewriter from "./typewriter";
 import Marquee from "@/components/ui/marquee";
 import { MarqueeDemo } from './marque'
@@ -16,6 +15,38 @@ import { BentoDemo } from './bentogrid'
 import ShimmerButton from "@/components/ui/shimmer-button";
 import { ShimmerButtonDemo } from './shimmer'
 
+import { motion, useAnimation } from "framer-motion";
+import { useInView } from "react-intersection-observer";
+
+const Section = ({ children, className }: { children: React.ReactNode; className?: string }) => {
+  const controls = useAnimation();
+  const [ref, inView] = useInView({ threshold: 0.2 });
+
+  React.useEffect(() => {
+    if (inView) {
+      controls.start("visible");
+    } else {
+      controls.start("hidden");
+    }
+  }, [controls, inView]);
+
+  const variants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+  };
+
+  return (
+    <motion.div
+      ref={ref}
+      className={`py-20 ${className}`}
+      initial="hidden"
+      animate={controls}
+      variants={variants}
+    >
+      {children}
+    </motion.div>
+  );
+};
 
 const HomePage = () => {
  const [width, setWidth] = useState(0);
@@ -98,7 +129,7 @@ const HomePage = () => {
                   About
                 </Link>
                 <Link className="hover:text-[#0023FF]" href="/pricing">
-                  Pricing
+                  Features
                 </Link>
                 <Link className="hover:text-[#0023FF]" href="/contact">
                   Contact
@@ -125,6 +156,7 @@ const HomePage = () => {
               </div>
             )}
           </div>
+          
           <motion.div
             className="w-full pt-[25px] md:pt-[75px] grid grid-cols-1 grid-flow-col md:grid-cols-3 mx-auto items-start my-50 pb-50"
             initial={{ opacity: 0 }}
