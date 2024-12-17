@@ -6,18 +6,15 @@ import { fileURLToPath } from 'url';
 import mime from 'mime-types';
 import multer from 'multer';
 
-// For ES Module compatibility
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Load .env file
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
-// Configure multer with memory storage
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 50 * 1024 * 1024 // 50MB limit
+    fileSize: 50 * 1024 * 1024
   },
   fileFilter: (req, file, cb) => {
     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf', 'text/plain'];
@@ -28,6 +25,9 @@ const upload = multer({
     }
   }
 });
+
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
+const fileManager = new GoogleAIFileManager(process.env.GOOGLE_API_KEY);
 
 async function uploadFileWithRetry(fileBuffer, fileMetadata, maxRetries = 3) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -75,11 +75,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "No text prompt provided" });
     }
 
-    const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
-    const fileManager = new GoogleAIFileManager(process.env.GOOGLE_API_KEY);
-    const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
-    });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     const mimeType = file.mimetype;
 
@@ -89,12 +85,10 @@ export default async function handler(req, res) {
       size: file.size
     });
 
-    // Upload file buffer directly
-const uploadResponse = await uploadFileWithRetry(file.buffer, {
-  mimeType,
-  displayName: file.originalname,
-});
-
+    const uploadResponse = await uploadFileWithRetry(file.buffer, {
+      mimeType,
+      displayName: file.originalname,
+    });
 
     const result = await model.generateContent([
       {
