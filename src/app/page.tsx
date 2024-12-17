@@ -288,7 +288,7 @@ const HomePage = () => {
 
             <div className="hidden md:flex-col md:flex">
               {" "}
-              <Image
+              {/* <Image
                 className="PexelsJeshootsCom1474587146991"
                 style={{
                   width: "100%",
@@ -297,14 +297,14 @@ const HomePage = () => {
                 }}
                 src="/images/Cheatsheetboard.svg"
                 alt="Pexels Jeshoots"
-              />
+              /> */}
             </div>
           </div>
 
           <div className="flex justify-between w-full pb-[100px]">
             <div>
               {" "}
-              <Image
+              {/* <Image
                 className="PexelsJeshootsCom1474587146991"
                 style={{
                   width: "100%",
@@ -313,7 +313,7 @@ const HomePage = () => {
                 }}
                 src="/images/memoryaid.svg"
                 alt="Pexels Jeshoots"
-              />
+              /> */}
             </div>
             <div className="text-[#F8F6EF] font-inter text-2xl text-end">
               <span className="bg-[#0023FF] text-white font-inter text-4xl font-semibold">
@@ -343,7 +343,7 @@ const HomePage = () => {
             </div>
             <div>
               {" "}
-              <Image
+              {/* <Image
                 className="PexelsJeshootsCom1474587146991"
                 style={{
                   width: "100%",
@@ -352,13 +352,13 @@ const HomePage = () => {
                 }}
                 src="/images/quiz.svg"
                 alt="Pexels Jeshoots"
-              />
+              /> */}
             </div>
           </div>
           <div className="flex justify-between w-full pb-[100px]">
             <div>
               {" "}
-              <Image
+              {/* <Image
                 className="PexelsJeshootsCom1474587146991"
                 style={{
                   width: "100%",
@@ -367,7 +367,7 @@ const HomePage = () => {
                 }}
                 src="/images/memoryaid.svg"
                 alt="Pexels Jeshoots"
-              />
+              /> */}
             </div>
             <div className="text-[#F8F6EF] font-inter text-2xl ">
               <span className="bg-[#0023FF] text-white font-inter text-end text-4xl font-semibold">

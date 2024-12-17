@@ -1,19 +1,28 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { GoogleAIFileManager } from "@google/generative-ai/server";
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import mime from 'mime-types';
+import fs from 'fs/promises';
+import os from 'os';
 import multer from 'multer';
-import { put } from '@vercel/blob';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
+// Configure multer for file upload
 const upload = multer({
-  storage: multer.memoryStorage(),
+  storage: multer.diskStorage({
+    destination: async (req, file, cb) => {
+      const tempDir = os.tmpdir();
+      cb(null, tempDir);
+    },
+    filename: (req, file, cb) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+    }
+  }),
   limits: {
     fileSize: 50 * 1024 * 1024 // 50MB limit
   },
@@ -28,20 +37,6 @@ const upload = multer({
 });
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
-const fileManager = new GoogleAIFileManager(process.env.GOOGLE_API_KEY);
-
-async function uploadFileWithRetry(fileUrl, fileMetadata, maxRetries = 3) {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      const uploadResponse = await fileManager.uploadFile(fileUrl, fileMetadata);
-      return uploadResponse;
-    } catch (error) {
-      console.error(`Upload attempt ${attempt} failed:`, error);
-      if (attempt === maxRetries) throw error;
-      await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
-    }
-  }
-}
 
 export default async function handler(req, res) {
   const uploadMiddleware = (req, res) => {
@@ -76,44 +71,28 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "No text prompt provided" });
     }
 
+    // Read the file as a buffer
+    const fileBuffer = await fs.readFile(file.path);
+
+    // Delete the temporary file after reading
+    await fs.unlink(file.path);
+
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    const mimeType = file.mimetype;
-
-    console.log('File details:', {
-      originalname: file.originalname,
-      mimetype: file.mimetype,
-      size: file.size
-    });
-
-    // Upload file to Vercel Blob Store
-    const blob = await put(file.originalname, file.buffer, {
-      access: 'public',
-    });
-
-    console.log('File uploaded to Blob Store:', blob.url);
-
-    // Use the Blob Store URL for Google AI FileManager
-    const uploadResponse = await uploadFileWithRetry(blob.url, {
-      mimeType,
-      displayName: file.originalname,
-    });
-
-    // Generate content using the uploaded file
+    // Generate content using the file
     const result = await model.generateContent([
       {
-        fileData: {
-          mimeType: uploadResponse.file.mimeType,
-          fileUri: uploadResponse.file.uri,
-        },
+        inlineData: {
+          mimeType: file.mimetype,
+          data: fileBuffer.toString('base64')
+        }
       },
-      { text: textPrompt },
+      { text: textPrompt }
     ]);
 
     res.status(200).json({
       message: "Content generated successfully",
-      generatedText: result.response.text(),
-      fileUrl: blob.url
+      generatedText: result.response.text()
     });
 
   } catch (error) {
