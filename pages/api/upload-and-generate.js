@@ -29,6 +29,19 @@ const upload = multer({
   }
 });
 
+async function uploadFileWithRetry(fileBuffer, fileMetadata, maxRetries = 3) {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const uploadResponse = await fileManager.uploadFile(fileBuffer, fileMetadata);
+      return uploadResponse;
+    } catch (error) {
+      console.error(`Upload attempt ${attempt} failed:`, error);
+      if (attempt === maxRetries) throw error;
+      await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+    }
+  }
+}
+
 export default async function handler(req, res) {
   const uploadMiddleware = (req, res) => {
     return new Promise((resolve, reject) => {
@@ -77,10 +90,11 @@ export default async function handler(req, res) {
     });
 
     // Upload file buffer directly
-    const uploadResponse = await fileManager.uploadFile(file.buffer, {
-      mimeType,
-      displayName: file.originalname,
-    });
+const uploadResponse = await uploadFileWithRetry(file.buffer, {
+  mimeType,
+  displayName: file.originalname,
+});
+
 
     const result = await model.generateContent([
       {
