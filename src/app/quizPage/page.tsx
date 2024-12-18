@@ -92,25 +92,25 @@ const QuizCompletion = ({
         )}
 
         <div className="flex justify-end space-x-4 pt-6 border-t border-gray-800">
-          <Button
+          <button
             onClick={() => {
               console.log("Practice More clicked");
               generatePracticeQuestions();
             }}
-            className="bg-blue-600 hover:bg-blue-700"
+            className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700"
           >
             Practice More
-          </Button>
+          </button>
 
-          <Button
+          <button
             onClick={() => {
               console.log("Back to Home clicked");
               handleBackToHome();
             }}
-            className="bg-red-600 hover:bg-red-700"
+            className="mt-4 px-4 py-2 bg-red-600 hover:bg-red-700"
           >
             Back to Home
-          </Button>
+          </button>
         </div>
       </CardContent>
     </Card>
