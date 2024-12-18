@@ -40,80 +40,81 @@ const QuizCompletion = ({
   };
 
   return (
-    <Card className="bg-gray-900 border border-gray-700 shadow-xl w-3/4">
-      <div className="p-6 border-b border-gray-800">
-        <div className="flex items-center space-x-3">
-          <div className="h-8 w-8 text-yellow-400">🏆</div>
-          <h2 className="text-2xl font-bold text-white">Quiz Completed!</h2>
-        </div>
-      </div>
-
-      <CardContent className="p-6 space-y-4">
-        {apiFeedback ? (
-          apiFeedback.split("\n").map((part, index) => {
-            if (part.startsWith("{") && part.endsWith("}")) {
-              return (
-                <div key={index} className="space-y-2">
-                  <h2 className="text-2xl font-bold text-white">
-                    {part.slice(1, -1)}
-                  </h2>
-                  <div className="h-1 w-20 bg-blue-500 rounded" />
-                </div>
-              );
-            }
-            if (part.startsWith("[") && part.endsWith("]")) {
-              return (
-                <h3
-                  key={index}
-                  className="text-xl font-semibold text-blue-300 mt-4"
-                >
-                  {part.slice(1, -1)}
-                </h3>
-              );
-            }
-            if (part.trim().startsWith("-")) {
-              return (
-                <div key={index} className="flex items-start space-x-2 ml-4">
-                  <span className="text-blue-400">•</span>
-                  <p className="text-gray-300">{part.slice(1).trim()}</p>
-                </div>
-              );
-            }
-            return (
-              <p key={index} className="text-gray-300">
-                {part}
-              </p>
-            );
-          })
-        ) : (
-          <div className="text-center py-8 text-gray-400">
-            No additional feedback required!
+    <div>
+      <Card className="bg-gray-900 border border-gray-700 shadow-xl w-3/4">
+        <div className="p-6 border-b border-gray-800">
+          <div className="flex items-center space-x-3">
+            <div className="h-8 w-8 text-yellow-400">🏆</div>
+            <h2 className="text-2xl font-bold text-white">Quiz Completed!</h2>
           </div>
-        )}
-
-        <div className="flex justify-end space-x-4 pt-6 border-t border-gray-800">
-          <button
-            // onClick={() => {
-            //   console.log("Practice More clicked");
-            //   generatePracticeQuestions();
-            // }}
-            // className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700"
-          >
-            Practice More
-          </button>
-
-          <button
-            // onClick={() => {
-            //   console.log("Back to Home clicked");
-            //   handleBackToHome();
-            // }}
-            // className="mt-4 px-4 py-2 bg-red-600 hover:bg-red-700"
-          >
-            Back to Home
-          </button>
         </div>
-      </CardContent>
-    </Card>
+
+        <CardContent className="p-6 space-y-4">
+          {apiFeedback ? (
+            apiFeedback.split("\n").map((part, index) => {
+              if (part.startsWith("{") && part.endsWith("}")) {
+                return (
+                  <div key={index} className="space-y-2">
+                    <h2 className="text-2xl font-bold text-white">
+                      {part.slice(1, -1)}
+                    </h2>
+                    <div className="h-1 w-20 bg-blue-500 rounded" />
+                  </div>
+                );
+              }
+              if (part.startsWith("[") && part.endsWith("]")) {
+                return (
+                  <h3
+                    key={index}
+                    className="text-xl font-semibold text-blue-300 mt-4"
+                  >
+                    {part.slice(1, -1)}
+                  </h3>
+                );
+              }
+              if (part.trim().startsWith("-")) {
+                return (
+                  <div key={index} className="flex items-start space-x-2 ml-4">
+                    <span className="text-blue-400">•</span>
+                    <p className="text-gray-300">{part.slice(1).trim()}</p>
+                  </div>
+                );
+              }
+              return (
+                <p key={index} className="text-gray-300">
+                  {part}
+                </p>
+              );
+            })
+          ) : (
+            <div className="text-center py-8 text-gray-400">
+              No additional feedback required!
+            </div>
+          )}
+        </CardContent>
+      </Card>
+      <div className="flex justify-end space-x-4 pt-6 border-t border-gray-800">
+        <button
+        // onClick={() => {
+        //   console.log("Practice More clicked");
+        //   generatePracticeQuestions();
+        // }}
+        // className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700"
+        >
+          Practice More
+        </button>
+
+        <button
+        // onClick={() => {
+        //   console.log("Back to Home clicked");
+        //   handleBackToHome();
+        // }}
+        // className="mt-4 px-4 py-2 bg-red-600 hover:bg-red-700"
+        >
+          Back to Home
+        </button>
+      </div>
+    </div>
   );
 };
 
