@@ -1,10 +1,10 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleAIFileManager } from "@google/generative-ai/server";
 import path from 'path';
-import fs from 'fs/promises';
-import os from 'os';
+import fs from 'fs';
 
-// Initialize Google Generative AI
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
+const fileManager = new GoogleAIFileManager(process.env.GOOGLE_API_KEY);
 const model = genAI.getGenerativeModel({
   model: "gemini-1.5-flash",
 });
@@ -14,9 +14,8 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { questions, attempts, originalFileName, fileContent } = req.body;
+  const { questions, attempts, originalFileName } = req.body;
 
-  // Validate input data
   if (!questions || !Array.isArray(questions) || questions.length === 0) {
     return res.status(400).json({ error: "Invalid or missing questions data" });
   }
@@ -26,26 +25,26 @@ export default async function handler(req, res) {
   if (!originalFileName || typeof originalFileName !== 'string') {
     return res.status(400).json({ error: "Invalid or missing original file name" });
   }
-  if (!fileContent) {
-    return res.status(400).json({ error: "No file content provided" });
-  }
 
   try {
-    // Create a temporary file in the system's temp directory
-    const tempDir = os.tmpdir();
-    const filePath = path.join(tempDir, originalFileName);
+    // Use an absolute path to the uploads directory
+  const uploadsDir = path.join(process.cwd(), 'pages', 'api', 'uploads');
+fs.mkdirSync(uploadsDir, { recursive: true });
+    const filePath = path.join(uploadsDir, originalFileName);
+    console.log("Reading file from:", filePath); // Debugging line
 
-    // Write file content to temp directory
-    const fileBuffer = Buffer.from(fileContent, 'base64');
-    await fs.writeFile(filePath, fileBuffer);
+    // Upload the file to get a URI
+    const uploadResponse = await fileManager.uploadFile(filePath, {
+      mimeType: "application/pdf",
+      displayName: originalFileName,
+    });
 
-    // Filter questions with multiple attempts
+    const fileUri = uploadResponse.file.uri;
+
     const questionsWithMultipleAttempts = questions.filter((_, index) => attempts[index] > 1);
 
     if (questionsWithMultipleAttempts.length === 0) {
-      return res.json({ 
-        feedback: ["No additional feedback is needed. All questions were answered correctly in one attempt."] 
-      });
+      return res.json({ feedback: ["No additional feedback is needed. All questions were answered correctly in one attempt."] });
     }
 
     const prompt = `Generate new multiple-choice questions based on the areas where the user struggled in the previous quiz. Format each question as follows:
@@ -57,36 +56,29 @@ export default async function handler(req, res) {
          CORRECT: Write the correct option letter (A, B, C, or D)
          
          Please separate each question with three dashes (---).
-      ${questionsWithMultipleAttempts.map((q, index) => `Question: "${q}" (${attempts[index]} attempts)`).join("\n")}`;
+${questionsWithMultipleAttempts.map((q, index) => `Question: "${q}" (${attempts[index]} attempts)`).join("\n")}`;
 
-    // Generate content using inline data
     const result = await model.generateContent([
       {
-        inlineData: {
+        fileData: {
           mimeType: "application/pdf",
-          data: fileBuffer.toString('base64')
-        }
+          fileUri: fileUri,
+        },
       },
       { text: prompt }
     ]);
 
     const generatedFeedback = await result.response.text();
 
-    // Delete temporary file
-    await fs.unlink(filePath);
+    console.log(result.response.text()); 
 
     res.json({
       feedback: generatedFeedback.split("\n"),
     });
   } catch (error) {
     console.error("Error in feedback generation:", error);
-    
-    // Ensure response is only sent if not already sent
-    if (!res.headersSent) {
-      res.status(500).json({ 
-        error: "Failed to generate feedback", 
-        details: error.message 
-      });
-    }
+    res.status(500).json({ error: "Failed to generate feedback. Please try again later." });
   }
 }
+
+

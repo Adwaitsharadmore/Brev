@@ -264,7 +264,7 @@ const QuizPage = () => {
         }),
       });
 
-      if (!response.ok) throw new Error("Failed to generate questions");
+   
 
       const data = await response.json();
       const newQuizContent = parseQuizContent(data.feedback.join("\n"));
@@ -282,7 +282,6 @@ const QuizPage = () => {
       setIsLoading(false);
     }
   };
-
   const handleBackToHome = async () => {
     try {
       await fetch("http://localhost:3001/api/cleanup", {
