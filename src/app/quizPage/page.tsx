@@ -93,21 +93,21 @@ const QuizCompletion = ({
 
         <div className="flex justify-end space-x-4 pt-6 border-t border-gray-800">
           <button
-            onClick={() => {
-              console.log("Practice More clicked");
-              generatePracticeQuestions();
-            }}
-            className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700"
+            // onClick={() => {
+            //   console.log("Practice More clicked");
+            //   generatePracticeQuestions();
+            // }}
+            // className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700"
           >
             Practice More
           </button>
 
           <button
-            onClick={() => {
-              console.log("Back to Home clicked");
-              handleBackToHome();
-            }}
-            className="mt-4 px-4 py-2 bg-red-600 hover:bg-red-700"
+            // onClick={() => {
+            //   console.log("Back to Home clicked");
+            //   handleBackToHome();
+            // }}
+            // className="mt-4 px-4 py-2 bg-red-600 hover:bg-red-700"
           >
             Back to Home
           </button>
