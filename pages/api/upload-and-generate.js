@@ -13,16 +13,15 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 // Configure multer for file upload
 const upload = multer({
-  storage: multer.diskStorage({
-    destination: async (req, file, cb) => {
-      const tempDir = os.tmpdir();
-      cb(null, tempDir);
-    },
-    filename: (req, file, cb) => {
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-      cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
-    }
-  }),
+  storage:multer.diskStorage({
+  destination: async (req, file, cb) => {
+    const tempDir = os.tmpdir();
+    cb(null, tempDir);
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  }
+}),
   limits: {
     fileSize: 50 * 1024 * 1024 // 50MB limit
   },
@@ -62,6 +61,8 @@ export default async function handler(req, res) {
 
     const { file } = req;
     const { textPrompt } = req.body;
+    console.log(file.path);
+    console.log(os.tmpdir());
 
     if (!file) {
       return res.status(400).json({ error: "No file uploaded" });

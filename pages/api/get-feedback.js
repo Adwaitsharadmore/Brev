@@ -24,10 +24,10 @@ const storage = multer.diskStorage({
     cb(null, tempDir);
   },
   filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+    cb(null, file.originalname);
   }
 });
+
 
 const upload = multer({ 
   storage: storage,
@@ -233,13 +233,10 @@ ${questionsWithMultipleAttempts.map((q, index) => `Question: "${q}" (${attempts[
       { text: prompt },
     ]);
 
-    const generatedFeedback = result.response.text;
+        const generatedFeedback = await result.response.text();
 
-    // Clean up the temporary file
-    fs.unlinkSync(tempFilePath);
 
-    res.status(200).json({
-      message: "Feedback generated successfully",
+    res.json({
       feedback: generatedFeedback.split("\n"),
     });
   } catch (error) {
