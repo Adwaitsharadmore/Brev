@@ -1,7 +1,15 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { GoogleAIFileManager } from "@google/generative-ai/server";
+import dotenv from 'dotenv';
 import path from 'path';
-import fs from 'fs';
+import { fileURLToPath } from 'url';
+import fs from 'fs/promises';
+import os from 'os';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 const fileManager = new GoogleAIFileManager(process.env.GOOGLE_API_KEY);
@@ -28,26 +36,22 @@ export default async function handler(req, res) {
 
   try {
     // Use an absolute path to the uploads directory
-  const uploadsDir = path.join(process.cwd(), 'pages', 'api', 'uploads');
-fs.mkdirSync(uploadsDir, { recursive: true });
-    const filePath = path.join(uploadsDir, originalFileName);
-    console.log("Reading file from:", filePath); // Debugging line
+    const tempDir = os.tmpdir();
+    const filePath = path.join(tempDir, originalFileName);
+    console.log("Reading file from:", filePath);
+    // Read the file as a buffer
+    const fileBuffer = await fs.readFile(filePath);
 
     // Upload the file to get a URI
-    const uploadResponse = await fileManager.uploadFile(filePath, {
-      mimeType: "application/pdf",
-      displayName: originalFileName,
-    });
+ 
 
-    const fileUri = uploadResponse.file.uri;
-
-    const questionsWithMultipleAttempts = questions.filter((_, index) => attempts[index] > 1);
+    const questionsWithMultipleAttempts = questions.filter((_, index) => attempts[index] > 0);
 
     if (questionsWithMultipleAttempts.length === 0) {
       return res.json({ feedback: ["No additional feedback is needed. All questions were answered correctly in one attempt."] });
     }
 
-    const prompt = `Generate a performance feedback report based on the user's quiz attempts, strictly following this format without bold or italic text. Use only hyphens (-) for bullet points, as shown in the format below. Focus on providing concise feedback for each question where multiple attempts were required. The format must be adhered to exactly as specified:
+const prompt = `Generate a performance feedback report based on the user's quiz attempts, strictly following this format without bold or italic text. Use only hyphens (-) for bullet points, as shown in the format below. Focus on providing concise feedback for each question where multiple attempts were required. The format must be adhered to exactly as specified:
 
 Performance Analysis Framework
 
@@ -188,12 +192,13 @@ Persistent Challenges:
 Include each question with its number of attempts, and provide specific feedback only for questions that required multiple attempts:
 ${questionsWithMultipleAttempts.map((q, index) => `Question: "${q}" (${attempts[index]} attempts)`).join("\n")}`;
 
+  // Generate content using the file
     const result = await model.generateContent([
       {
-        fileData: {
+        inlineData: {
           mimeType: "application/pdf",
-          fileUri: fileUri,
-        },
+          data: fileBuffer.toString('base64')
+        }
       },
       { text: prompt }
     ]);
