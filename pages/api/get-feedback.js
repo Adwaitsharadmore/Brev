@@ -101,10 +101,7 @@ For each question requiring multiple attempts:
 
 Question ID: [number]
 Prompt: "[exact question text]"
-Pattern Analysis:
-- First attempt error: [what went wrong]
-- Common misconception: [if applicable]
-- Final understanding: [how they reached correct answer]
+
 Improvement Strategy:
 - Review: [specific topics/concepts]
 - Practice: [recommended exercises]
@@ -220,9 +217,6 @@ Persistent Challenges:
 
 Include each question with its number of attempts, and provide specific feedback only for questions that required multiple attempts:
 ${questionsWithMultipleAttempts.map((q, index) => `Question: "${q}" (${attempts[index]} attempts)`).join("\n")}`;
-
-
-
 
     // Generate content based on the provided data
  const result = await model.generateContent([
