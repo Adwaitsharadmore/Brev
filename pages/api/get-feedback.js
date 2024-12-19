@@ -72,6 +72,8 @@ if (req.method !== 'POST') {
   try {
     // Retrieve the file using the originalFileName
     const filePath = path.join(os.tmpdir(), originalFileName);
+    console.log("File path:", filePath);
+    console.log(filePath);
     const fileBuffer = await fs.readFile(filePath);
     const mimeType = mime.lookup(filePath) || 'application/octet-stream';
 

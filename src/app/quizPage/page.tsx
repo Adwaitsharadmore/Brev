@@ -232,6 +232,7 @@ const QuizPage = () => {
 
   const handleQuizCompletion = async () => {
     if (!originalFileName || isLoading) return;
+    console.log(originalFileName);
 
     setIsLoading(true);
     try {
