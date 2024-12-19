@@ -170,24 +170,26 @@ Please structure the content following this format exactly as it matches the fro
 
       
        const quizPrompt = hasSpecialCharacters
-         ? `Generate 5 multiple-choice questions based on the document provided. Format each question as follows:
-         QUESTION: Write the question here
-         OPTION_A: First option
-         OPTION_B: Second option
-         OPTION_C: Third option
-         OPTION_D: Fourth option
-         CORRECT: Write the correct option letter (A, B, C, or D)
-         
-         Please separate each question with three dashes (---).`
-         : `Generate 5 multiple-choice questions based on the document provided. Format each question as follows:
-         QUESTION: Write the question here
-         OPTION_A: First option
-         OPTION_B: Second option
-         OPTION_C: Third option
-         OPTION_D: Fourth option
-         CORRECT: Write the correct option letter (A, B, C, or D)
-         
-         Please separate each question with three dashes (---).`;
+         ? `Generate multiple-choice questions focusing on the most important topics of the document. The number of questions should be proportional to the size and content density of the document. Each question should test the user's understanding of the key points, concepts, or details in the document. Format each question as follows:
+
+QUESTION: Write the question here
+OPTION_A: First option
+OPTION_B: Second option
+OPTION_C: Third option
+OPTION_D: Fourth option
+CORRECT: Write the correct option letter (A, B, C, or D)
+
+Separate each question with three dashes (---).`
+         : `Generate multiple-choice questions focusing on the most important topics of the document. The number of questions should be proportional to the size and content density of the document. Each question should test the user's understanding of the key points, concepts, or details in the document. Format each question as follows:
+
+QUESTION: Write the question here
+OPTION_A: First option
+OPTION_B: Second option
+OPTION_C: Third option
+OPTION_D: Fourth option
+CORRECT: Write the correct option letter (A, B, C, or D)
+
+Separate each question with three dashes (---).`;
 
         const formData = new FormData();
         formData.append("file", file);
