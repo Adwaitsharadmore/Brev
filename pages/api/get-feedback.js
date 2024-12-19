@@ -1,15 +1,48 @@
+import express from 'express';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { GoogleAIFileManager } from "@google/generative-ai/server";
 import dotenv from 'dotenv';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import fs from 'fs/promises';
 import os from 'os';
+import path from 'path';
+import cors from 'cors';
+import { fileURLToPath } from 'url';
+import mime from 'mime-types';
+import multer from 'multer';
 
+// For ES Module compatibility
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Load .env file
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+
+// Configure multer with disk storage in temp directory
+const storage = multer.diskStorage({
+  destination: async (req, file, cb) => {
+    const tempDir = os.tmpdir();
+    cb(null, tempDir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ 
+  storage: storage,
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf', 'text/plain'];
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid file type'), false);
+    }
+  },
+  limits: {
+    fileSize: 50 * 1024 * 1024 // 50MB limit
+  }
+});
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 const fileManager = new GoogleAIFileManager(process.env.GOOGLE_API_KEY);
@@ -17,41 +50,35 @@ const model = genAI.getGenerativeModel({
   model: "gemini-1.5-flash",
 });
 
+
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
+if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   const { questions, attempts, originalFileName } = req.body;
 
+  // Validate input
   if (!questions || !Array.isArray(questions) || questions.length === 0) {
     return res.status(400).json({ error: "Invalid or missing questions data" });
   }
   if (!attempts || !Array.isArray(attempts) || attempts.length === 0) {
     return res.status(400).json({ error: "Invalid or missing attempts data" });
   }
-  if (!originalFileName || typeof originalFileName !== 'string') {
+  if (!originalFileName || typeof originalFileName !== "string") {
     return res.status(400).json({ error: "Invalid or missing original file name" });
   }
 
   try {
-    // Use an absolute path to the uploads directory
-    const tempDir = os.tmpdir();
-    const filePath = path.join(tempDir, originalFileName);
-    console.log("Reading file from:", filePath);
-    // Read the file as a buffer
+    // Retrieve the file using the originalFileName
+    const filePath = path.join(os.tmpdir(), originalFileName);
     const fileBuffer = await fs.readFile(filePath);
+    const mimeType = mime.lookup(filePath) || 'application/octet-stream';
 
-    // Upload the file to get a URI
- 
+    const questionsWithMultipleAttempts = questions.filter((_, index) => attempts[index] > 1);
+    
 
-    const questionsWithMultipleAttempts = questions.filter((_, index) => attempts[index] > 0);
-
-    if (questionsWithMultipleAttempts.length === 0) {
-      return res.json({ feedback: ["No additional feedback is needed. All questions were answered correctly in one attempt."] });
-    }
-
-const prompt = `Generate a performance feedback report based on the user's quiz attempts, strictly following this format without bold or italic text. Use only hyphens (-) for bullet points, as shown in the format below. Focus on providing concise feedback for each question where multiple attempts were required. The format must be adhered to exactly as specified:
+    const prompt = `Generate a performance feedback report based on the user's quiz attempts, strictly following this format without bold or italic text. Use only hyphens (-) for bullet points, as shown in the format below. Focus on providing concise feedback for each question where multiple attempts were required. The format must be adhered to exactly as specified:
 
 Performance Analysis Framework
 
@@ -192,28 +219,34 @@ Persistent Challenges:
 Include each question with its number of attempts, and provide specific feedback only for questions that required multiple attempts:
 ${questionsWithMultipleAttempts.map((q, index) => `Question: "${q}" (${attempts[index]} attempts)`).join("\n")}`;
 
-  // Generate content using the file
-    const result = await model.generateContent([
+
+
+
+    // Generate content based on the provided data
+ const result = await model.generateContent([
       {
         inlineData: {
-          mimeType: "application/pdf",
+          mimeType: mimeType,
           data: fileBuffer.toString('base64')
         }
       },
-      { text: prompt }
+      { text: prompt },
     ]);
 
-    const generatedFeedback = await result.response.text();
+    const generatedFeedback = result.response.text;
 
-    console.log(result.response.text()); 
+    // Clean up the temporary file
+    fs.unlinkSync(tempFilePath);
 
-    res.json({
+    res.status(200).json({
+      message: "Feedback generated successfully",
       feedback: generatedFeedback.split("\n"),
     });
   } catch (error) {
-    console.error("Error in feedback generation:", error);
-    res.status(500).json({ error: "Failed to generate feedback. Please try again later." });
+    console.error("Feedback generation failed:", error);
+    res.status(500).json({
+      error: "Failed to generate feedback",
+      details: error.message,
+    });
   }
 }
-
-
