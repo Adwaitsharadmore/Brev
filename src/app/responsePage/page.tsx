@@ -180,7 +180,8 @@ OPTION_D: Fourth option
 CORRECT: Write the correct option letter (A, B, C, or D)
 
 Separate each question with three dashes (---).`
-         : `Generate multiple-choice questions focusing on the most important topics of the document. The number of questions should be proportional to the size and content density of the document. Each question should test the user's understanding of the key points, concepts, or details in the document. Format each question as follows:
+
+: `Generate multiple-choice questions focusing on the most important topics of the document. The number of questions should be proportional to the size and content density of the document. Each question should test the user's understanding of the key points, concepts, or details in the document. Format each question as follows:
 
 QUESTION: Write the question here
 OPTION_A: First option
