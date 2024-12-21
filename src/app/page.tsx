@@ -17,7 +17,11 @@ import { ShimmerButtonDemo } from './shimmer'
 import Image from "next/image";
 import { motion, useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-
+import BlurFade from "@/components/ui/blur-fade";
+import HeroVideoDialog from "@/components/ui/hero-video-dialog";
+import { cn } from "@/lib/utils";
+import { DotPattern } from "@/components/ui/dot-pattern";
+import ScrollProgress from "@/components/ui/scroll-progress";
 
 const Section = ({ children, className }: { children: React.ReactNode; className?: string }) => {
   const controls = useAnimation();
@@ -106,56 +110,66 @@ const HomePage = () => {
   };
 
   return (
-    <>
-      <div className="w-full h-screen relative bg-black scroll-smooth">
-        <div className="w-3/4 mx-auto flex flex-col items-start">
-          <div className="w-full bg-black px-4 sm:px-6 md:px-8 py-4 sm:py-6">
-            <div className="flex justify-between items-center">
-              <div className="text-white text-3xl sm:text-4xl font-extrabold font-inter capitalize">
-                <Link href="/">Brev</Link>
-              </div>
-              <div className="sm:hidden">
-                <button
-                  onClick={toggleMenu}
-                  className="text-white hover:text-[#0023FF] transition-colors duration-200"
-                >
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
+    <div>
+      <ScrollProgress className="top-[65px]" />
+      <div className="w-screen h-screen relative bg-[#f8f6ef] scroll-smooth">
+        <div className="w-3/4 mx-auto flex flex-col items-center">
+          <div className="w-screen fixed top-0 z-50 bg-[#f8f6ef] justify-between gap-between">
+            <div className="w-3/4 mx-auto shadow-sm gap-between justify-between">
+              <div className="flex justify-between items-center px-4 py-3 gap-between">
+                <div className="text-[#0023FF] text-3xl sm:text-4xl font-extrabold font-inter capitalize">
+                  <Link href="/">Brev</Link>
+                </div>
+                <div className="sm:hidden">
+                  <button
+                    onClick={toggleMenu}
+                    className="text-[#0023FF] hover:text-[#0023FF] transition-colors duration-200"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 6h16M4 12h16M4 18h16"
-                    />
-                  </svg>
-                </button>
-              </div>
-              <div className="hidden sm:flex gap-4 sm:gap-6 md:gap-8">
-                <div
-                  onClick={() => handleScroll("about")}
-                  className="hover:text-[#0023FF]"
-                >
-                  About
+                    <svg
+                      className="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 6h16M4 12h16M4 18h16"
+                      />
+                    </svg>
+                  </button>
                 </div>
-                <div
-                  onClick={() => handleScroll("features")}
-                  className="hover:text-[#0023FF]"
-                >
-                  Features
-                </div>
-                <div
-                  className="hover:text-[#0023FF]"
-                  onClick={() => handleScroll("contact")}
-                >
-                  Contact
+                <div className="hidden sm:flex gap-4 sm:gap-6 md:gap-8">
+                  <div
+                    onClick={() => handleScroll("about")}
+                    className="text-[#0023FF] hover:text-[#0023FF] cursor-pointer"
+                  >
+                    Key Features
+                  </div>
+                  <div
+                    onClick={() => handleScroll("features")}
+                    className="text-[#0023FF] hover:text-[#0023FF] cursor-pointer"
+                  >
+                    How to Brev
+                  </div>
+                  <div
+                    className="text-[#0023FF] hover:text-[#0023FF] cursor-pointer"
+                    onClick={() => handleScroll("contact")}
+                  >
+                    Our Story
+                  </div>
+                  <div
+                    className="text-[#0023FF] hover:text-[#0023FF] cursor-pointer"
+                    onClick={() => handleScroll("contact")}
+                  >
+                    Contact Us
+                  </div>
                 </div>
               </div>
             </div>
+
             {isOpen && (
               <div className="sm:hidden mt-4 items-center text-center">
                 <div>
@@ -176,40 +190,23 @@ const HomePage = () => {
               </div>
             )}
           </div>
-          <section id="about" className="about">
-            {" "}
-            <motion.div
-              className="w-full pt-[25px] md:pt-[160px] grid grid-cols-1 grid-flow-col md:grid-cols-3 mx-auto items-start my-50 pb-50"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5, duration: 0.5 }}
-            >
-              <div className="flex flex-col col-span-2 md:items-start items-center px-4 md:px-8 md:leading-tight">
-                <div
-                  className="text-white text-6xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-semibold leading-tight font-Inter"
-                  style={{ letterSpacing: "-0.5px" }}
-                >
-                  You got{" "}
-                </div>
-                <div className="text-white text-5xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-semibold leading-none font-Inter">
-                  {" "}
-                  this, Brev!
+
+          <BlurFade delay={0.25} inView>
+            <section id="about" className="about">
+              <motion.div className="relative w-full mx-auto pt-[100px] md:items-center justify-center my-50 pb-50">
+                <div className="flex flex-col md:items-center items-center justify-center md:leading-tight">
+                  <div className="text-black text-4xl md:text-center text-center sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl font-semibold leading-tight tracking-tighter font-Inter">
+                    Your go-to tool for smarter learning
+                  </div>{" "}
+                  <div className="text-black md:text-center text-center md:items-start items-center md:w-[53%] text-lg md:text-2xl font-light md:leading-none tracking-tighter font-Inter mt-4 pb-2">
+                    acheive more with less stress
+                  </div>
+                  <div className="z-10 pt-5">
+                    <ShimmerButtonDemo></ShimmerButtonDemo>
+                  </div>
                 </div>
 
-                <div className="text-white md:text-start text-center md:items-start items-center md:w-[53%] text-lg md:text-2xl font-light md:leading-none font-Inter mt-4 pb-2">
-                  Your go-to tool for smarter learning, helping you achieve{" "}
-                  <span className="bg-white md:leading-none text-[#0023FF] italic px-1">
-                    more with less
-                  </span>
-                  <span> stress and stay on top of your game.</span>
-                </div>
-
-                <div className="z-10 pt-5">
-                  <ShimmerButtonDemo></ShimmerButtonDemo>
-                </div>
-              </div>
-
-              <div className="items-center hidden md:flex-col md:flex justify-center mt-[-30px] w-[100%]">
+                {/* <div className="items-center hidden md:flex-col md:flex justify-center mt-[-30px] w-[100%]">
                 <Image
                   width={500}
                   height={300}
@@ -219,108 +216,74 @@ const HomePage = () => {
                 <span className="text-[#0023ff] bg-white px-2 font-inter font-bold text-3xl">
                   <Typewriter></Typewriter>
                 </span>
-              </div>
-            </motion.div>
-          </section>
+              </div> */}
+              </motion.div>
+            </section>
 
-          <section id="features">
-            <div className="w-full pt-8 sm:pt-12 md:pt-16 lg:pt-20 xl:pt-24 mx-auto my-4 sm:my-6 md:my-8 lg:my-10">
-              <div className="md:flex md:flex-col flex text-center md:text-start gap-2 md:gap-0">
-                <div>
-                  {" "}
-                  <span className="break-words font-bold text-5xl sm:text-4xl md:text-8xl tracking-tight">
-                    Key{" "}
-                  </span>
-                </div>
-                <div>
-                  <span className="break-words font-bold text-5xl sm:text-4xl md:text-8xl tracking-tight">
-                    Features{" "}
-                  </span>
+            <section id="features">
+              <div className="bg-[#f8f6ef] w-full pt-8 sm:pt-12 md:pt-16 lg:pt-20 xl:pt-[200px] mx-auto my-4 sm:my-6 md:my-8 lg:my-10">
+                <div className="text-black md:flex md:flex-col flex text-center md:text-start gap-2 md:gap-0">
+                  <div>
+                    {" "}
+                    <span className="break-words font-bold text-5xl sm:text-4xl md:text-5xl tracking-tighter leading-none">
+                      key features{" "}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="grid grid-cols-1 grid-flow-col md:grid-cols-3 justify-between w-full pb-8 sm:pb-12 md:pb-16 lg:pb-20">
-              <div className="col-span-2 text-[#F8F6EF] font-inter text-base sm:text-lg md:text-xl lg:text-2xl space-y-4">
-                <span className="bg-[#0023FF] text-white font-inter text-2xl md:text-4xl font-semibold">
-                  Cheat sheet generation--
-                </span>
-                <br />
-                <span className="bg-[#0023FF] text-white font-inter text-2xl md:text-4xl font-semibold">
-                  precise or detailed
-                  <br />
-                </span>
-                <div className="md:w-[75%]">
-                  Quickly convert lengthy notes into concise, organized cheat
-                  sheets that highlight essential information and core concepts.
-                  This feature saves time and provides students with an
-                  efficient way to review high-yield information before exams.
+              <div className="grid grid-cols-1 grid-flow-col md:grid-cols-3 justify-between w-full pb-8 sm:pb-12 md:pb-16 lg:pb-20">
+                <div className="col-span-2 text-[#F8F6EF] font-inter text-base sm:text-lg md:text-xl space-y-4">
+                  <div className="bg-black p-7 rounded-2xl w-[70%]">
+                    {" "}
+                    <span className="text-white font-inter text-2xl md:text-4xl font-semibold tracking-tighter">
+                      Cheat sheet generation
+                    </span>
+                    <div className="text-white font-inter text-xl tracking-tighter font-Inter pt-2">
+                      Quickly convert detailed notes into concise, organized
+                      cheat sheets that focus on essential topics. Save time and
+                      ace exams with effective study tools.
+                    </div>
+                  </div>
                 </div>
 
                 <div className="hidden md:flex-col md:flex">
-                  <div className="md:w-full w-[20%] flex sm:items-start">
-                    <div>
-                      <svg
-                        width="163"
-                        height="175"
-                        viewBox="0 0 163 175"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          clip-rule="evenodd"
-                          d="M45.8684 96.8821C46.5224 100.78 44.0743 116.97 42.7045 117.826C41.5556 118.544 43.9156 122.37 49.8366 117.883C54.753 114.148 57.5392 112.904 64.3827 111.32C67.9318 110.51 68.9781 109.235 66.7475 108.517C65.0275 107.977 59.5398 108.88 55.5582 110.374C53.372 111.201 53.5545 110.756 56.8556 106.747C64.8206 97.1734 72.8276 92.5841 90.6823 87.4319C111.801 81.3581 122.457 73.0428 123.345 61.9278C123.728 57.1332 119.231 57.9978 117.822 63.0193C114.83 73.6681 107.66 78.811 87.0887 85.1222C68.0037 90.9604 60.4929 95.1153 53.0967 103.878C51.8921 105.293 50.8712 106.511 50.8049 106.552C50.7607 106.58 50.8313 105.169 50.9928 103.412C51.4584 98.1099 50.4512 95.2197 47.9893 94.7704C46.1076 94.4139 45.5379 94.9766 45.8684 96.8821Z"
-                          fill="#F8F6EF"
-                        />
-                      </svg>
-                      Precise Cheat Sheet: <br />
-                      <div className="md:w-[60%]">
-                        {" "}
-                        A concise summary ideal for last-minute review.
-                      </div>
-                    </div>
-                    <div className="md:w-full w-[50%] items-center sm:items-end">
-                      <svg
-                        width="255"
-                        height="255"
-                        viewBox="0 0 255 255"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          clip-rule="evenodd"
-                          d="M184.368 153.116C183.625 158.471 188.755 182.472 191 184.164C192.882 185.582 189.419 190.253 179.656 181.816C171.55 174.797 167.022 172.067 156.013 167.468C150.304 165.1 148.542 162.92 152.036 162.652C154.732 162.465 163.532 165.626 169.98 169.121C173.522 171.05 173.197 170.351 167.64 163.489C154.237 147.076 141.147 137.781 112.347 124.326C78.2828 108.44 60.6949 92.9105 58.4337 76.7028C57.4582 69.7112 64.6804 72.4808 67.305 80.1464C72.8778 96.4038 84.6776 106.206 117.888 122.245C148.698 137.101 160.965 145.605 173.401 160.664C175.426 163.1 177.143 165.19 177.251 165.272C177.324 165.327 177.104 163.283 176.713 160.714C175.568 152.968 176.95 149.176 180.832 149.372C183.799 149.503 184.748 150.502 184.368 153.116Z"
-                          fill="#F8F6EF"
-                        />
-                      </svg>
-                      Detailed Cheat Sheet: A comprehensive, in-depth version
-                      that’s perfect for studying a subject from scratch, with
-                      all necessary information included to thoroughly cover the
-                      topic.
+                  <HeroVideoDialog
+                    className="dark:hidden block"
+                    animationStyle="top-in-bottom-out"
+                    videoSrc="https://www.youtube.com/embed/qh3NGpYRG3I?si=4rb-zSdDkVK9qxxb"
+                    thumbnailSrc="https://startup-template-sage.vercel.app/hero-light.png"
+                    thumbnailAlt="Hero Video"
+                  />
+                </div>
+              </div>
+              <div className="bg-[#f8f6ef] grid grid-cols-1 grid-flow-col items-end md:grid-cols-3 w-full pb-8 sm:pb-12 md:pb-16 lg:pb-20">
+                <div className="hidden md:flex-col col-span-1 md:flex">
+                  <HeroVideoDialog
+                    className="dark:hidden block"
+                    animationStyle="top-in-bottom-out"
+                    videoSrc="https://www.youtube.com/embed/qh3NGpYRG3I?si=4rb-zSdDkVK9qxxb"
+                    thumbnailSrc="https://startup-template-sage.vercel.app/hero-light.png"
+                    thumbnailAlt="Hero Video"
+                  />
+                </div>
+                <div className="col-span-3 text-[#F8F6EF] font-inter place-items-end text-base sm:text-lg md:text-xl space-y-4">
+                  <div className="bg-black p-7 rounded-2xl w-[70%]">
+                    {" "}
+                    <span className="text-white font-inter text-2xl md:text-4xl font-semibold tracking-tighter">
+                      Practice Quizzes
+                    </span>
+                    <div className="text-white font-inter text-xl tracking-tighter font-Inter pt-2">
+                      Test your knowledge with AI-generated quizzes tailored to
+                      your notes. Identify weak areas and focus on improvement
+                      for exam success.
                     </div>
                   </div>
                 </div>
               </div>
-
-              <div className="hidden md:flex-col md:flex">
-                {" "}
-                {/* <Image
-                className="PexelsJeshootsCom1474587146991"
-                style={{
-                  width: "100%",
-                  maxWidth: "auto",
-                  height: "auto",
-                }}
-                src="/images/Cheatsheetboard.svg"
-                alt="Pexels Jeshoots"
-              /> */}
-              </div>
-            </div>
-            <div className="flex justify-between w-full pb-[100px]">
-              <div>
-                {" "}
-                {/* <Image
+              <div className="flex justify-between w-full pb-[100px]">
+                <div>
+                  {" "}
+                  {/* <Image
                 className="PexelsJeshootsCom1474587146991"
                 style={{
                   width: "100%",
@@ -330,35 +293,36 @@ const HomePage = () => {
                 src="/images/memoryaid.svg"
                 alt="Pexels Jeshoots"
               /> */}
+                </div>
+                <div className="text-[#F8F6EF] font-inter text-2xl text-end">
+                  <span className="bg-[#0023FF] text-white font-inter text-4xl font-semibold">
+                    Memory Aids & Mnemonics <br />
+                  </span>
+                  <br />
+                  Brev’s AI-powered mnemonic generator creates <br />
+                  personalized memory aids that cater to the student’s <br />{" "}
+                  learning style, making complex topics easier to retain. <br />{" "}
+                  These mnemonics leverage proven memory techniques— <br />
+                  like acronyms, visualization, and chunking—to reinforce <br />
+                  learning and aid long-term recall.
+                </div>
               </div>
-              <div className="text-[#F8F6EF] font-inter text-2xl text-end">
-                <span className="bg-[#0023FF] text-white font-inter text-4xl font-semibold">
-                  Memory Aids & Mnemonics <br />
-                </span>
-                <br />
-                Brev’s AI-powered mnemonic generator creates <br />
-                personalized memory aids that cater to the student’s <br />{" "}
-                learning style, making complex topics easier to retain. <br />{" "}
-                These mnemonics leverage proven memory techniques— <br />
-                like acronyms, visualization, and chunking—to reinforce <br />
-                learning and aid long-term recall.
-              </div>
-            </div>
-            <div className="flex justify-between w-full pb-[100px]">
-              <div className="text-[#F8F6EF] font-inter text-2xl">
-                <span className="bg-[#0023FF] text-white font-inter text-4xl font-semibold">
-                  Targeted Quizzes <br />
-                </span>
-                <br />
-                Brev offers custom quizzes designed to test knowledge in <br />{" "}
-                areas where students need the most practice. Through <br />
-                adaptive question generation, Brev helps reinforce <br />
-                understanding, identify knowledge gaps, and build exam <br />{" "}
-                readiness.
-              </div>
-              <div>
-                {" "}
-                {/* <Image
+              <div className="flex justify-between w-full pb-[100px]">
+                <div className="text-[#F8F6EF] font-inter text-2xl">
+                  <span className="bg-[#0023FF] text-white font-inter text-4xl font-semibold">
+                    Targeted Quizzes <br />
+                  </span>
+                  <br />
+                  Brev offers custom quizzes designed to test knowledge in{" "}
+                  <br /> areas where students need the most practice. Through{" "}
+                  <br />
+                  adaptive question generation, Brev helps reinforce <br />
+                  understanding, identify knowledge gaps, and build exam <br />{" "}
+                  readiness.
+                </div>
+                <div>
+                  {" "}
+                  {/* <Image
                 className="PexelsJeshootsCom1474587146991"
                 style={{
                   width: "100%",
@@ -368,13 +332,13 @@ const HomePage = () => {
                 src="/images/quiz.svg"
                 alt="Pexels Jeshoots"
               /> */}
+                </div>
               </div>
-            </div>
 
-            <div className="flex justify-between w-full pb-[100px]">
-              <div>
-                {" "}
-                {/* <Image
+              <div className="flex justify-between w-full pb-[100px]">
+                <div>
+                  {" "}
+                  {/* <Image
                 className="PexelsJeshootsCom1474587146991"
                 style={{
                   width: "100%",
@@ -384,26 +348,28 @@ const HomePage = () => {
                 src="/images/memoryaid.svg"
                 alt="Pexels Jeshoots"
               /> */}
-              </div>
-              <div className="text-[#F8F6EF] font-inter text-2xl ">
-                <span className="bg-[#0023FF] text-white font-inter text-end text-4xl font-semibold">
-                  Feedback & Progress Tracking <br />
-                </span>
-                <div className="text-[#F8F6EF] font-inter text-2xl">
-                  <span className="text-start">
-                    <br />
-                    After each quiz, students receive detailed feedback, with{" "}
-                    <br />
-                    actionable insights into their strengths and areas needing{" "}
-                    <br />
-                    improvement. Brev tracks progress over time, helping <br />
-                    students focus on weaker topics and measure their
-                    <br /> improvement through tailored follow-up quizzes.
+                </div>
+                <div className="text-[#F8F6EF] font-inter text-2xl ">
+                  <span className="bg-[#0023FF] text-white font-inter text-end text-4xl font-semibold">
+                    Feedback & Progress Tracking <br />
                   </span>
+                  <div className="text-[#F8F6EF] font-inter text-2xl">
+                    <span className="text-start">
+                      <br />
+                      After each quiz, students receive detailed feedback, with{" "}
+                      <br />
+                      actionable insights into their strengths and areas needing{" "}
+                      <br />
+                      improvement. Brev tracks progress over time, helping{" "}
+                      <br />
+                      students focus on weaker topics and measure their
+                      <br /> improvement through tailored follow-up quizzes.
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-          </section>
+            </section>
+          </BlurFade>
         </div>
 
         <section>
@@ -601,7 +567,7 @@ const HomePage = () => {
           </section>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
