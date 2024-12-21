@@ -115,7 +115,7 @@ const HomePage = () => {
       <div className="w-screen h-screen relative bg-[#f8f6ef] scroll-smooth">
         <div className="w-3/4 mx-auto flex flex-col items-center">
           <div className="w-screen fixed top-0 z-50 bg-[#f8f6ef] justify-between gap-between">
-            <div className="w-3/4 mx-auto shadow-sm gap-between justify-between">
+            <div className="w-3/4 mx-auto gap-between justify-between">
               <div className="flex justify-between items-center px-4 py-3 gap-between">
                 <div className="text-[#0023FF] text-3xl sm:text-4xl font-extrabold font-inter capitalize">
                   <Link href="/">Brev</Link>
