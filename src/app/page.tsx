@@ -256,7 +256,7 @@ const HomePage = () => {
                   />
                 </div>
               </div>
-              <div className="bg-[#f8f6ef] grid grid-cols-1 grid-flow-col items-end md:grid-cols-3 w-full pb-8 sm:pb-12 md:pb-16 lg:pb-20">
+              <div className="bg-[#f8f6ef] grid grid-cols-1 grid-flow-col md:grid-cols-3 w-full pb-8 sm:pb-12 md:pb-16 lg:pb-20">
                 <div className="hidden md:flex-col col-span-1 md:flex">
                   <HeroVideoDialog
                     className="dark:hidden block"
@@ -267,7 +267,7 @@ const HomePage = () => {
                   />
                 </div>
                 <div className="col-span-3 text-[#F8F6EF] font-inter place-items-end text-base sm:text-lg md:text-xl space-y-4">
-                  <div className="bg-black p-7 rounded-2xl w-[70%]">
+                  <div className="bg-black p-7 rounded-2xl w-[60%] pb-[100px]">
                     {" "}
                     <span className="text-white font-inter text-2xl md:text-4xl font-semibold tracking-tighter">
                       Practice Quizzes
