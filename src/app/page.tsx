@@ -193,7 +193,7 @@ const HomePage = () => {
 
           <BlurFade delay={0.25} inView>
             <section id="about" className="about">
-              <motion.div className="relative w-full mx-auto pt-[100px] md:items-center justify-center my-50 pb-50">
+              <motion.div className="relative w-full mx-auto pt-[200px] md:items-center justify-center my-50 pb-50">
                 <div className="flex flex-col md:items-center items-center justify-center md:leading-tight">
                   <div className="text-black text-4xl md:text-center text-center sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl font-semibold leading-tight tracking-tighter font-Inter">
                     Your go-to tool for smarter learning
