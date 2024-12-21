@@ -238,7 +238,7 @@ const HomePage = () => {
                     <span className="text-white font-inter text-2xl md:text-4xl font-semibold tracking-tighter">
                       Cheat sheet generation
                     </span>
-                    <div className="text-white font-inter text-xl tracking-tighter font-Inter pt-2">
+                    <div className="text-white font-inter text-xl tracking-tighter font-Inter pt-2 pb-[50px]">
                       Quickly convert detailed notes into concise, organized
                       cheat sheets that focus on essential topics. Save time and
                       ace exams with effective study tools.

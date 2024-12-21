@@ -669,21 +669,21 @@ const renderCheatsheetAsList = () => {
     
     return (
       <div>
-        <div className="flex-1 flex flex-col items-center w-full h-screen relative bg-black">
+        <div className="flex-1 flex flex-col items-center w-full h-screen relative bg-[#f8f6ef]">
           <div className="w-3/4 mx-auto flex flex-col items-start">
             {/* Nav Bar */}
             <div className="w-full flex justify-between items-center pt-10 pb-5">
-              <div className="text-white text-4xl font-extrabold font-inter capitalize">
+              <div className="text-[#0023FF] text-4xl font-extrabold font-inter capitalize">
                 <Link href="/">Brev</Link>
               </div>
               <div className="flex gap-8">
-                <div className="text-white text-lg font-normal font-inter">
+                <div className="text-[#0023FF] text-lg font-normal font-inter">
                   About
                 </div>
-                <div className="text-white text-lg font-normal font-Inter">
+                <div className="text-[#0023FF] text-lg font-normal font-Inter">
                   Pricing
                 </div>
-                <div className="text-white text-lg font-normal font-Inter">
+                <div className="text-[#0023FF] text-lg font-normal font-Inter">
                   Contact
                 </div>
               </div>
@@ -692,26 +692,26 @@ const renderCheatsheetAsList = () => {
             {/* Phrases Section */}
             <div className="w-full pt-[20px] mx-auto my-10">
               <div className="w-full">
-                <span className="text-white text-[4vw] md:text-[69px] font-semibold leading-tight font-Inter">
+                <span className="text-black tracking-tighter text-[4vw] md:text-[69px] font-semibold leading-tight font-Inter">
                   Don’t worry,{" "}
                 </span>
-                <span className="text-[#0023FF] bg-white text-[4vw] md:text-[69px] font-semibold leading-tight font-Inter">
+                <span className="text-[#0023FF] tracking-tighter bg-white text-[4vw] md:text-[69px] font-semibold leading-tight font-Inter">
                   {" "}
                   Brev’s
                 </span>
-                <span className="text-white text-[4vw] md:text-[69px] font-semibold leading-tight font-Inter">
+                <span className="text-black tracking-tighter text-[4vw] md:text-[69px] font-semibold leading-tight font-Inter">
                   {" "}
                   got your back.
                 </span>
               </div>
-              <div className="text-white text-[2vw] md:text-6xl font-light leading-tight font-Inter mt-4">
+              <div className="text-black text-[2vw] tracking-tighter md:text-6xl font-light leading-tight font-Inter mt-4">
                 Just upload a file
               </div>
-              <div className="text-white text-[2vw] md:text-6xl font-light leading-tight font-Inter mt-4">
+              <div className="text-black text-[2vw] tracking-tighter md:text-6xl font-light leading-tight font-Inter mt-4">
                 and choose your
               </div>
-              <div className="text-white text-[2vw] md:text-6xl gap-4 font-light leading-tight font-Inter mt-4 flex items-center">
-                <span>desired  </span>
+              <div className="text-black text-[2vw] tracking-tighter md:text-6xl gap-4 font-light leading-tight font-Inter mt-4 flex items-center">
+                <span>desired </span>
                 {/* <img
                   className="w-[100vw] max-w-[400px] h-auto ml-2 pt-3"
                   src="/images/msg1.gif"
@@ -833,10 +833,7 @@ const renderCheatsheetAsList = () => {
           </form>
 
           <div className="w-full max-w-4xl bg-white shadow-md rounded-lg p-6 mt-6">
-            <div
-              id="cheatsheet-content"
-              className="text-lg text-black"
-            >
+            <div id="cheatsheet-content" className="text-lg text-black">
               {cheatsheetContent ? (
                 renderCheatsheetAsList()
               ) : (
