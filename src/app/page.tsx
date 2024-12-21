@@ -225,7 +225,7 @@ const HomePage = () => {
                 <div className="text-black md:flex md:flex-col flex text-center md:text-start gap-2 md:gap-0">
                   <div>
                     {" "}
-                    <span className="break-words font-bold text-5xl sm:text-4xl md:text-5xl tracking-tighter leading-none">
+                    <span className="break-words font-bold text-5xl sm:text-5xl md:text-6xl tracking-tighter leading-none">
                       key features{" "}
                     </span>
                   </div>
@@ -235,7 +235,7 @@ const HomePage = () => {
                 <div className="col-span-2 text-[#F8F6EF] font-inter text-base sm:text-lg md:text-xl space-y-4">
                   <div className="bg-black p-7 rounded-2xl w-[70%]">
                     {" "}
-                    <span className="text-white font-inter text-2xl md:text-4xl font-semibold tracking-tighter">
+                    <span className="text-white font-inter text-2xl md:text-3xl font-semibold tracking-tighter">
                       Cheat sheet generation
                     </span>
                     <div className="text-white font-inter text-xl tracking-tighter font-Inter pt-2 pb-[50px]">
@@ -269,7 +269,7 @@ const HomePage = () => {
                 <div className="col-span-3 text-[#F8F6EF] font-inter place-items-end text-base sm:text-lg md:text-xl space-y-4">
                   <div className="bg-black p-7 rounded-2xl w-[60%] pb-[100px]">
                     {" "}
-                    <span className="text-white font-inter text-2xl md:text-4xl font-semibold tracking-tighter">
+                    <span className="text-white font-inter text-2xl md:text-3xl font-semibold tracking-tighter">
                       Practice Quizzes
                     </span>
                     <div className="text-white font-inter text-xl tracking-tighter font-Inter pt-2">
