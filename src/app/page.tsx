@@ -22,6 +22,7 @@ import HeroVideoDialog from "@/components/ui/hero-video-dialog";
 import { cn } from "@/lib/utils";
 import { DotPattern } from "@/components/ui/dot-pattern";
 import ScrollProgress from "@/components/ui/scroll-progress";
+import BoxReveal from "@/components/ui/box-reveal";
 
 const Section = ({ children, className }: { children: React.ReactNode; className?: string }) => {
   const controls = useAnimation();
@@ -233,17 +234,19 @@ const HomePage = () => {
               </div>
               <div className="grid grid-cols-1 grid-flow-col md:grid-cols-3 justify-between w-full pb-8 sm:pb-12 md:pb-16 lg:pb-20">
                 <div className="col-span-2 text-[#F8F6EF] font-inter text-base sm:text-lg md:text-xl space-y-4">
-                  <div className="bg-black p-7 rounded-2xl w-[70%]">
-                    {" "}
-                    <span className="text-white font-inter text-2xl md:text-3xl font-semibold tracking-tighter">
-                      Cheat sheet generation
-                    </span>
-                    <div className="text-white font-inter text-xl tracking-tighter font-Inter pt-2 pb-[50px]">
-                      Quickly convert detailed notes into concise, organized
-                      cheat sheets that focus on essential topics. Save time and
-                      ace exams with effective study tools.
+                  
+                    <div className="bg-black p-7 rounded-2xl w-[70%]">
+                      {" "}
+                      <span className="text-white font-inter text-2xl md:text-3xl font-semibold tracking-tighter">
+                        Cheat sheet generation
+                      </span>
+                      <div className="text-white font-inter text-xl tracking-tighter font-Inter pt-2">
+                        Quickly convert detailed notes into concise, organized
+                        cheat sheets that focus on essential topics. Save time
+                        and ace exams with effective study tools.
+                      </div>
                     </div>
-                  </div>
+                
                 </div>
 
                 <div className="hidden md:flex-col md:flex">
@@ -267,7 +270,7 @@ const HomePage = () => {
                   />
                 </div>
                 <div className="col-span-3 text-[#F8F6EF] font-inter place-items-end text-base sm:text-lg md:text-xl space-y-4">
-                  <div className="bg-black p-7 rounded-2xl w-[60%] pb-[100px]">
+                  <div className="bg-black p-7 rounded-2xl w-[60%]">
                     {" "}
                     <span className="text-white font-inter text-2xl md:text-3xl font-semibold tracking-tighter">
                       Practice Quizzes
@@ -404,7 +407,7 @@ const HomePage = () => {
                     <br />
                     <br />
                     <br />
-                    <div className="bg-[#0023FF] text-white p-5 rounded-2xl text-3xl">
+                    <div className="bg-[#0023FF] text-white p-5 rounded-2xl text-2xl w-[90%]">
                       Brev began as an ambitious idea during a hackathon at
                       Arizona State University. What started as a project for a
                       24-hour challenge turned into something much bigger. We
