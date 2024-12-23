@@ -174,19 +174,34 @@ const HomePage = () => {
             {isOpen && (
               <div className="sm:hidden mt-4 items-center text-center">
                 <div>
-                  <Link className="hover:text-[#0023FF]" href="/about">
-                    About
-                  </Link>
+                  <div
+                    className="hover:text-[#0023FF] text-black"
+                    onClick={() => handleScroll("features")}
+                  >
+                    key features
+                  </div>
                 </div>
                 <div>
-                  <Link className="hover:text-[#0023FF]" href="/about">
-                    Contact
-                  </Link>
+                  <div
+                    className="hover:text-[#0023FF] text-black"
+                    onClick={() => handleScroll("story")}
+                  >
+                    Our story
+                  </div>
                 </div>
                 <div>
-                  <Link className="hover:text-[#0023FF]" href="/pricing">
-                    Pricing
-                  </Link>
+                  <div
+                    className="hover:text-[#0023FF] text-black"
+                    onClick={() => handleScroll("about")}
+                  >
+                    how to brev
+                  </div>
+                </div>
+                <div
+                  className="hover:text-[#0023FF] text-black"
+                  onClick={() => handleScroll("contact")}
+                >
+                  contact us
                 </div>
               </div>
             )}
