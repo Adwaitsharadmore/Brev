@@ -113,7 +113,7 @@ const HomePage = () => {
   return (
     <div>
       <ScrollProgress className="top-[65px]" />
-      <div className="w-screen h-screen relative bg-[#f8f6ef] scroll-smooth">
+      <div className="w-screen h-screen relative bg-[#f8f6ef] items-center scroll-smooth">
         <div className="w-3/4 mx-auto flex flex-col items-center">
           <div className="w-screen fixed top-0 z-50 bg-[#f8f6ef] justify-between gap-between">
             <div className="w-3/4 mx-auto gap-between justify-between">
@@ -157,7 +157,7 @@ const HomePage = () => {
                   </div>
                   <div
                     className="text-[#0023FF] hover:text-[#0023FF] cursor-pointer"
-                    onClick={() => handleScroll("contact")}
+                    onClick={() => handleScroll("story")}
                   >
                     Our Story
                   </div>
@@ -199,7 +199,7 @@ const HomePage = () => {
                   <div className="text-black text-4xl md:text-center text-center sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl font-semibold leading-tight tracking-tighter font-Inter">
                     Your go-to tool for smarter learning
                   </div>{" "}
-                  <div className="text-black md:text-center text-center md:items-start items-center md:w-[53%] text-lg md:text-2xl font-light md:leading-none tracking-tighter font-Inter mt-4 pb-2">
+                  <div className="text-black md:text-center text-center md:items-start items-center md:w-[53%] text-lg md:text-2xl font-light md:leading-none tracking-tighter font-Inter pb-2">
                     acheive more with less stress
                   </div>
                   <div className="z-10 pt-5">
@@ -233,20 +233,18 @@ const HomePage = () => {
                 </div>
               </div>
               <div className="grid grid-cols-1 grid-flow-col md:grid-cols-3 justify-between w-full pb-8 sm:pb-12 md:pb-16 lg:pb-20">
-                <div className="col-span-2 text-[#F8F6EF] font-inter text-base sm:text-lg md:text-xl space-y-4">
-                  
-                    <div className="bg-black p-7 rounded-2xl w-[70%]">
-                      {" "}
-                      <span className="text-white font-inter text-2xl md:text-3xl font-semibold tracking-tighter">
-                        Cheat sheet generation
-                      </span>
-                      <div className="text-white font-inter text-xl tracking-tighter font-Inter pt-2">
-                        Quickly convert detailed notes into concise, organized
-                        cheat sheets that focus on essential topics. Save time
-                        and ace exams with effective study tools.
-                      </div>
+                <div className="md:col-span-2 items-center md:items-start text-[#F8F6EF] font-inter text-base sm:text-lg md:text-xl space-y-4 pr-[175px]">
+                  <div className="bg-black p-7 rounded-2xl">
+                    {" "}
+                    <span className="text-white font-inter text-2xl md:text-3xl font-semibold tracking-tighter">
+                      Cheat sheet generation
+                    </span>
+                    <div className="text-white font-inter text-xl tracking-tighter font-Inter pt-2">
+                      Quickly convert detailed notes into concise, organized
+                      cheat sheets that focus on essential topics. Save time and
+                      ace exams with effective study tools.
                     </div>
-                
+                  </div>
                 </div>
 
                 <div className="hidden md:flex-col md:flex">
@@ -269,8 +267,8 @@ const HomePage = () => {
                     thumbnailAlt="Hero Video"
                   />
                 </div>
-                <div className="col-span-3 text-[#F8F6EF] font-inter place-items-end text-base sm:text-lg md:text-xl space-y-4">
-                  <div className="bg-black p-7 rounded-2xl w-[60%]">
+                <div className="col-span-3 text-[#F8F6EF] font-inter place-items-end text-base sm:text-lg md:text-xl space-y-4 pl-[175px]">
+                  <div className="bg-black p-7 rounded-2xl">
                     {" "}
                     <span className="text-white font-inter text-2xl md:text-3xl font-semibold tracking-tighter">
                       Practice Quizzes
@@ -284,100 +282,40 @@ const HomePage = () => {
                 </div>
               </div>
               <div className="flex justify-between w-full pb-[100px]">
-                <div>
-                  {" "}
-                  {/* <Image
-                className="PexelsJeshootsCom1474587146991"
-                style={{
-                  width: "100%",
-                  maxWidth: "auto",
-                  height: "auto",
-                }}
-                src="/images/memoryaid.svg"
-                alt="Pexels Jeshoots"
-              /> */}
-                </div>
-                <div className="text-[#F8F6EF] font-inter text-2xl text-end">
-                  <span className="bg-[#0023FF] text-white font-inter text-4xl font-semibold">
-                    Memory Aids & Mnemonics <br />
-                  </span>
-                  <br />
-                  Brev’s AI-powered mnemonic generator creates <br />
-                  personalized memory aids that cater to the student’s <br />{" "}
-                  learning style, making complex topics easier to retain. <br />{" "}
-                  These mnemonics leverage proven memory techniques— <br />
-                  like acronyms, visualization, and chunking—to reinforce <br />
-                  learning and aid long-term recall.
-                </div>
-              </div>
-              <div className="flex justify-between w-full pb-[100px]">
-                <div className="text-[#F8F6EF] font-inter text-2xl">
-                  <span className="bg-[#0023FF] text-white font-inter text-4xl font-semibold">
-                    Targeted Quizzes <br />
-                  </span>
-                  <br />
-                  Brev offers custom quizzes designed to test knowledge in{" "}
-                  <br /> areas where students need the most practice. Through{" "}
-                  <br />
-                  adaptive question generation, Brev helps reinforce <br />
-                  understanding, identify knowledge gaps, and build exam <br />{" "}
-                  readiness.
-                </div>
-                <div>
-                  {" "}
-                  {/* <Image
-                className="PexelsJeshootsCom1474587146991"
-                style={{
-                  width: "100%",
-                  maxWidth: "auto",
-                  height: "auto",
-                }}
-                src="/images/quiz.svg"
-                alt="Pexels Jeshoots"
-              /> */}
-                </div>
-              </div>
-
-              <div className="flex justify-between w-full pb-[100px]">
-                <div>
-                  {" "}
-                  {/* <Image
-                className="PexelsJeshootsCom1474587146991"
-                style={{
-                  width: "100%",
-                  maxWidth: "auto",
-                  height: "auto",
-                }}
-                src="/images/memoryaid.svg"
-                alt="Pexels Jeshoots"
-              /> */}
-                </div>
-                <div className="text-[#F8F6EF] font-inter text-2xl ">
-                  <span className="bg-[#0023FF] text-white font-inter text-end text-4xl font-semibold">
-                    Feedback & Progress Tracking <br />
-                  </span>
-                  <div className="text-[#F8F6EF] font-inter text-2xl">
-                    <span className="text-start">
-                      <br />
-                      After each quiz, students receive detailed feedback, with{" "}
-                      <br />
-                      actionable insights into their strengths and areas needing{" "}
-                      <br />
-                      improvement. Brev tracks progress over time, helping{" "}
-                      <br />
-                      students focus on weaker topics and measure their
-                      <br /> improvement through tailored follow-up quizzes.
+                <div className="col-span-2 text-[#F8F6EF] font-inter text-base sm:text-lg md:text-xl space-y-4 pr-[175px]">
+                  <div className="bg-black p-7 rounded-2xl">
+                    {" "}
+                    <span className="text-white font-inter text-2xl md:text-3xl font-semibold tracking-tighter">
+                      Targeted Quizzes
                     </span>
+                    <div className="text-white font-inter text-xl tracking-tighter font-Inter pt-2">
+                      Quickly convert detailed notes into concise, organized
+                      cheat sheets that focus on essential topics. Save time and
+                      ace exams with effective study tools.
+                    </div>
                   </div>
                 </div>
+
+                <div className="hidden md:flex-col md:flex w-[75%]">
+                  <HeroVideoDialog
+                    className="dark:hidden block"
+                    animationStyle="top-in-bottom-out"
+                    videoSrc="https://www.youtube.com/embed/qh3NGpYRG3I?si=4rb-zSdDkVK9qxxb"
+                    thumbnailSrc="https://startup-template-sage.vercel.app/hero-light.png"
+                    thumbnailAlt="Hero Video"
+                  />
+                </div>
+              </div>
+              <div className="flex justify-between w-full ">
+
               </div>
             </section>
           </BlurFade>
         </div>
 
-        <section>
+        <section id="story">
           {" "}
-          <div className="w-full h-auto relative bg-white scroll-smooth">
+          <div className="w-full h-auto relative scroll-smooth">
             <div className="w-3/4 mx-auto flex flex-col items-start">
               <div>
                 <div
@@ -416,17 +354,14 @@ const HomePage = () => {
                       Though we were confident in our creation and excited about
                       its potential, the hackathon didn’t result in any awards
                       or recognition. But we didn’t let that stop us.
-                      <br />
-                      <br />
                       Instead of giving up, we saw this as an opportunity to
                       turn Brev into something greater—a full-fledged startup
                       with a mission to help students conquer their exams. Our
                       vision became clear: to relieve the stress and anxiety
                       that come with exam preparation and create the best study
                       tool out there.
-                      <br />
-                      <br />
-                      Since then, we’ve poured countless hours into Brev,
+                      
+                        Since then, we’ve poured countless hours into Brev,
                       refining it to be the ultimate study companion. What began
                       as a simple hackathon idea is now a tool designed to help
                       students maximize their study time, reduce stress, and

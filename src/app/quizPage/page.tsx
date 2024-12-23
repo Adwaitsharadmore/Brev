@@ -40,7 +40,7 @@ const QuizCompletion = ({
   };
 
   return (
-    <div>
+    <div className="flex-1 flex flex-col items-center">
       <Card className="bg-gray-900 border border-gray-700 shadow-xl w-3/4">
         <div className="p-6 border-b border-gray-800">
           <div className="flex items-center space-x-3">
@@ -95,21 +95,21 @@ const QuizCompletion = ({
       </Card>
       <div className="flex justify-end space-x-4 pt-6 border-t border-gray-800">
         <button
-        onClick={() => {
-          console.log("Practice More clicked");
-          generatePracticeQuestions();
-        }}
-        className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700"
+          onClick={() => {
+            console.log("Practice More clicked");
+            generatePracticeQuestions();
+          }}
+          className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700"
         >
           Practice More
         </button>
 
         <button
-        onClick={() => {
-          console.log("Back to Home clicked");
-          handleBackToHome();
-        }}
-        className="mt-4 px-4 py-2 bg-red-600 hover:bg-red-700"
+          onClick={() => {
+            console.log("Back to Home clicked");
+            handleBackToHome();
+          }}
+          className="mt-4 px-4 py-2 bg-red-600 hover:bg-red-700"
         >
           Back to Home
         </button>
@@ -306,14 +306,14 @@ const QuizPage = () => {
 
   if (!quizContent.length) {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+      <div className="min-h-screen bg-white text-black flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen text-white flex flex-col items-center justify-center p-4">
       <header className="absolute top-0 left-0 p-4">
         <Link href="/">
           <Image
@@ -331,13 +331,13 @@ const QuizPage = () => {
       )}
 
       {!showFinalFeedback ? (
-        <Card className="w-3/4 bg-gray-900 border border-gray-700">
+        <Card className="w-3/4 bg-[#f8f6ef] text-black border border-gray-700">
           <CardContent className="p-6">
             <div className="flex justify-between mb-4">
-              <span className="text-gray-400">
+              <span className="text-gray-600">
                 Question {currentQuestion + 1} of {quizContent.length}
               </span>
-              <span className="text-gray-400">
+              <span className="text-red-600">
                 Attempts: {attempts[currentQuestion]}
               </span>
             </div>
@@ -355,9 +355,9 @@ const QuizPage = () => {
                     ${
                       selectedAnswer === index
                         ? isCorrect
-                          ? "bg-green-600"
-                          : "bg-red-600"
-                        : "bg-gray-800 hover:bg-gray-700"
+                          ? "bg-green-600 text-white"
+                          : "bg-red-600 text-white"
+                        : "bg-white/50 hover:bg-gray-700 hover:text-white border border-gray-700"
                     }
                     ${option.includes("\n") ? "whitespace-pre-wrap" : ""}`}
                 >

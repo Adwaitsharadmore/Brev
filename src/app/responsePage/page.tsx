@@ -855,9 +855,9 @@ const renderCheatsheetAsList = () => {
             </button>
           )}
 
-          <div className="flex gap-4 mt-8">
+          <div className="flex gap-4 mt-8 pb-10">
             <Link href="/">
-              <label className="flex items-center justify-center w-58 p-4 bg-white text-black border rounded-full cursor-pointer hover:bg-custom-hover transition-colors">
+              <label className="flex items-center justify-center w-58 p-4 bg-[#0023FF] text-white border rounded-full cursor-pointer hover:bg-custom-hover transition-colors">
                 <span className="font-bold">Back</span>
               </label>
             </Link>
