@@ -233,8 +233,8 @@ const HomePage = () => {
                 </div>
               </div>
               <div className="grid grid-cols-1 grid-flow-col md:grid-cols-3 justify-between w-full pb-8 sm:pb-12 md:pb-16 lg:pb-20">
-                <div className="md:col-span-2 items-center md:items-start text-[#F8F6EF] font-inter text-base sm:text-lg md:text-xl space-y-4 pr-[175px]">
-                  <div className="bg-black p-7 rounded-2xl">
+                <div className="md:col-span-2 items-center md:items-start text-[#F8F6EF] font-inter text-base sm:text-lg md:text-xl space-y-4">
+                  <div className="bg-black p-7 rounded-2xl md:w-[75%] w-[100%]">
                     {" "}
                     <span className="text-white font-inter text-2xl md:text-3xl font-semibold tracking-tighter">
                       Cheat sheet generation
@@ -267,8 +267,8 @@ const HomePage = () => {
                     thumbnailAlt="Hero Video"
                   />
                 </div>
-                <div className="col-span-3 text-[#F8F6EF] font-inter place-items-end text-base sm:text-lg md:text-xl space-y-4 pl-[175px]">
-                  <div className="bg-black p-7 rounded-2xl">
+                <div className="col-span-3 text-[#F8F6EF] font-inter place-items-end text-base sm:text-lg md:text-xl space-y-4 ">
+                  <div className="bg-black p-7 rounded-2xl md:w-[75%] w-[100%]">
                     {" "}
                     <span className="text-white font-inter text-2xl md:text-3xl font-semibold tracking-tighter">
                       Practice Quizzes
@@ -282,8 +282,8 @@ const HomePage = () => {
                 </div>
               </div>
               <div className="flex justify-between w-full pb-[100px]">
-                <div className="col-span-2 text-[#F8F6EF] font-inter text-base sm:text-lg md:text-xl space-y-4 pr-[175px]">
-                  <div className="bg-black p-7 rounded-2xl">
+                <div className="col-span-2 text-[#F8F6EF] font-inter text-base sm:text-lg md:text-xl space-y-4">
+                  <div className="bg-black p-7 rounded-2xl md:w-[75%] w-[100%]">
                     {" "}
                     <span className="text-white font-inter text-2xl md:text-3xl font-semibold tracking-tighter">
                       Targeted Quizzes
@@ -306,9 +306,7 @@ const HomePage = () => {
                   />
                 </div>
               </div>
-              <div className="flex justify-between w-full ">
-
-              </div>
+              <div className="flex justify-between w-full "></div>
             </section>
           </BlurFade>
         </div>
@@ -353,15 +351,13 @@ const HomePage = () => {
                       tirelessly day and night to build a full-stack web app.
                       Though we were confident in our creation and excited about
                       its potential, the hackathon didn’t result in any awards
-                      or recognition. But we didn’t let that stop us.
-                      Instead of giving up, we saw this as an opportunity to
-                      turn Brev into something greater—a full-fledged startup
-                      with a mission to help students conquer their exams. Our
-                      vision became clear: to relieve the stress and anxiety
-                      that come with exam preparation and create the best study
-                      tool out there.
-                      
-                        Since then, we’ve poured countless hours into Brev,
+                      or recognition. But we didn’t let that stop us. Instead of
+                      giving up, we saw this as an opportunity to turn Brev into
+                      something greater—a full-fledged startup with a mission to
+                      help students conquer their exams. Our vision became
+                      clear: to relieve the stress and anxiety that come with
+                      exam preparation and create the best study tool out there.
+                      Since then, we’ve poured countless hours into Brev,
                       refining it to be the ultimate study companion. What began
                       as a simple hackathon idea is now a tool designed to help
                       students maximize their study time, reduce stress, and
