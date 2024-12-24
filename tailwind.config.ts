@@ -8,7 +8,14 @@ const config: Config = {
     './src/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
-  	extend: {
+	  extend: {
+			backdropFilter: {
+        // Add custom blur sizes if needed
+        none: 'none',
+        sm: 'blur(4px)',
+        md: 'blur(8px)',
+        lg: 'blur(16px)',
+      },
   		animation: {
   			'fade-in': 'fadeIn 0.5s ease-in-out',
   			marquee: 'marquee var(--duration) infinite linear',

@@ -23,6 +23,8 @@ import { cn } from "@/lib/utils";
 import { DotPattern } from "@/components/ui/dot-pattern";
 import ScrollProgress from "@/components/ui/scroll-progress";
 import BoxReveal from "@/components/ui/box-reveal";
+import { DockDemo } from "./dock";
+import { Dock } from "@/components/magicui/dock";
 
 const Section = ({ children, className }: { children: React.ReactNode; className?: string }) => {
   const controls = useAnimation();
@@ -112,10 +114,10 @@ const HomePage = () => {
 
   return (
     <div>
-      <ScrollProgress className="top-[65px]" />
-      <div className="w-screen h-screen relative bg-[#f8f6ef] items-center scroll-smooth">
+      <div className="w-screen h-screen relative items-center scroll-smooth">
         <div className="w-3/4 mx-auto flex flex-col items-center">
-          <div className="w-screen fixed top-0 z-50 bg-[#f8f6ef] justify-between gap-between">
+          <div className="w-screen sticky top-0 z-50 bg-[#f8f6ef] supports-backdrop-blur:bg-background/90 bg-background/40 backdrop-blur-lg justify-between gap-between">
+            <ScrollProgress className="top-[65px]" />
             <div className="w-3/4 mx-auto gap-between justify-between">
               <div className="flex justify-between items-center px-4 py-3 gap-between">
                 <div className="text-[#0023FF] text-3xl sm:text-4xl font-extrabold font-inter capitalize">
