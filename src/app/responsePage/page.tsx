@@ -669,7 +669,7 @@ const renderCheatsheetAsList = () => {
     
     return (
       <div>
-        <div className="flex-1 flex flex-col items-center w-full h-screen relative bg-[#f8f6ef]">
+        <div className="flex flex-col items-center w-full h-screen relative bg-[#f8f6ef]">
           <div className="w-3/4 mx-auto flex flex-col items-start">
             {/* Nav Bar */}
             <div className="w-full flex justify-between items-center pt-10 pb-5">
@@ -690,27 +690,27 @@ const renderCheatsheetAsList = () => {
             </div>
 
             {/* Phrases Section */}
-            <div className="w-full pt-[20px] mx-auto my-10">
+            <div className="w-full md:pt-[20px] pt-[10px] mx-auto my-10">
               <div className="w-full">
-                <span className="text-black tracking-tighter text-[4vw] md:text-[69px] font-semibold leading-tight font-Inter">
+                <span className="text-black tracking-tighter md:text-6xl text-2xl font-semibold leading-tight font-Inter">
                   Don’t worry,{" "}
                 </span>
-                <span className="text-[#0023FF] tracking-tighter bg-white text-[4vw] md:text-[69px] font-semibold leading-tight font-Inter">
+                <span className="text-[#0023FF] tracking-tighter md:text-6xl text-2xl font-semibold leading-tight font-Inter">
                   {" "}
                   Brev’s
                 </span>
-                <span className="text-black tracking-tighter text-[4vw] md:text-[69px] font-semibold leading-tight font-Inter">
+                <span className="text-black tracking-tighter md:text-6xl text-2xl font-semibold leading-tight font-Inter">
                   {" "}
                   got your back.
                 </span>
               </div>
-              <div className="text-black text-[2vw] tracking-tighter md:text-6xl font-light leading-tight font-Inter mt-4">
+              <div className="text-black tracking-tighter md:text-6xl text-2xl font-light leading-tight font-Inter mt-4">
                 Just upload a file
               </div>
-              <div className="text-black text-[2vw] tracking-tighter md:text-6xl font-light leading-tight font-Inter mt-4">
+              <div className="text-black tracking-tighter md:text-6xl text-2xl font-light leading-tight font-Inter mt-4">
                 and choose your
               </div>
-              <div className="text-black text-[2vw] tracking-tighter md:text-6xl gap-4 font-light leading-tight font-Inter mt-4 flex items-center">
+              <div className="text-black tracking-tighter md:text-6xl text-2xl gap-4 font-light leading-tight font-Inter mt-4 flex items-center">
                 <span>desired </span>
                 {/* <img
                   className="w-[100vw] max-w-[400px] h-auto ml-2 pt-3"
@@ -722,115 +722,119 @@ const renderCheatsheetAsList = () => {
             </div>
           </div>
 
-          <form
-            onSubmit={handleSubmit}
-            className="w-full max-w-4xl bg-black border border-gray-700 shadow-md rounded-lg p-6 mt-6"
-          >
-            <div className="mb-4">
-              <label className="block text-lg font-medium text-white">
-                Upload File
-              </label>
-              <input
-                type="file"
-                onChange={handleFileChange}
-                className="hidden"
-                id="file-upload"
-              />
-              <label
-                htmlFor="file-upload"
-                className="cursor-pointer mt-2 px-4 py-2 bg-white text-black border rounded-full inline-block text-center hover:bg-[#0023FF] hover:text-white transition-colors"
-              >
-                Choose File
-              </label>
-              {file && (
-                <p className="text-white mt-2">
-                  Selected file:{" "}
-                  <span className="font-semibold">{file.name}</span>
-                </p>
+          <div className="w-3/4 items-center justify-center">
+            <form
+              onSubmit={handleSubmit}
+              className="w-full max-w-4xl bg-black border border-gray-700 shadow-md rounded-lg p-6 mt-6"
+            >
+              <div className="mb-4">
+                <label className="block text-lg font-medium text-white">
+                  Upload File
+                </label>
+                <input
+                  type="file"
+                  onChange={handleFileChange}
+                  className="hidden"
+                  id="file-upload"
+                />
+                <label
+                  htmlFor="file-upload"
+                  className="cursor-pointer mt-2 px-4 py-2 bg-white text-black border rounded-full inline-block text-center hover:bg-[#0023FF] hover:text-white transition-colors"
+                >
+                  Choose File
+                </label>
+                {file && (
+                  <p className="text-white mt-2">
+                    Selected file:{" "}
+                    <span className="font-semibold">{file.name}</span>
+                  </p>
+                )}
+              </div>
+
+              <div className="mb-4 bg-black rounded-lg">
+                <label className="block text-lg font-medium text-white">
+                  Anything you wanna ask your Notes?
+                </label>
+                <input
+                  type="text"
+                  value={textPrompt}
+                  onChange={(e) => setTextPrompt(e.target.value)}
+                  className="mt-2 p-2 border border-gray-500 rounded w-full bg-black text-white"
+                  placeholder="Enter any additional prompt (optional)"
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-lg font-medium text-white mb-2">
+                  Select an option:
+                </label>
+                <div className="flex justify-start gap-4">
+                  <button
+                    type="submit"
+                    className={`bg-${
+                      loadingCheatsheet ? "yellow-500" : "white"
+                    } text-black px-4 py-2 rounded-full`}
+                    disabled={loadingCheatsheet}
+                  >
+                    {loadingCheatsheet
+                      ? "Generating..."
+                      : "Generate Cheatsheet"}
+                  </button>
+                  <button
+                    type="button"
+                    className={`bg-${
+                      loadingMnemonics ? "yellow-500" : "white"
+                    } text-black px-4 py-2 rounded-full ml-4`}
+                    onClick={handleGenerateMnemonics}
+                    disabled={loadingMnemonics}
+                  >
+                    {loadingMnemonics ? "Generating..." : "Generate Mnemonics"}
+                  </button>
+                  <button
+                    type="button"
+                    className={`bg-${
+                      loadingQuiz ? "yellow-500" : "white"
+                    } text-black px-4 py-2 rounded-full ml-4`}
+                    onClick={handleGenerateQuiz}
+                    disabled={loadingQuiz}
+                  >
+                    {loadingQuiz ? "Generating..." : "Generate Quiz"}
+                  </button>
+                </div>
+              </div>
+
+              {errorMessage && (
+                <p className="text-red-500 mt-2">{errorMessage}</p>
               )}
-            </div>
 
-            <div className="mb-4 bg-black rounded-lg">
-              <label className="block text-lg font-medium text-white">
-                Anything you wanna ask your Notes?
-              </label>
-              <input
-                type="text"
-                value={textPrompt}
-                onChange={(e) => setTextPrompt(e.target.value)}
-                className="mt-2 p-2 border border-gray-500 rounded w-full bg-black text-white"
-                placeholder="Enter any additional prompt (optional)"
-              />
-            </div>
-
-            <div className="mb-4">
-              <label className="block text-lg font-medium text-white mb-2">
-                Select an option:
-              </label>
-              <div className="flex justify-start gap-4">
-                <button
-                  type="submit"
-                  className={`bg-${
-                    loadingCheatsheet ? "yellow-500" : "white"
-                  } text-black px-4 py-2 rounded-full`}
-                  disabled={loadingCheatsheet}
-                >
-                  {loadingCheatsheet ? "Generating..." : "Generate Cheatsheet"}
-                </button>
-                <button
-                  type="button"
-                  className={`bg-${
-                    loadingMnemonics ? "yellow-500" : "white"
-                  } text-black px-4 py-2 rounded-full ml-4`}
-                  onClick={handleGenerateMnemonics}
-                  disabled={loadingMnemonics}
-                >
-                  {loadingMnemonics ? "Generating..." : "Generate Mnemonics"}
-                </button>
-                <button
-                  type="button"
-                  className={`bg-${
-                    loadingQuiz ? "yellow-500" : "white"
-                  } text-black px-4 py-2 rounded-full ml-4`}
-                  onClick={handleGenerateQuiz}
-                  disabled={loadingQuiz}
-                >
-                  {loadingQuiz ? "Generating..." : "Generate Quiz"}
-                </button>
+              <div className="mb-4">
+                <div className="flex justify-start gap-4">
+                  <button
+                    type="button"
+                    className={`px-3 py-1 rounded-full ${
+                      selectedOption === "Detailed"
+                        ? "bg-yellow-500 text-black"
+                        : "bg-white text-black"
+                    }`}
+                    onClick={() => toggleSelection("Detailed")}
+                  >
+                    Detailed
+                  </button>
+                  <button
+                    type="button"
+                    className={`px-3 py-1 rounded-full ${
+                      selectedOption === "Precise"
+                        ? "bg-yellow-500 text-black"
+                        : "bg-white text-black"
+                    }`}
+                    onClick={() => toggleSelection("Precise")}
+                  >
+                    Precise
+                  </button>
+                </div>
               </div>
-            </div>
-
-            {errorMessage && (
-              <p className="text-red-500 mt-2">{errorMessage}</p>
-            )}
-
-            <div className="mb-4">
-              <div className="flex justify-start gap-4">
-                <button
-                  type="button"
-                  className={`px-3 py-1 rounded-full ${
-                    selectedOption === "Detailed"
-                      ? "bg-yellow-500 text-black"
-                      : "bg-white text-black"
-                  }`}
-                  onClick={() => toggleSelection("Detailed")}
-                >
-                  Detailed
-                </button>
-                <button
-                  type="button"
-                  className={`px-3 py-1 rounded-full ${
-                    selectedOption === "Precise"
-                      ? "bg-yellow-500 text-black"
-                      : "bg-white text-black"
-                  }`}
-                  onClick={() => toggleSelection("Precise")}
-                >
-                  Precise
-                </button>
-              </div>
-            </div>
-          </form>
+            </form>
+          </div>
 
           <div className="w-full max-w-4xl bg-white shadow-md rounded-lg p-6 mt-6">
             <div id="cheatsheet-content" className="text-lg text-black">

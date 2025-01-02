@@ -37,7 +37,7 @@ const Typewriter = () => {
   }, [blink]);
 
   return (
-    <span className="typewriter-text text-4xl md:text-6xl lg:text-[4.4rem] font-extra-bold text-[#0023FF] leading-none relative before:absolute before:inset-x-0 before:bottom-0 md:before:bottom-2 lg:before:bottom-2  before:block before:w-[90%] before:h-[14px] before:bg-blue before:bg-opacity-60 ">
+    <span className="typewriter-text text-2xl md:text-6xl lg:text-[4.4rem] font-extra-bold text-[#0023FF] leading-none relative before:absolute before:inset-x-0 before:bottom-0 md:before:bottom-2 lg:before:bottom-2  before:block before:w-[90%] before:h-[14px] before:bg-blue before:bg-opacity-60 ">
       {`${titles[index].substring(0, subIndex)}`}
       <span className="typewriter-cursor">{blink ? "|" : " "}</span>
     </span>

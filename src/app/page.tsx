@@ -115,7 +115,7 @@ const HomePage = () => {
   return (
     <div>
       <div className="w-screen h-screen relative items-center scroll-smooth">
-        <div className="w-3/4 mx-auto flex flex-col items-center">
+        <div className="mx-auto flex flex-col items-center">
           <div className="w-screen sticky top-0 z-50 bg-[#f8f6ef] supports-backdrop-blur:bg-background/90 bg-background/40 backdrop-blur-lg justify-between gap-between">
             <ScrollProgress className="top-[65px]" />
             <div className="w-3/4 mx-auto gap-between justify-between">
@@ -211,7 +211,7 @@ const HomePage = () => {
 
           <BlurFade delay={0.25} inView>
             <section id="about" className="about">
-              <motion.div className="relative w-full mx-auto pt-[200px] md:items-center justify-center my-50 pb-50">
+              <motion.div className="relative mx-auto pt-[200px] md:items-center justify-center my-50 pb-50">
                 <div className="flex flex-col md:items-center items-center justify-center md:leading-tight">
                   <div className="text-black text-4xl md:text-center text-center sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl font-semibold leading-tight tracking-tighter font-Inter">
                     Your go-to tool for smarter learning
@@ -239,7 +239,7 @@ const HomePage = () => {
             </section>
 
             <section id="features">
-              <div className="bg-[#f8f6ef] w-full pt-8 sm:pt-12 md:pt-16 lg:pt-20 xl:pt-[200px] mx-auto my-4 sm:my-6 md:my-8 lg:my-10">
+              <div className="bg-[#f8f6ef] pt-8 sm:pt-12 md:pt-16 lg:pt-20 xl:pt-[200px] mx-auto my-4 sm:my-6 md:my-8 lg:my-10">
                 <div className="text-black md:flex md:flex-col flex text-center md:text-start gap-2 md:gap-0">
                   <div>
                     {" "}
@@ -333,11 +333,11 @@ const HomePage = () => {
 
         <section id="story">
           {" "}
-          <div className="w-full h-auto relative scroll-smooth">
+          <div className="h-auto relative scroll-smooth">
             <div className="w-3/4 mx-auto flex flex-col items-start">
               <div>
                 <div
-                  className="pt-[100px] flex w-full"
+                  className="pt-[100px] flex"
                   style={{
                     color: "black",
                     fontSize: "69px",
@@ -431,8 +431,7 @@ const HomePage = () => {
           </div>
         </section>
 
-        <div className="w-full relative scroll-smooth">
-         
+        <div className="relative scroll-smooth">
           <section id="contact">
             {" "}
             <footer className="bg-[#0023FF] flex justify-center items-center">
@@ -444,7 +443,7 @@ const HomePage = () => {
               </div>
               <div>
                 {" "}
-                <div className="pt-[100px] text-center font-inter text-7xl w-full items-center flex-col justify-center">
+                <div className="pt-[100px] text-center font-inter text-7xl items-center flex-col justify-center">
                   Follow us on our socials.
                 </div>
                 <div className="flex justify-center items-center gap-20 p-10 ">
@@ -461,7 +460,7 @@ const HomePage = () => {
                     <FaLinkedin className="text-7xl hover:text-[#0023FF]" />
                   </Link>
                 </div>
-                <div className="flex justify-center w-full pb-[150px]">
+                <div className="flex justify-center pb-[150px]">
                   <Link href="">
                     <button
                       className="px-8 py-4 bg-white text-black"
