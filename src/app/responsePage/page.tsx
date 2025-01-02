@@ -690,7 +690,7 @@ const renderCheatsheetAsList = () => {
             </div>
 
             {/* Phrases Section */}
-            <div className="w-full md:pt-[20px] pt-[10px] mx-auto my-10">
+            <div className="w-full md:pt-[20px] pt-[10px] mx-auto">
               <div className="w-full">
                 <span className="text-black tracking-tighter md:text-6xl text-2xl font-semibold leading-tight font-Inter">
                   Don’t worry,{" "}
@@ -722,7 +722,7 @@ const renderCheatsheetAsList = () => {
             </div>
           </div>
 
-          <div className="w-3/4 items-center justify-center">
+          <div className="w-[100%] items-center justify-items-center md:p-0 p-5">
             <form
               onSubmit={handleSubmit}
               className="w-full max-w-4xl bg-black border border-gray-700 shadow-md rounded-lg p-6 mt-6"
@@ -777,7 +777,7 @@ const renderCheatsheetAsList = () => {
                     disabled={loadingCheatsheet}
                   >
                     {loadingCheatsheet
-                      ? "Generating..."
+                      ? "Generating Cheatsheet..."
                       : "Generate Cheatsheet"}
                   </button>
                   <button
@@ -788,7 +788,7 @@ const renderCheatsheetAsList = () => {
                     onClick={handleGenerateMnemonics}
                     disabled={loadingMnemonics}
                   >
-                    {loadingMnemonics ? "Generating..." : "Generate Mnemonics"}
+                    {loadingMnemonics ? "Generating Mnemonics..." : "Generate Mnemonics"}
                   </button>
                   <button
                     type="button"
@@ -798,7 +798,7 @@ const renderCheatsheetAsList = () => {
                     onClick={handleGenerateQuiz}
                     disabled={loadingQuiz}
                   >
-                    {loadingQuiz ? "Generating..." : "Generate Quiz"}
+                    {loadingQuiz ? "Generating Quiz..." : "Generate Quiz"}
                   </button>
                 </div>
               </div>
