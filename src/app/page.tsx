@@ -431,42 +431,8 @@ const HomePage = () => {
           </div>
         </section>
 
-        <div className="w-full relative bg-white scroll-smooth">
-          <div className="w-3/4 pb-[200px] mx-auto flex flex-col items-start">
-            <div className="items-center flex-col item-center justify-center w-full">
-              <div
-                className="pt-[200px] text-center text-black"
-                style={{
-                  fontSize: "170px",
-                  font: "Inter",
-                  fontWeight: 10,
-                  wordWrap: "break-word",
-                  letterSpacing: "-4px",
-                  lineHeight: "1",
-                }}
-              >
-                SHHH, there is more to come!
-              </div>
-              <div className="pt-5 flex justify-center w-full">
-                <button
-                  className="px-8 py-4"
-                  onClick={handleStartBreving}
-                  style={{
-                    background: "#0023FF",
-                    borderRadius: "31px",
-                    color: "white",
-                    fontSize: "18px",
-                    font: "Inter",
-                    lineHeight: "27.50px",
-                    border: "none",
-                    cursor: "pointer",
-                  }}
-                >
-                  Wanna know more?
-                </button>
-              </div>
-            </div>
-          </div>
+        <div className="w-full relative scroll-smooth">
+         
           <section id="contact">
             {" "}
             <footer className="bg-[#0023FF] flex justify-center items-center">
