@@ -249,7 +249,7 @@ const HomePage = () => {
                   </div>
                 </div>
               </div>
-              <div className="grid grid-cols-1 grid-flow-col md:grid-cols-3 justify-between w-full pb-8 sm:pb-12 md:pb-16 lg:pb-20">
+              {/* <div className="grid grid-cols-1 grid-flow-col md:grid-cols-3 justify-between w-full pb-8 sm:pb-12 md:pb-16 lg:pb-20">
                 <div className="md:col-span-2 items-center md:items-start text-[#F8F6EF] font-inter text-base sm:text-lg md:text-xl space-y-4">
                   <div className="bg-black p-7 rounded-2xl md:w-[75%] w-[100%]">
                     {" "}
@@ -323,7 +323,10 @@ const HomePage = () => {
                   />
                 </div>
               </div>
-              <div className="flex justify-between w-full "></div>
+              <div className="flex justify-between w-full "></div> */}
+              <div>
+                <BentoDemo></BentoDemo>
+              </div>
             </section>
           </BlurFade>
         </div>
@@ -383,9 +386,6 @@ const HomePage = () => {
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="pt-[100px]">
-                <BentoDemo></BentoDemo>
               </div>
             </div>
             {/*<div
