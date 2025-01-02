@@ -484,8 +484,27 @@ const HomePage = () => {
         </div> */}
 
         <section>
-          <footer className="bg-[#0023FF]">
-            
+          <footer className="bg-[#0023FF] flex p-10 grid-flow-col grid-cols-3 justify-between">
+            <div>
+              <div className="text-center text-white col-span-1">
+                <div className="text-7xl font-inter">Brev</div>
+                <div className="text-2xl font-inter">© 2021 Brev, Inc.</div>
+              </div>
+            </div>
+            <div className="flex flex-col items-center col-span-2">
+              <div>
+                <p className="text-2xl">our <br /> socials</p>
+              </div>
+
+            </div>
+            <div className="flex flex-col">
+              <div>
+                contact us
+              </div>
+              <div>
+                links
+              </div>
+            </div>
           </footer>
         </section>
       </div>
