@@ -114,7 +114,7 @@ const HomePage = () => {
 
   return (
     <div>
-      <div className="w-screen h-screen relative items-center scroll-smooth">
+      <div className="w-screen h-screen items-center scroll-smooth">
         <div className="mx-auto flex flex-col items-center">
           <div className="w-screen sticky top-0 z-50 bg-[#f8f6ef] supports-backdrop-blur:bg-background/90 bg-background/40 backdrop-blur-lg justify-between gap-between">
             <ScrollProgress className="top-[65px]" />
@@ -324,7 +324,7 @@ const HomePage = () => {
                 </div>
               </div>
               <div className="flex justify-between w-full "></div> */}
-              <div>
+              <div className="md:p-0 p-5">
                 <BentoDemo></BentoDemo>
               </div>
             </section>
@@ -431,10 +431,10 @@ const HomePage = () => {
           </div>
         </section>
 
-        <div className="relative scroll-smooth">
+        {/* <div className="w-screen relative scroll-smooth">
           <section id="contact">
             {" "}
-            <footer className="bg-[#0023FF] flex justify-center items-center">
+            <div className="bg-[#0023FF] flex items-center w-full">
               <div className="pr-20">
                 <div className="pt-[100px] text-center text-white">
                   <div className="text-7xl font-inter">Brev</div>
@@ -479,9 +479,15 @@ const HomePage = () => {
                   </Link>
                 </div>
               </div>
-            </footer>
-          </section>
-        </div>
+            </div>
+          </section> 
+        </div> */}
+
+        <section>
+          <footer className="bg-[#0023FF]">
+            
+          </footer>
+        </section>
       </div>
     </div>
   );
