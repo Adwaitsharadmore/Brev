@@ -1,54 +1,68 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-
-import fs from 'fs';
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import fs from "fs";
 import Typewriter from "./p";
 import ScrollProgress from "@/components/ui/scroll-progress";
+import { Card, CardContent } from "@/components/ui/card";
+
+interface Mnemonic {
+  text: string;
+  type: string;
+  title: string;
+  subtopic: string;
+  explanation: string;
+}
 
 const ResponsePage = () => {
-    const [isOpen, setIsOpen] = useState(false);
-     const [cheatsheetContent, setCheatsheetContent] = useState<string | null>(null);
-     const [file, setFile] = useState<File | null>(null);
-     const [textPrompt, setTextPrompt] = useState("");
-     const [loadingCheatsheet, setLoadingCheatsheet] = useState(false);
-     const [loadingQuiz, setLoadingQuiz] = useState(false);
-     const [loadingMnemonics, setLoadingMnemonics] = useState(false);
-     const [selectedOption, setSelectedOption] = useState("");
-     const [errorMessage, setErrorMessage] = useState("");
+  const [showingMnemonics, setShowingMnemonics] = useState(false);
 
-    const [tempFilePath, setTempFilePath] = useState<string | null>(null);
-    const [hasSpecialCharacters, setHasSpecialCharacters] = useState(false);
-    const [mnemonicsContent, setMnemonicsContent] = useState<string | null>(null);
-    const [html2pdf, setHtml2pdf] = useState<typeof import("html2pdf.js") | null>(null);   
+  const [isOpen, setIsOpen] = useState(false);
+  const [cheatsheetContent, setCheatsheetContent] = useState<string | null>(
+    null
+  );
+  const [file, setFile] = useState<File | null>(null);
+  const [textPrompt, setTextPrompt] = useState("");
+  const [loadingCheatsheet, setLoadingCheatsheet] = useState(false);
+  const [loadingQuiz, setLoadingQuiz] = useState(false);
+  const [loadingMnemonics, setLoadingMnemonics] = useState(false);
+  const [selectedOption, setSelectedOption] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
+  const [tempFilePath, setTempFilePath] = useState<string | null>(null);
+  const [hasSpecialCharacters, setHasSpecialCharacters] = useState(false);
+  const [mnemonicsContent, setMnemonicsContent] = useState<string | null>(null);
+  const [html2pdf, setHtml2pdf] = useState<typeof import("html2pdf.js") | null>(
+    null
+  );
 
-     useEffect(() => {
-       const loadHtml2Pdf = async () => {
-         const { default: pdf } = await import("html2pdf.js");
-         setHtml2pdf(pdf); // Set the library to state
-       };
-       loadHtml2Pdf();
-     }, []);
-    
-      const handleScroll = (id: string) => {
-        const element = document.getElementById(id);
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth" });
-        }
-      };
-    
- const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-   const selectedFile = event.target.files?.[0];
-   if (selectedFile) {
-     setFile(selectedFile);
-   } else {
-     alert("No file selected. Please try again.");
-   }
- };
+  useEffect(() => {
+    const loadHtml2Pdf = async () => {
+      const { default: pdf } = await import("html2pdf.js");
+      setHtml2pdf(pdf); // Set the library to state
+    };
+    loadHtml2Pdf();
+  }, []);
 
-const handleSubmit = async (event: React.FormEvent) => {
+  const handleScroll = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.target.files?.[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+    } else {
+      alert("No file selected. Please try again.");
+    }
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     if (!file) {
@@ -57,7 +71,9 @@ const handleSubmit = async (event: React.FormEvent) => {
     }
 
     if (!selectedOption) {
-      setErrorMessage("Please select if you want a detailed or precise cheatsheet first");
+      setErrorMessage(
+        "Please select if you want a detailed or precise cheatsheet first"
+      );
       return;
     }
 
@@ -143,13 +159,10 @@ Please structure the content following this format exactly as it matches the fro
     formData.append("textPrompt", customPrompt);
 
     try {
-      const response = await fetch(
-        "/api/upload-and-generate",
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
+      const response = await fetch("/api/upload-and-generate", {
+        method: "POST",
+        body: formData,
+      });
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -167,19 +180,16 @@ Please structure the content following this format exactly as it matches the fro
     }
   };
 
+  const handleGenerateQuiz = async () => {
+    if (!file) {
+      alert("Please upload a file");
+      return;
+    }
 
+    setLoadingQuiz(true);
 
-    const handleGenerateQuiz = async () => {
-      if (!file) {
-        alert("Please upload a file");
-        return;
-      }
-
-      setLoadingQuiz(true);
-
-      
-       const quizPrompt = hasSpecialCharacters
-         ? `Generate multiple-choice questions focusing on the most important topics of the document. The number of questions should be proportional to the size and content density of the document. Each question should test the user's understanding of the key points, concepts, or details in the document. Format each question as follows:
+    const quizPrompt = hasSpecialCharacters
+      ? `Generate multiple-choice questions focusing on the most important topics of the document. The number of questions should be proportional to the size and content density of the document. Each question should test the user's understanding of the key points, concepts, or details in the document. Format each question as follows:
 
 QUESTION: Write the question here
 OPTION_A: First option
@@ -189,8 +199,7 @@ OPTION_D: Fourth option
 CORRECT: Write the correct option letter (A, B, C, or D)
 
 Separate each question with three dashes (---).`
-
-: `Generate multiple-choice questions focusing on the most important topics of the document. The number of questions should be proportional to the size and content density of the document. Each question should test the user's understanding of the key points, concepts, or details in the document. Format each question as follows:
+      : `Generate multiple-choice questions focusing on the most important topics of the document. The number of questions should be proportional to the size and content density of the document. Each question should test the user's understanding of the key points, concepts, or details in the document. Format each question as follows:
 
 QUESTION: Write the question here
 OPTION_A: First option
@@ -201,47 +210,45 @@ CORRECT: Write the correct option letter (A, B, C, or D)
 
 Separate each question with three dashes (---).`;
 
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("textPrompt", quizPrompt);
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("textPrompt", quizPrompt);
 
-      try {
-        const response = await fetch(
-          "/api/upload-and-generate-quiz",
-          {
-            method: "POST",
-            body: formData,
-          }
-        );
-        if (!response.ok) {
-          throw new Error("Failed to generate quiz");
-        }
-        const data = await response.json();
-
-        // Store the tempFilePath for later use
-        setTempFilePath(data.tempFilePath);
-
-        // Redirect to the new quiz page with generated quiz content
-        window.location.href = `/quizPage?quiz=${encodeURIComponent(
-          data.generatedQuiz
-        )}&originalFileName=${encodeURIComponent(file.name)}`;
-      } catch (error) {
-        console.error("Error fetching quiz content:", error);
-      } finally {
-        setLoadingQuiz(false);
+    try {
+      const response = await fetch("/api/upload-and-generate-quiz", {
+        method: "POST",
+        body: formData,
+      });
+      if (!response.ok) {
+        throw new Error("Failed to generate quiz");
       }
-    };
+      const data = await response.json();
+
+      // Store the tempFilePath for later use
+      setTempFilePath(data.tempFilePath);
+
+      // Redirect to the new quiz page with generated quiz content
+      window.location.href = `/quizPage?quiz=${encodeURIComponent(
+        data.generatedQuiz
+      )}&originalFileName=${encodeURIComponent(file.name)}`;
+    } catch (error) {
+      console.error("Error fetching quiz content:", error);
+    } finally {
+      setLoadingQuiz(false);
+    }
+  };
+
+  const handleGenerateMnemonics = async () => {
+    if (!file) {
+      alert("Please upload a file");
+      return;
+    }
+
+    setLoadingMnemonics(true);
+      setShowingMnemonics(true);
 
 
-const handleGenerateMnemonics = async () => {
-  if (!file) {
-    alert("Please upload a file");
-    return;
-  }
-
-  setLoadingMnemonics(true);
-
-  const customPrompt = `Analyze the document and create mnemonics for all the key concepts of the provided document to aid in memorizing key concepts. Use the most effective and suitable mnemonic technique for the respective key concepts. Use the following format strictly:
+    const customPrompt = `Analyze the document and create mnemonics for all the key concepts of the provided document to aid in memorizing key concepts. Use the most effective and suitable mnemonic technique for the respective key concepts. Use the following format strictly:
 
 Each concept in this framework should follow this pattern:
 1. Start with a brief explanation of the concept
@@ -347,272 +354,509 @@ Remember: Choose the most effective method based on the content.
 Remember: Each new mnemonic created should follow this enhanced format with explanation first, then the mnemonic itself, maintaining consistent formatting throughout.
     `;
 
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("textPrompt", customPrompt);
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("textPrompt", customPrompt);
 
-  try {
-    const response = await fetch(
-      "/api/upload-and-generate-mnemonics",
-      {
+    try {
+      const response = await fetch("/api/upload-and-generate-mnemonics", {
         method: "POST",
         body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-    );
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const data = await response.json();
+      setCheatsheetContent(data.generatedMnemonics);
+    } catch (error) {
+      console.error("Error fetching mnemonics:", error);
+      setErrorMessage("Failed to generate mnemonics. Please try again.");
+    } finally {
+      setLoadingMnemonics(false);
     }
+  };
 
-    const data = await response.json();
-    setCheatsheetContent(data.generatedMnemonics);
-  } catch (error) {
-    console.error("Error fetching mnemonics:", error);
-    setErrorMessage("Failed to generate mnemonics. Please try again.");
-  } finally {
-    setLoadingMnemonics(false);
-  }
-    };
-    
-const renderMnemonicsAsList = () => {
-  if (!mnemonicsContent) return null;
+  // const renderCheatsheetAsList = () => {
+  //   if (!cheatsheetContent) return null;
 
-  // Split content into sections by '---'
-  const sections = mnemonicsContent
-    .split("---")
-    .filter((section) => section.trim());
+  //   // Split by `---` to get sections and then iterate over each line for parsing
+  //   const sections = cheatsheetContent
+  //     .split("---")
+  //     .filter((section) => section.trim());
 
-  return (
-    <div id="mnemonics-content" className="text-black max-w-4xl mx-auto">
-      {sections.map((section, index) => {
-        const lines = section
-          .trim()
-          .split("\n")
-          .filter((line) => line.trim());
+  //   // Helper function to format mathematical notation
+  //   const formatMathText = (text:string) => {
+  //     // Format subscripts (e.g., a₀, n₁)
+  //     let formattedText = text.replace(/([a-z])(\d)/gi, "$1₍$2₎");
 
-        return (
-          <div key={index} className="mb-8 bg-white rounded-lg shadow-md p-6">
-            {lines.map((line, lineIndex) => {
-              const titleMatch = line.match(/^TITLE:\s(.+)/);
-              const subtopicMatch = line.match(/^SUBTOPIC:\s(.+)/);
-              const mnemonicMatch = line.match(/^MNEMONIC_\d+:\s(.+)/);
-              const typeMatch = line.match(/^TYPE:\s(.+)/);
+  //     // Format superscripts (e.g., x², 2ⁿ)
+  //     formattedText = formattedText.replace(/\^(\d+)/g, "⁽$1⁾");
 
-              if (titleMatch) {
-                return (
-                  <h2
-                    key={lineIndex}
-                    className="text-3xl font-bold mb-4 text-blue-900 border-b pb-2"
-                  >
-                    {titleMatch[1]}
-                  </h2>
-                );
-              } else if (subtopicMatch) {
-                return (
-                  <h3
-                    key={lineIndex}
-                    className="text-xl font-semibold mb-3 text-blue-700 mt-4"
-                  >
-                    {subtopicMatch[1]}
-                  </h3>
-                );
-              } else if (mnemonicMatch) {
-                return (
-                  <div key={lineIndex} className="ml-4 mb-2">
-                    <div className="flex">
-                      <div className="mr-2 text-blue-500"></div>
-                      <div className="flex-1 font-normal">
-                        {mnemonicMatch[1]}
-                      </div>
-                    </div>
-                  </div>
-                );
-              } else if (typeMatch) {
-                return (
-                  <div
-                    key={lineIndex}
-                    className="ml-8 mb-3 text-gray-600 italic text-sm"
-                  >
-                    {typeMatch[1]}
-                  </div>
-                );
-              }
-              return null;
-            })}
-          </div>
-        );
-      })}
-    </div>
-  );
-};
+  //     // Format special symbols
+  //     const symbolMap = {
+  //       ">=": "≥",
+  //       "<=": "≤",
+  //       "!=": "≠",
+  //       phi: "φ",
+  //       sqrt: "√",
+  //       "->": "→",
+  //       N0: "ℕ₀",
+  //       N: "ℕ",
+  //       Z: "ℤ",
+  //     };
 
+  //     Object.entries(symbolMap).forEach(([key, value]) => {
+  //       formattedText = formattedText.replace(new RegExp(key, "g"), value);
+  //     });
 
-const renderCheatsheetAsList = () => {
-  if (!cheatsheetContent) return null;
+  //     return formattedText;
+  //   };
 
-  // Split by `---` to get sections and then iterate over each line for parsing
-  const sections = cheatsheetContent
-    .split("---")
-    .filter((section) => section.trim());
+  //   // Helper function to handle code-like blocks
+  //   const formatCodeBlock = (text: string) => {
+  //     if (text.includes("{") || text.includes("if") || text.includes("→")) {
+  //       return (
+  //         <pre className="bg-gray-100 p-4 rounded-md font-mono text-sm my-2 whitespace-pre-wrap">
+  //           {text}
+  //         </pre>
+  //       );
+  //     }
+  //     return formatMathText(text);
+  //   };
 
-  // Helper function to format mathematical notation
-  const formatMathText = (text:string) => {
-    // Format subscripts (e.g., a₀, n₁)
-    let formattedText = text.replace(/([a-z])(\d)/gi, "$1₍$2₎");
+  //   return (
+  //     <div id="cheatsheet-content" className="text-black max-w-4xl mx-auto">
+  //       {sections.map((section: string, index: number) => {
+  //         const lines = section
+  //           .trim()
+  //           .split("\n")
+  //           .filter((line) => line.trim());
 
-    // Format superscripts (e.g., x², 2ⁿ)
-    formattedText = formattedText.replace(/\^(\d+)/g, "⁽$1⁾");
+  //         return (
+  //           <div key={index} className="mb-8 bg-white rounded-lg shadow-md p-6">
+  //             {lines.map((line: string, lineIndex: number) => {
+  //               const titleMatch1 = line.match(/^TITLE:\s(.+)/);
+  //               const subtopicMatch = line.match(/^SUBTOPIC:\s(.+)/);
+  //               const detailMatch = line.match(/^DETAIL_\d+:\s(.+)/);
+  //               const mnemonicMatch = line.match(/^MNEMONIC_\d+:\s(.+)/);
+  //               const typeMatch = line.match(/^TYPE:\s(.+)/);
+  //               const explanationMatch = line.match(/^Explanation:\s(.+)/);
 
-    // Format special symbols
-    const symbolMap = {
-      ">=": "≥",
-      "<=": "≤",
-      "!=": "≠",
-      phi: "φ",
-      sqrt: "√",
-      "->": "→",
-      N0: "ℕ₀",
-      N: "ℕ",
-      Z: "ℤ",
-    };
+  //               if (titleMatch1) {
+  //                 return (
+  //                   <h2
+  //                     key={lineIndex}
+  //                     className="text-3xl font-bold mb-4 text-blue-900 border-b pb-2"
+  //                   >
+  //                     {formatMathText(titleMatch1[1])}
+  //                   </h2>
+  //                 );
+  //               } else if (explanationMatch) {
+  //                 return (
+  //                   <div className="ml-4 mb-4 text-gray-700 bg-blue-50 p-4 rounded-lg">
+  //                     <p className="font-medium text-blue-800 mb-1">
+  //                       Explanation:
+  //                     </p>
+  //                     <p>{explanationMatch[1]}</p>
+  //                   </div>
+  //                 );
+  //               } else if (subtopicMatch) {
+  //                 return (
+  //                   <h3
+  //                     key={lineIndex}
+  //                     className="text-xl font-semibold mb-3 text-blue-700 mt-4"
+  //                   >
+  //                     {formatMathText(subtopicMatch[1])}
+  //                   </h3>
+  //                 );
+  //               } else if (mnemonicMatch) {
+  //                 return (
+  //                   <div className="ml-4 mb-2">
+  //                     <div className="flex items-start">
+  //                       <div className="mr-2 text-blue-500 mt-1"></div>
+  //                       <div className="flex-1">
+  //                         <div className="font-medium text-gray-800 bg-blue-50 p-3 rounded-lg">
+  //                           {mnemonicMatch[1]}
+  //                         </div>
+  //                       </div>
+  //                     </div>
+  //                   </div>
+  //                 );
+  //               } else if (detailMatch) {
+  //                 const detailContent = detailMatch[1].trim();
+  //                 return (
+  //                   <div key={lineIndex} className="ml-4 mb-3">
+  //                     <div className="flex">
+  //                       <div className="mr-2 text-blue-500">•</div>
+  //                       <div className="flex-1">
+  //                         {detailContent.includes("\n") ||
+  //                         detailContent.includes("    ") ? (
+  //                           <div className="font-normal">
+  //                             {detailContent
+  //                               .split("\n")
+  //                               .map((part: string, partIndex: number) => (
+  //                                 <div
+  //                                   key={partIndex}
+  //                                   className={
+  //                                     part.startsWith("    ")
+  //                                       ? "ml-4 font-mono"
+  //                                       : ""
+  //                                   }
+  //                                 >
+  //                                   {formatCodeBlock(part.trim())}
+  //                                 </div>
+  //                               ))}
+  //                           </div>
+  //                         ) : (
+  //                           <div className="font-normal">
+  //                             {formatMathText(detailContent)}
+  //                           </div>
+  //                         )}
+  //                       </div>
+  //                     </div>
+  //                   </div>
+  //                 );
+  //               } else if (typeMatch) {
+  //                 return (
+  //                   <div className="ml-8 mb-4 text-black font-inter">
+  //                     <div className="flex items-center">
+  //                       <span className="text-blue-400 mr-2"></span>
+  //                       {typeMatch[1]}
+  //                     </div>
+  //                   </div>
+  //                 );
+  //               } else {
+  //                 return (
+  //                   <p key={lineIndex} className="ml-4 mb-2 font-normal">
+  //                     {formatMathText(line.trim())}
+  //                   </p>
+  //                 );
+  //               }
+  //             })}
+  //           </div>
+  //         );
+  //       })}
+  //     </div>
+  //   );
+  // };
 
-    Object.entries(symbolMap).forEach(([key, value]) => {
-      formattedText = formattedText.replace(new RegExp(key, "g"), value);
+  const parseMnemonics = (content: string) => {
+    const sections = content.split("---").filter((section) => section.trim());
+    const mnemonics: Mnemonic[] = [];
+
+    sections.forEach((section) => {
+      const lines = section
+        .trim()
+        .split("\n")
+        .filter((line) => line.trim());
+      let currentMnemonic: Partial<Mnemonic> = {};
+
+      lines.forEach((line) => {
+        const titleMatch = line.match(/^TITLE:\s(.+)/);
+        const subtopicMatch = line.match(/^SUBTOPIC:\s(.+)/);
+        const explanationMatch = line.match(/^Explanation:\s(.+)/);
+        const mnemonicMatch = line.match(/^MNEMONIC_\d+:\s(.+)/);
+        const typeMatch = line.match(/^TYPE:\s(.+)/);
+
+        if (titleMatch) currentMnemonic.title = titleMatch[1];
+        else if (subtopicMatch) currentMnemonic.subtopic = subtopicMatch[1];
+        else if (explanationMatch)
+          currentMnemonic.explanation = explanationMatch[1];
+        else if (mnemonicMatch) currentMnemonic.text = mnemonicMatch[1];
+        else if (typeMatch) {
+          currentMnemonic.type = typeMatch[1];
+          mnemonics.push(currentMnemonic as Mnemonic);
+          currentMnemonic = {};
+        }
+      });
     });
 
-    return formattedText;
+    return mnemonics;
   };
 
-  // Helper function to handle code-like blocks
-  const formatCodeBlock = (text: string) => {
-    if (text.includes("{") || text.includes("if") || text.includes("→")) {
-      return (
-        <pre className="bg-gray-100 p-4 rounded-md font-mono text-sm my-2 whitespace-pre-wrap">
-          {text}
-        </pre>
-      );
-    }
-    return formatMathText(text);
-  };
+  const renderCheatsheetAsList = () => {
+    if (!cheatsheetContent) return null;
 
-  return (
-    <div id="cheatsheet-content" className="text-black max-w-4xl mx-auto">
-      {sections.map((section: string, index: number) => {
-        const lines = section
-          .trim()
-          .split("\n")
-          .filter((line) => line.trim());
+    
+  if (showingMnemonics) {
+    const mnemonics = parseMnemonics(cheatsheetContent);
+    return <MnemonicCards mnemonics={mnemonics} />;
+  }
+    const sections = cheatsheetContent
+      .split("---")
+      .filter((section) => section.trim());
 
+    // Helper function to format mathematical notation (keeping existing implementation)
+    const formatMathText = (text: string) => {
+      let formattedText = text.replace(/([a-z])(\d)/gi, "$1₍$2₎");
+      formattedText = formattedText.replace(/\^(\d+)/g, "⁽$1⁾");
+      const symbolMap = {
+        ">=": "≥",
+        "<=": "≤",
+        "!=": "≠",
+        "->": "→",
+        N0: "ℕ₀",
+        N: "N",
+        Z: "Z",
+      };
+      Object.entries(symbolMap).forEach(([key, value]) => {
+        formattedText = formattedText.replace(new RegExp(key, "g"), value);
+      });
+      return formattedText;
+    };
+
+    const formatCodeBlock = (text: string) => {
+      if (text.includes("{") || text.includes("if") || text.includes("→")) {
         return (
-          <div key={index} className="mb-8 bg-white rounded-lg shadow-md p-6">
-            {lines.map((line: string, lineIndex: number) => {
-              const titleMatch1 = line.match(/^TITLE:\s(.+)/);
-              const subtopicMatch = line.match(/^SUBTOPIC:\s(.+)/);
-              const detailMatch = line.match(/^DETAIL_\d+:\s(.+)/);
-              const mnemonicMatch = line.match(/^MNEMONIC_\d+:\s(.+)/);
-              const typeMatch = line.match(/^TYPE:\s(.+)/);
-              const explanationMatch = line.match(/^Explanation:\s(.+)/);
+          <pre className="bg-gray-100 p-4 rounded-md font-mono text-sm my-2 whitespace-pre-wrap">
+            {text}
+          </pre>
+        );
+      }
+      return formatMathText(text);
+    };
 
-              if (titleMatch1) {
-                return (
-                  <h2
-                    key={lineIndex}
-                    className="text-3xl font-bold mb-4 text-blue-900 border-b pb-2"
-                  >
-                    {formatMathText(titleMatch1[1])}
-                  </h2>
-                );
-              } else if (explanationMatch) {
-                return (
-                  <div className="ml-4 mb-4 text-gray-700 bg-blue-50 p-4 rounded-lg">
-                    <p className="font-medium text-blue-800 mb-1">
-                      Explanation:
-                    </p>
-                    <p>{explanationMatch[1]}</p>
-                  </div>
-                );
-              } else if (subtopicMatch) {
-                return (
-                  <h3
-                    key={lineIndex}
-                    className="text-xl font-semibold mb-3 text-blue-700 mt-4"
-                  >
-                    {formatMathText(subtopicMatch[1])}
-                  </h3>
-                );
-              } else if (mnemonicMatch) {
-                return (
-                  <div className="ml-4 mb-2">
-                    <div className="flex items-start">
-                      <div className="mr-2 text-blue-500 mt-1"></div>
-                      <div className="flex-1">
-                        <div className="font-medium text-gray-800 bg-blue-50 p-3 rounded-lg">
-                          {mnemonicMatch[1]}
+    return (
+      <div id="cheatsheet-content" className="text-black max-w-4xl mx-auto">
+        {sections.map((section, index) => {
+          const lines = section
+            .trim()
+            .split("\n")
+            .filter((line) => line.trim());
+
+          // Extract all mnemonics and their associated info for this section
+          let currentTitle = "";
+          let currentSubtopic = "";
+          let currentExplanation = "";
+          let mnemonics: Mnemonic[] = [];
+          let currentMnemonic: Mnemonic | null = null;
+
+          lines.forEach((line) => {
+            const titleMatch = line.match(/^TITLE:\s(.+)/);
+            const subtopicMatch = line.match(/^SUBTOPIC:\s(.+)/);
+            const explanationMatch = line.match(/^Explanation:\s(.+)/);
+            const mnemonicMatch = line.match(/^MNEMONIC_\d+:\s(.+)/);
+            const typeMatch = line.match(/^TYPE:\s(.+)/);
+
+            if (titleMatch) {
+              currentTitle = titleMatch[1];
+            } else if (subtopicMatch) {
+              currentSubtopic = subtopicMatch[1];
+            } else if (explanationMatch) {
+              currentExplanation = explanationMatch[1];
+            } else if (mnemonicMatch) {
+              currentMnemonic = {
+                text: mnemonicMatch[1],
+                type: "",
+                title: currentTitle,
+                subtopic: currentSubtopic,
+                explanation: currentExplanation,
+              };
+            } else if (typeMatch && currentMnemonic) {
+              currentMnemonic.type = typeMatch[1];
+              mnemonics.push(currentMnemonic);
+              currentMnemonic = null;
+            }
+          });
+
+          return (
+            <div key={index} className="mb-8 bg-white rounded-lg shadow-md p-6">
+              {lines.map((line, lineIndex) => {
+                const titleMatch = line.match(/^TITLE:\s(.+)/);
+                const subtopicMatch = line.match(/^SUBTOPIC:\s(.+)/);
+                const detailMatch = line.match(/^DETAIL_\d+:\s(.+)/);
+                const explanationMatch = line.match(/^Explanation:\s(.+)/);
+
+                if (titleMatch) {
+                  return (
+                    <h2
+                      key={lineIndex}
+                      className="text-3xl font-bold mb-4 text-blue-900 border-b pb-2"
+                    >
+                      {formatMathText(titleMatch[1])}
+                    </h2>
+                  );
+                } else if (explanationMatch) {
+                  return (
+                    <div className="ml-4 mb-4 text-gray-700 bg-blue-50 p-4 rounded-lg">
+                      <p className="font-medium text-blue-800 mb-1">
+                        Explanation:
+                      </p>
+                      <p>{explanationMatch[1]}</p>
+                    </div>
+                  );
+                } else if (subtopicMatch) {
+                  return (
+                    <h3
+                      key={lineIndex}
+                      className="text-xl font-semibold mb-3 text-blue-700 mt-4"
+                    >
+                      {formatMathText(subtopicMatch[1])}
+                    </h3>
+                  );
+                } else if (detailMatch) {
+                  const detailContent = detailMatch[1].trim();
+                  return (
+                    <div key={lineIndex} className="ml-4 mb-3">
+                      <div className="flex">
+                        <div className="mr-2 text-blue-500">•</div>
+                        <div className="flex-1">
+                          {detailContent.includes("\n") ||
+                          detailContent.includes("    ") ? (
+                            <div className="font-normal">
+                              {detailContent
+                                .split("\n")
+                                .map((part, partIndex) => (
+                                  <div
+                                    key={partIndex}
+                                    className={
+                                      part.startsWith("    ")
+                                        ? "ml-4 font-mono"
+                                        : ""
+                                    }
+                                  >
+                                    {formatCodeBlock(part.trim())}
+                                  </div>
+                                ))}
+                            </div>
+                          ) : (
+                            <div className="font-normal">
+                              {formatMathText(detailContent)}
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
-                  </div>
-                );
-              } else if (detailMatch) {
-                const detailContent = detailMatch[1].trim();
-                return (
-                  <div key={lineIndex} className="ml-4 mb-3">
-                    <div className="flex">
-                      <div className="mr-2 text-blue-500">•</div>
-                      <div className="flex-1">
-                        {detailContent.includes("\n") ||
-                        detailContent.includes("    ") ? (
-                          <div className="font-normal">
-                            {detailContent
-                              .split("\n")
-                              .map((part: string, partIndex: number) => (
-                                <div
-                                  key={partIndex}
-                                  className={
-                                    part.startsWith("    ")
-                                      ? "ml-4 font-mono"
-                                      : ""
-                                  }
-                                >
-                                  {formatCodeBlock(part.trim())}
-                                </div>
-                              ))}
-                          </div>
-                        ) : (
-                          <div className="font-normal">
-                            {formatMathText(detailContent)}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                );
-              } else if (typeMatch) {
-                return (
-                  <div className="ml-8 mb-4 text-black font-inter">
-                    <div className="flex items-center">
-                      <span className="text-blue-400 mr-2"></span>
-                      {typeMatch[1]}
-                    </div>
-                  </div>
-                );
-              } else {
-                return (
-                  <p key={lineIndex} className="ml-4 mb-2 font-normal">
-                    {formatMathText(line.trim())}
-                  </p>
-                );
-              }
-            })}
-          </div>
-        );
-      })}
-    </div>
-  );
-};
+                  );
+                }
+              })}
+
+              {mnemonics.length > 0 && (
+                <div className="mt-6">
+                  <h4 className="text-lg font-semibold mb-3 text-blue-800">
+                    Mnemonics
+                  </h4>
+                  <MnemonicCards
+                    mnemonics={mnemonics.map((m) => ({
+                      text: m.text,
+                      type: m.type,
+                      title: m.title,
+                      subtopic: m.subtopic,
+                      explanation: m.explanation,
+                    }))}
+                  />
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
+  const MnemonicCards = ({ mnemonics }: { mnemonics: Mnemonic[] }) => {
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const touchStartX = useRef<number | null>(null);
+    const touchEndX = useRef<number | null>(null);
+
+    const handleTouchStart = (e: React.TouchEvent) => {
+      touchStartX.current = e.touches[0].clientX;
+    };
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+      touchEndX.current = e.touches[0].clientX;
+    };
+
+    const handleTouchEnd = () => {
+      if (!touchStartX.current || !touchEndX.current) return;
+
+      const diff = touchStartX.current - touchEndX.current;
+      const threshold = 50;
+
+      if (Math.abs(diff) > threshold) {
+        if (diff > 0 && currentIndex < mnemonics.length - 1) {
+          setCurrentIndex(currentIndex + 1);
+        } else if (diff < 0 && currentIndex > 0) {
+          setCurrentIndex(currentIndex - 1);
+        }
+      }
+
+      touchStartX.current = null;
+      touchEndX.current = null;
+    };
+
+    const navigateCard = (direction: "next" | "prev") => {
+      if (direction === "next" && currentIndex < mnemonics.length - 1) {
+        setCurrentIndex(currentIndex + 1);
+      } else if (direction === "prev" && currentIndex > 0) {
+        setCurrentIndex(currentIndex - 1);
+      }
+    };
+
+    return (
+      <div className="relative w-full max-w-md mx-auto">
+        <Card
+          className="bg-blue-50 shadow-lg transform transition-transform duration-300"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          <CardContent className="p-6">
+            <div className="text-sm text-blue-600 mb-2">
+              {mnemonics[currentIndex].subtopic}
+            </div>
+            <div className="text-lg font-medium text-gray-800 mb-4">
+              {mnemonics[currentIndex].text}
+            </div>
+            <div className="text-sm text-gray-600 mb-2">
+              <span className="font-medium">Type:</span>{" "}
+              {mnemonics[currentIndex].type}
+            </div>
+            {mnemonics[currentIndex].explanation && (
+              <div className="text-sm text-gray-600 mt-2 bg-white p-3 rounded-lg">
+                {mnemonics[currentIndex].explanation}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <div className="flex justify-between items-center mt-4">
+          <button
+            onClick={() => navigateCard("prev")}
+            disabled={currentIndex === 0}
+            className={`p-2 rounded-full ${
+              currentIndex === 0
+                ? "text-gray-400"
+                : "text-blue-600 hover:bg-blue-100"
+            }`}
+          >
+            <ChevronLeft size={24} />
+          </button>
+
+          <span className="text-sm text-gray-600">
+            {currentIndex + 1} / {mnemonics.length}
+          </span>
+
+          <button
+            onClick={() => navigateCard("next")}
+            disabled={currentIndex === mnemonics.length - 1}
+            className={`p-2 rounded-full ${
+              currentIndex === mnemonics.length - 1
+                ? "text-gray-400"
+                : "text-blue-600 hover:bg-blue-100"
+            }`}
+          >
+            <ChevronRight size={24} />
+          </button>
+        </div>
+      </div>
+    );
+  };
 
   // Define the toggleSelection function to handle option changes
-  const toggleSelection = (option:string) => {
+  const toggleSelection = (option: string) => {
     // If the clicked option is already selected, deselect it; otherwise, select the new option.
     if (selectedOption === option) {
       setSelectedOption(""); // Deselect if it's the current option
@@ -621,20 +865,19 @@ const renderCheatsheetAsList = () => {
     }
   };
 
-    
-   const toggleMenu = () => {
-     setIsOpen(!isOpen);
-   };
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
   const handleDownloadPDF = async () => {
     if (typeof window === "undefined") {
       console.error("Cannot use html2pdf on the server side.");
       return;
     }
-  
+
     try {
       // Import html2pdf dynamically
-      const html2pdf = (await import('html2pdf.js')).default;
-      
+      const html2pdf = (await import("html2pdf.js")).default;
+
       await document.fonts.ready;
       const images = document.images;
       const promises = Array.from(images).map((img) => {
@@ -645,13 +888,13 @@ const renderCheatsheetAsList = () => {
         });
       });
       await Promise.all(promises);
-    
+
       const element = document.getElementById("cheatsheet-content");
       if (!element) {
         console.error("Cheatsheet content element not found");
         return;
       }
-    
+
       const opt = {
         margin: 10,
         filename: "cheatsheet.pdf",
@@ -665,306 +908,300 @@ const renderCheatsheetAsList = () => {
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
         pagebreak: { mode: ["avoid-all", "css", "legacy"] },
       };
-    
+
       await html2pdf().set(opt).from(element).save();
-      
     } catch (err) {
       console.error("Error generating PDF:", err);
     }
   };
-  
-  
 
   if (typeof window !== "undefined") {
     // Code that uses window, document, or self
   }
 
-    
-    return (
-      <div>
-        <div className="flex flex-col items-center w-screen h-screen relative bg-[#f8f6ef]">
-          <div className="w-3/4  flex flex-col items-start">
-            
-              {/* Nav Bar */}
-              <div className="w-full sticky top-0 z-50 bg-[#f8f6ef] supports-backdrop-blur:bg-background/90 bg-background/40 backdrop-blur-lg justify-between">
-                
-                <div className="gap-between justify-between">
-                  <div className="flex justify-between items-center py-3 gap-between">
-                    <div className="text-[#0023FF] text-3xl sm:text-4xl font-extrabold font-inter capitalize">
-                      <Link href="/">Brev</Link>
-                    </div>
-                    <div className="sm:hidden">
-                      <button
-                        onClick={toggleMenu}
-                        className="text-[#0023FF] hover:text-[#0023FF] transition-colors duration-200"
-                      >
-                        <svg
-                          className="w-6 h-6"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M4 6h16M4 12h16M4 18h16"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                    <div className="hidden sm:flex gap-4 sm:gap-6 md:gap-8">
-                      <div
-                        onClick={() => handleScroll("about")}
-                        className="text-[#0023FF] hover:text-[#0023FF] cursor-pointer"
-                      >
-                        Key Features
-                      </div>
-                      <div
-                        onClick={() => handleScroll("features")}
-                        className="text-[#0023FF] hover:text-[#0023FF] cursor-pointer"
-                      >
-                        How to Brev
-                      </div>
-                      <div
-                        className="text-[#0023FF] hover:text-[#0023FF] cursor-pointer"
-                        onClick={() => handleScroll("story")}
-                      >
-                        Our Story
-                      </div>
-                      <div
-                        className="text-[#0023FF] hover:text-[#0023FF] cursor-pointer"
-                        onClick={() => handleScroll("contact")}
-                      >
-                        Contact Us
-                      </div>
-                    </div>
+  return (
+    <div>
+      <div className="flex flex-col items-center w-screen h-screen relative bg-[#f8f6ef]">
+        <div className="w-3/4  flex flex-col items-start">
+          {/* Nav Bar */}
+          <div className="w-full sticky top-0 z-50 bg-[#f8f6ef] supports-backdrop-blur:bg-background/90 bg-background/40 backdrop-blur-lg justify-between">
+            <div className="gap-between justify-between">
+              <div className="flex justify-between items-center py-3 gap-between">
+                <div className="text-[#0023FF] text-3xl sm:text-4xl font-extrabold font-inter capitalize">
+                  <Link href="/">Brev</Link>
+                </div>
+                <div className="sm:hidden">
+                  <button
+                    onClick={toggleMenu}
+                    className="text-[#0023FF] hover:text-[#0023FF] transition-colors duration-200"
+                  >
+                    <svg
+                      className="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 6h16M4 12h16M4 18h16"
+                      />
+                    </svg>
+                  </button>
+                </div>
+                <div className="hidden sm:flex gap-4 sm:gap-6 md:gap-8">
+                  <div
+                    onClick={() => handleScroll("about")}
+                    className="text-[#0023FF] hover:text-[#0023FF] cursor-pointer"
+                  >
+                    Key Features
+                  </div>
+                  <div
+                    onClick={() => handleScroll("features")}
+                    className="text-[#0023FF] hover:text-[#0023FF] cursor-pointer"
+                  >
+                    How to Brev
+                  </div>
+                  <div
+                    className="text-[#0023FF] hover:text-[#0023FF] cursor-pointer"
+                    onClick={() => handleScroll("story")}
+                  >
+                    Our Story
+                  </div>
+                  <div
+                    className="text-[#0023FF] hover:text-[#0023FF] cursor-pointer"
+                    onClick={() => handleScroll("contact")}
+                  >
+                    Contact Us
                   </div>
                 </div>
+              </div>
+            </div>
 
-                {isOpen && (
-                  <div className="sm:hidden mt-4 items-center text-center">
-                    <div>
-                      <div
-                        className="hover:text-[#0023FF] text-black"
-                        onClick={() => handleScroll("features")}
-                      >
-                        key features
-                      </div>
-                    </div>
-                    <div>
-                      <div
-                        className="hover:text-[#0023FF] text-black"
-                        onClick={() => handleScroll("story")}
-                      >
-                        Our story
-                      </div>
-                    </div>
-                    <div>
-                      <div
-                        className="hover:text-[#0023FF] text-black"
-                        onClick={() => handleScroll("about")}
-                      >
-                        how to brev
-                      </div>
-                    </div>
-                    <div
-                      className="hover:text-[#0023FF] text-black"
-                      onClick={() => handleScroll("contact")}
-                    >
-                      contact us
-                    </div>
+            {isOpen && (
+              <div className="sm:hidden mt-4 items-center text-center">
+                <div>
+                  <div
+                    className="hover:text-[#0023FF] text-black"
+                    onClick={() => handleScroll("features")}
+                  >
+                    key features
                   </div>
-                )}
+                </div>
+                <div>
+                  <div
+                    className="hover:text-[#0023FF] text-black"
+                    onClick={() => handleScroll("story")}
+                  >
+                    Our story
+                  </div>
+                </div>
+                <div>
+                  <div
+                    className="hover:text-[#0023FF] text-black"
+                    onClick={() => handleScroll("about")}
+                  >
+                    how to brev
+                  </div>
+                </div>
+                <div
+                  className="hover:text-[#0023FF] text-black"
+                  onClick={() => handleScroll("contact")}
+                >
+                  contact us
+                </div>
               </div>
-            
-            {/* Phrases Section */}
-            <div className="w-full md:pt-[20px] pt-[10px] mx-auto">
-              <div className="w-full">
-                <span className="text-black tracking-tighter md:text-6xl text-2xl font-semibold leading-tight font-Inter">
-                  Don’t worry,{" "}
-                </span>
-                <span className="text-[#0023FF] tracking-tighter md:text-6xl text-2xl font-semibold leading-tight font-Inter">
-                  {" "}
-                  Brev’s
-                </span>
-                <span className="text-black tracking-tighter md:text-6xl text-2xl font-semibold leading-tight font-Inter">
-                  {" "}
-                  got your back.
-                </span>
-              </div>
-              <div className="text-black tracking-tighter md:text-6xl text-2xl font-light leading-tight font-Inter mt-4">
-                Just upload a file
-              </div>
-              <div className="text-black tracking-tighter md:text-6xl text-2xl font-light leading-tight font-Inter mt-4">
-                and choose your
-              </div>
-              <div className="text-black tracking-tighter md:text-6xl text-2xl gap-4 font-light leading-tight font-Inter mt-4 flex items-center">
-                <span>desired </span>
-                {/* <img
+            )}
+          </div>
+
+          {/* Phrases Section */}
+          <div className="w-full md:pt-[20px] pt-[10px] mx-auto">
+            <div className="w-full">
+              <span className="text-black tracking-tighter md:text-6xl text-2xl font-semibold leading-tight font-Inter">
+                Don’t worry,{" "}
+              </span>
+              <span className="text-[#0023FF] tracking-tighter md:text-6xl text-2xl font-semibold leading-tight font-Inter">
+                {" "}
+                Brev’s
+              </span>
+              <span className="text-black tracking-tighter md:text-6xl text-2xl font-semibold leading-tight font-Inter">
+                {" "}
+                got your back.
+              </span>
+            </div>
+            <div className="text-black tracking-tighter md:text-6xl text-2xl font-light leading-tight font-Inter mt-4">
+              Just upload a file
+            </div>
+            <div className="text-black tracking-tighter md:text-6xl text-2xl font-light leading-tight font-Inter mt-4">
+              and choose your
+            </div>
+            <div className="text-black tracking-tighter md:text-6xl text-2xl gap-4 font-light leading-tight font-Inter mt-4 flex items-center">
+              <span>desired </span>
+              {/* <img
                   className="w-[100vw] max-w-[400px] h-auto ml-2 pt-3"
                   src="/images/msg1.gif"
                   alt="Message GIF"
                 /> */}
-                <Typewriter></Typewriter>
-              </div>
+              <Typewriter></Typewriter>
             </div>
           </div>
+        </div>
 
-          <div className="w-full flex justify-center px-4 md:px-0">
-            <form
-              onSubmit={handleSubmit}
-              className="w-full md:w-3/4 bg-black border border-gray-700 shadow-md rounded-lg p-4 md:p-6 mt-6"
-            >
-              <div className="mb-4">
-                <label className="block text-lg font-medium text-white">
-                  Upload File
-                </label>
-                <input
-                  type="file"
-                  onChange={handleFileChange}
-                  className="hidden"
-                  id="file-upload"
-                />
-                <label
-                  htmlFor="file-upload"
-                  className="cursor-pointer mt-2 px-4 py-2 bg-white text-black border rounded-full inline-block text-center hover:bg-[#0023FF] hover:text-white transition-colors"
-                >
-                  Choose File
-                </label>
-                {file && (
-                  <p className="text-white mt-2">
-                    Selected file:{" "}
-                    <span className="font-semibold">{file.name}</span>
-                  </p>
-                )}
-              </div>
+        <div className="w-full flex justify-center px-4 md:px-0">
+          <form
+            onSubmit={handleSubmit}
+            className="w-full md:w-3/4 bg-black border border-gray-700 shadow-md rounded-lg p-4 md:p-6 mt-6"
+          >
+            <div className="mb-4">
+              <label className="block text-lg font-medium text-white">
+                Upload File
+              </label>
+              <input
+                type="file"
+                onChange={handleFileChange}
+                className="hidden"
+                id="file-upload"
+              />
+              <label
+                htmlFor="file-upload"
+                className="cursor-pointer mt-2 px-4 py-2 bg-white text-black border rounded-full inline-block text-center hover:bg-[#0023FF] hover:text-white transition-colors"
+              >
+                Choose File
+              </label>
+              {file && (
+                <p className="text-white mt-2">
+                  Selected file:{" "}
+                  <span className="font-semibold">{file.name}</span>
+                </p>
+              )}
+            </div>
 
-              <div className="mb-4 bg-black rounded-lg">
-                <label className="block text-lg font-medium text-white">
-                  Anything you wanna ask your Notes?
-                </label>
-                <input
-                  type="text"
-                  value={textPrompt}
-                  onChange={(e) => setTextPrompt(e.target.value)}
-                  className="mt-2 p-2 border border-gray-500 rounded w-full bg-black text-white"
-                  placeholder="Enter any additional prompt (optional)"
-                />
-              </div>
+            <div className="mb-4 bg-black rounded-lg">
+              <label className="block text-lg font-medium text-white">
+                Anything you wanna ask your Notes?
+              </label>
+              <input
+                type="text"
+                value={textPrompt}
+                onChange={(e) => setTextPrompt(e.target.value)}
+                className="mt-2 p-2 border border-gray-500 rounded w-full bg-black text-white"
+                placeholder="Enter any additional prompt (optional)"
+              />
+            </div>
 
-              <div className="mb-4">
-                <label className="block text-lg font-medium text-white mb-2">
-                  Select an option:
-                </label>
-                <div className="flex flex-col space-y-4">
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    <button
-                      type="submit"
-                      className={`bg-${
-                        loadingCheatsheet ? "yellow-500" : "white"
-                      } text-black px-4 py-2 rounded-full`}
-                      disabled={loadingCheatsheet}
-                    >
-                      {loadingCheatsheet
-                        ? "Generating Cheatsheet..."
-                        : "Generate Cheatsheet"}
-                    </button>
+            <div className="mb-4">
+              <label className="block text-lg font-medium text-white mb-2">
+                Select an option:
+              </label>
+              <div className="flex flex-col space-y-4">
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <button
+                    type="submit"
+                    className={`bg-${
+                      loadingCheatsheet ? "yellow-500" : "white"
+                    } text-black px-4 py-2 rounded-full`}
+                    disabled={loadingCheatsheet}
+                  >
+                    {loadingCheatsheet
+                      ? "Generating Cheatsheet..."
+                      : "Generate Cheatsheet"}
+                  </button>
 
-                    <div className="flex gap-2">
-                      <button
-                        type="button"
-                        className={`px-3 py-1 rounded-full ${
-                          selectedOption === "Detailed"
-                            ? "bg-yellow-500 text-black"
-                            : "bg-white text-black"
-                        }`}
-                        onClick={() => toggleSelection("Detailed")}
-                      >
-                        Detailed
-                      </button>
-                      <button
-                        type="button"
-                        className={`px-3 py-1 rounded-full ${
-                          selectedOption === "Precise"
-                            ? "bg-yellow-500 text-black"
-                            : "bg-white text-black"
-                        }`}
-                        onClick={() => toggleSelection("Precise")}
-                      >
-                        Precise
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col sm:flex-row gap-4">
+                  <div className="flex gap-2">
                     <button
                       type="button"
-                      className={`bg-${
-                        loadingMnemonics ? "yellow-500" : "white"
-                      } text-black px-4 py-2 rounded-full`}
-                      onClick={handleGenerateMnemonics}
-                      disabled={loadingMnemonics}
+                      className={`px-3 py-1 rounded-full ${
+                        selectedOption === "Detailed"
+                          ? "bg-yellow-500 text-black"
+                          : "bg-white text-black"
+                      }`}
+                      onClick={() => toggleSelection("Detailed")}
                     >
-                      {loadingMnemonics
-                        ? "Generating Mnemonics..."
-                        : "Generate Mnemonics"}
+                      Detailed
                     </button>
-
                     <button
                       type="button"
-                      className={`bg-${
-                        loadingQuiz ? "yellow-500" : "white"
-                      } text-black px-4 py-2 rounded-full`}
-                      onClick={handleGenerateQuiz}
-                      disabled={loadingQuiz}
+                      className={`px-3 py-1 rounded-full ${
+                        selectedOption === "Precise"
+                          ? "bg-yellow-500 text-black"
+                          : "bg-white text-black"
+                      }`}
+                      onClick={() => toggleSelection("Precise")}
                     >
-                      {loadingQuiz ? "Generating Quiz..." : "Generate Quiz"}
+                      Precise
                     </button>
                   </div>
                 </div>
 
-                {errorMessage && (
-                  <p className="text-red-500 mt-2">{errorMessage}</p>
-                )}
-              </div>
-            </form>
-          </div>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <button
+                    type="button"
+                    className={`bg-${
+                      loadingMnemonics ? "yellow-500" : "white"
+                    } text-black px-4 py-2 rounded-full`}
+                    onClick={handleGenerateMnemonics}
+                    disabled={loadingMnemonics}
+                  >
+                    {loadingMnemonics
+                      ? "Generating Mnemonics..."
+                      : "Generate Mnemonics"}
+                  </button>
 
-          <div className="w-3/4 bg-white shadow-md rounded-lg p-5 mt-6">
-            <div id="cheatsheet-content" className="text-lg text-black">
-              {cheatsheetContent ? (
-                renderCheatsheetAsList()
-              ) : (
-                <p>
-                  {loadingCheatsheet
-                    ? "Generating your cheatsheet..."
-                    : "Your cheatsheet content will be displayed here once generated."}
-                </p>
+                  <button
+                    type="button"
+                    className={`bg-${
+                      loadingQuiz ? "yellow-500" : "white"
+                    } text-black px-4 py-2 rounded-full`}
+                    onClick={handleGenerateQuiz}
+                    disabled={loadingQuiz}
+                  >
+                    {loadingQuiz ? "Generating Quiz..." : "Generate Quiz"}
+                  </button>
+                </div>
+              </div>
+
+              {errorMessage && (
+                <p className="text-red-500 mt-2">{errorMessage}</p>
               )}
             </div>
-          </div>
+          </form>
+        </div>
 
-          {cheatsheetContent && (
-            <button
-              onClick={handleDownloadPDF}
-              className="mt-4 px-4 py-2 bg-white text-black rounded-full hover:bg-gray-200 transition-colors"
-            >
-              Download as PDF
-            </button>
-          )}
-
-          <div className="flex gap-4 mt-8 pb-10">
-            <Link href="/">
-              <label className="flex items-center justify-center w-58 p-4 bg-[#0023FF] text-white border rounded-full cursor-pointer hover:bg-custom-hover transition-colors">
-                <span className="font-bold">Back</span>
-              </label>
-            </Link>
+        <div className="w-3/4 bg-white shadow-md rounded-lg p-5 mt-6">
+          <div id="cheatsheet-content" className="text-lg text-black">
+            {cheatsheetContent ? (
+              renderCheatsheetAsList()
+            ) : (
+              <p>
+                {loadingCheatsheet
+                  ? "Generating your cheatsheet..."
+                  : "Your cheatsheet content will be displayed here once generated."}
+              </p>
+            )}
           </div>
         </div>
+
+        {cheatsheetContent && (
+          <button
+            onClick={handleDownloadPDF}
+            className="mt-4 px-4 py-2 bg-white text-black rounded-full hover:bg-gray-200 transition-colors"
+          >
+            Download as PDF
+          </button>
+        )}
+
+        <div className="flex gap-4 mt-8 pb-10">
+          <Link href="/">
+            <label className="flex items-center justify-center w-58 p-4 bg-[#0023FF] text-white border rounded-full cursor-pointer hover:bg-custom-hover transition-colors">
+              <span className="font-bold">Back</span>
+            </label>
+          </Link>
+        </div>
       </div>
-    );
+    </div>
+  );
 };
 
 export default ResponsePage;
