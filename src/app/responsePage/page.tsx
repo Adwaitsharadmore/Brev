@@ -796,7 +796,7 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
     };
 
     return (
-      <div className="relative w-full max-w-md mx-auto">
+      <div className="relative w-full mx-auto">
         <Card
           className="bg-blue-50 shadow-lg transform transition-transform duration-300"
           onTouchStart={handleTouchStart}
