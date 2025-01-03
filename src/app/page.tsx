@@ -210,8 +210,8 @@ const HomePage = () => {
           </div>
 
           <BlurFade delay={0.25} inView>
-            <section id="about" className="about">
-              <motion.div className="relative mx-auto pt-[200px] md:items-center justify-center my-50 pb-50">
+            <section id="about" className="py-[250px]">
+              <motion.div className="relative mx-auto md:items-center justify-center my-50 pb-50">
                 <div className="flex flex-col md:items-center items-center justify-center md:leading-tight">
                   <div className="text-black text-4xl md:text-center text-center sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl font-semibold leading-tight tracking-tighter font-Inter">
                     Your go-to tool for smarter learning
@@ -238,8 +238,8 @@ const HomePage = () => {
               </motion.div>
             </section>
 
-            <section id="features">
-              <div className="bg-[#f8f6ef] pt-8 sm:pt-12 md:pt-16 lg:pt-20 xl:pt-[200px] mx-auto my-4 sm:my-6 md:my-8 lg:my-10">
+            <section id="features" className="w-full justify-center items-center flex flex-col">
+              <div className="w-3/4 bg-[#f8f6ef] pt-8 mx-auto my-4 sm:my-6 md:my-8 lg:my-10">
                 <div className="text-black md:flex md:flex-col flex text-center md:text-start gap-2 md:gap-0">
                   <div>
                     {" "}
@@ -324,7 +324,7 @@ const HomePage = () => {
                 </div>
               </div>
               <div className="flex justify-between w-full "></div> */}
-              <div className="md:p-0 p-5">
+              <div className="md:p-0 p-5 w-3/4">
                 <BentoDemo></BentoDemo>
               </div>
             </section>

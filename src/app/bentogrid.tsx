@@ -1,5 +1,6 @@
 import { CalendarIcon, FileTextIcon } from "@radix-ui/react-icons";
-import { BellIcon, Share2Icon } from "lucide-react";
+import { BellIcon, Share2Icon, PenTool } from "lucide-react";
+import { SiQuizlet } from "react-icons/si";
 
 import { cn } from "@/lib/utils";
 
@@ -33,8 +34,9 @@ const files = [
 const features = [
   {
     Icon: FileTextIcon,
-    name: "Save your files",
-    description: "We automatically save your files as you type.",
+    name: "Cheat sheet generation",
+    description:
+      " Quickly convert detailed notes into concise, organized cheat sheets that focus on essential topics. Save time and ace exams with effective study tools.",
     href: "#",
     cta: "Learn more",
     className: "col-span-3 lg:col-span-1",
@@ -60,16 +62,19 @@ const features = [
                 </figcaption>
               </div>
             </div>
-            <blockquote className="mt-2 text-black text-xs">{f.body}</blockquote>
+            <blockquote className="mt-2 text-black text-xs">
+              {f.body}
+            </blockquote>
           </figure>
         ))}
       </Marquee>
     ),
   },
   {
-    Icon: BellIcon,
-    name: "Notifications",
-    description: "Get notified when something happens.",
+    Icon: PenTool,
+    name: "Practice Quizzes",
+    description:
+      "Test your knowledge with AI-generated quizzes tailored to your notes. Identify weak areas and focus on improvement for exam success.",
     href: "#",
     cta: "Learn more",
     className: "col-span-3 lg:col-span-2",
