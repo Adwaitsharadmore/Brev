@@ -804,7 +804,7 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
           onTouchEnd={handleTouchEnd}
         >
           <CardContent className="p-6">
-            <div className="text-sm text-blue-600 mb-2">
+            <div className="text-lg font-semibold text-blue-600 mb-2">
               {mnemonics[currentIndex].subtopic}
             </div>
             <div className="text-lg font-medium text-gray-800 mb-4">

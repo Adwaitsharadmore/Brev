@@ -100,3 +100,12 @@ h1, h2, h3, h4, h5, h6, p, a, li {
 html {
   scroll-behavior: smooth;
 }
+
+.scrollbar-hide {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, and Opera */
+}
