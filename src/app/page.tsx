@@ -302,7 +302,7 @@ const HomePage = () => {
                   </div>
                 </div>
               </div>
-              <div className="md:p-0 p-5 w-full">
+              <div className="w-full">
                 <StickyScroll content={content} />
                 {/* <BentoDemo></BentoDemo> */}
               </div>

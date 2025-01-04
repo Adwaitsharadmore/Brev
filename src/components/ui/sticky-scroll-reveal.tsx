@@ -56,10 +56,10 @@ export const StickyScroll = ({
 
   return (
     <motion.div
-      className="h-[30rem] overflow-y-auto flex justify-center relative space-x-10 rounded-md p-10 bg-[#f8f6ef] scrollbar-hide"
+      className="w-full h-[30rem] overflow-y-auto flex justify-between relative rounded-md bg-[#f8f6ef] scrollbar-hide"
       ref={ref}
     >
-      <div className="div relative flex items-start px-4">
+      <div className="div relative flex items-start">
         <div className="max-w">
           {content.map((item, index) => (
             <div key={item.title + index} className="my-20">
