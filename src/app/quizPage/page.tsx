@@ -315,15 +315,9 @@ const QuizPage = () => {
   return (
     <div className="min-h-screen text-white flex flex-col items-center justify-center p-4">
       <header className="absolute top-0 left-0 p-4">
-        <Link href="/">
-          <Image
-            src="/images/mainlogo.svg"
-            alt="PrepPal Logo"
-            width={80}
-            height={80}
-            className="object-cover rounded-full"
-          />
-        </Link>
+        <div className="text-[#0023FF] text-3xl sm:text-4xl font-extrabold font-inter capitalize">
+          <Link href="/">Brev</Link>
+        </div>
       </header>
 
       {error && (
