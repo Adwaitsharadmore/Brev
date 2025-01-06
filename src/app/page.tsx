@@ -10,10 +10,10 @@ import { FaLinkedin } from "react-icons/fa";
 import { useEffect } from "react";
 import Typewriter from "./typewriter";
 import Marquee from "@/components/ui/marquee";
-import { MarqueeDemo } from './marque'
-import { BentoDemo } from './bentogrid'
+import { MarqueeDemo } from "./marque";
+import { BentoDemo } from "./bentogrid";
 import ShimmerButton from "@/components/ui/shimmer-button";
-import { ShimmerButtonDemo } from './shimmer'
+import { ShimmerButtonDemo } from "./shimmer";
 import Image from "next/image";
 import { motion, useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
@@ -26,8 +26,15 @@ import BoxReveal from "@/components/ui/box-reveal";
 import { DockDemo } from "./dock";
 import { Dock } from "@/components/magicui/dock";
 import { StickyScroll } from "@/components/ui/sticky-scroll-reveal";
+import { ContainerScroll } from "@/components/ui/container-scroll-animation";
 
-const Section = ({ children, className }: { children: React.ReactNode; className?: string }) => {
+const Section = ({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) => {
   const controls = useAnimation();
   const [ref, inView] = useInView({ threshold: 0.2 });
 
@@ -105,30 +112,27 @@ const content = [
     ),
   },
 ];
- 
 
 const HomePage = () => {
-
   const handleScroll = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      element.scrollIntoView({ behavior: "smooth" });
     }
-  }
-    
- 
- const [width, setWidth] = useState(0);
+  };
+
+  const [width, setWidth] = useState(0);
   const [duplicatedImages, setDuplicatedImages] = useState<string[]>([]);
   const [isOpen, setIsOpen] = useState(false);
 
-   const toggleMenu = () => {
-     setIsOpen(!isOpen);
-   };
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
 
   const images = [
     "/images/work1.jpg",
     "/images/work2.PNG",
-    "/images/work3.PNG",  
+    "/images/work3.PNG",
     "/images/work4.png",
     "/images/work5.png",
     "/images/work6.png",
@@ -154,9 +158,7 @@ const HomePage = () => {
     setWidth(calculateWidth());
   }, [duplicatedImages]);
 
-   
   const router = useRouter();
-
 
   const handleStartBreving = () => {
     router.push("/responsePage");
@@ -260,7 +262,7 @@ const HomePage = () => {
           </div>
 
           <BlurFade delay={0.25} inView>
-            <section id="about" className="py-[250px]">
+            <section id="about" className="pt-[250px]">
               <motion.div className="relative mx-auto md:items-center justify-center my-50 pb-50">
                 <div className="flex flex-col md:items-center items-center justify-center md:leading-tight">
                   <div className="text-black text-4xl md:text-center text-center sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl font-semibold leading-tight tracking-tighter font-Inter">
@@ -286,6 +288,18 @@ const HomePage = () => {
                 </span>
               </div> */}
               </motion.div>
+            </section>
+            <section id="howtobrev">
+              <ContainerScroll
+                titleComponent={
+                  <h1 className="text-4xl font-semibold text-black">How to use Brev</h1>
+                }
+              >
+                <div className="space-y-4">
+                  {/* Add your content here */}
+                  <p className="text-black">Content goes here</p>
+                </div>
+              </ContainerScroll>
             </section>
 
             <section
