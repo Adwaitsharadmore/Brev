@@ -38,14 +38,35 @@ const QuizCompletion = ({
     hidden: { opacity: 0, x: -20 },
     visible: { opacity: 1, x: 0 },
   };
+  const [isPracticeLoading, setIsPracticeLoading] = useState(false);
+  const [isHomeLoading, setIsHomeLoading] = useState(false);
+
+ const handlePracticeClick = async () => {
+   setIsPracticeLoading(true);
+   try {
+     await generatePracticeQuestions();
+   } finally {
+     setIsPracticeLoading(false);
+   }
+ };
+
+ const handleHomeClick = async () => {
+   setIsHomeLoading(true);
+   try {
+     await handleBackToHome();
+   } finally {
+     setIsHomeLoading(false);
+   }
+ };
+
 
   return (
     <div className="flex-1 flex flex-col items-center">
-      <Card className="bg-gray-900 border border-gray-700 shadow-xl w-3/4">
+      <Card className="bg-[#f8f6ef] border border-gray-700 shadow-xl w-3/4">
         <div className="p-6 border-b border-gray-800">
           <div className="flex items-center space-x-3">
             <div className="h-8 w-8 text-yellow-400">🏆</div>
-            <h2 className="text-2xl font-bold text-white">Quiz Completed!</h2>
+            <h2 className="text-2xl font-bold text-black">Quiz Completed!</h2>
           </div>
         </div>
 
@@ -55,7 +76,7 @@ const QuizCompletion = ({
               if (part.startsWith("{") && part.endsWith("}")) {
                 return (
                   <div key={index} className="space-y-2">
-                    <h2 className="text-2xl font-bold text-white">
+                    <h2 className="text-2xl font-bold text-gray-800">
                       {part.slice(1, -1)}
                     </h2>
                     <div className="h-1 w-20 bg-blue-500 rounded" />
@@ -66,7 +87,7 @@ const QuizCompletion = ({
                 return (
                   <h3
                     key={index}
-                    className="text-xl font-semibold text-blue-300 mt-4"
+                    className="text-xl font-semibold text-blue-700 mt-4"
                   >
                     {part.slice(1, -1)}
                   </h3>
@@ -76,18 +97,18 @@ const QuizCompletion = ({
                 return (
                   <div key={index} className="flex items-start space-x-2 ml-4">
                     <span className="text-blue-400">•</span>
-                    <p className="text-gray-300">{part.slice(1).trim()}</p>
+                    <p className="text-gray-800">{part.slice(1).trim()}</p>
                   </div>
                 );
               }
               return (
-                <p key={index} className="text-gray-300">
+                <p key={index} className="text-gray-900">
                   {part}
                 </p>
               );
             })
           ) : (
-            <div className="text-center py-8 text-gray-400">
+            <div className="text-center py-8 text-gray-800">
               No additional feedback required!
             </div>
           )}
@@ -95,23 +116,71 @@ const QuizCompletion = ({
       </Card>
       <div className="flex justify-end space-x-4 pt-6 border-t border-gray-800">
         <button
-          onClick={() => {
-            console.log("Practice More clicked");
-            generatePracticeQuestions();
-          }}
-          className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700"
+          onClick={handlePracticeClick}
+          disabled={isPracticeLoading}
+          className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg disabled:opacity-50"
         >
-          Practice More
+          {isPracticeLoading ? (
+            <div className="flex items-center space-x-2">
+              <svg
+                className="animate-spin h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                />
+              </svg>
+              <span>Loading...</span>
+            </div>
+          ) : (
+            "Practice More"
+          )}
         </button>
 
         <button
-          onClick={() => {
-            console.log("Back to Home clicked");
-            handleBackToHome();
-          }}
-          className="mt-4 px-4 py-2 bg-red-600 hover:bg-red-700"
+          onClick={handleHomeClick}
+          disabled={isHomeLoading}
+          className="mt-4 px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg disabled:opacity-50"
         >
-          Back to Home
+          {isHomeLoading ? (
+            <div className="flex items-center space-x-2">
+              <svg
+                className="animate-spin h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                />
+              </svg>
+              <span>Loading...</span>
+            </div>
+          ) : (
+            "Back to Home"
+          )}
         </button>
       </div>
     </div>
@@ -259,9 +328,9 @@ const QuizPage = () => {
   };
 
   const generatePracticeQuestions = async () => {
+    setIsLoading(true);
     if (!originalFileName || isLoading) return;
 
-    setIsLoading(true);
     try {
       const response = await fetch("/api/get-morequestions", {
         method: "POST",
@@ -272,8 +341,6 @@ const QuizPage = () => {
           originalFileName,
         }),
       });
-
-   
 
       const data = await response.json();
       const newQuizContent = parseQuizContent(data.feedback.join("\n"));
@@ -292,6 +359,7 @@ const QuizPage = () => {
     }
   };
   const handleBackToHome = async () => {
+    setIsLoading(true);
     try {
       await fetch("http://localhost:3001/api/cleanup", {
         method: "POST",
