@@ -292,7 +292,14 @@ const HomePage = () => {
             <section id="howtobrev">
               <ContainerScroll
                 titleComponent={
-                  <h1 className="text-4xl font-semibold text-black">How to use Brev</h1>
+                  <>
+                    <h1 className="text-4xl font-semibold text-black dark:text-white">
+                      How to use <br />
+                      <span className="text-4xl md:text-[7rem] font-bold mt-1 leading-none">
+                        Brev
+                      </span>
+                    </h1>
+                  </>
                 }
               >
                 <div className="space-y-4">
