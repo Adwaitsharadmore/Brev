@@ -313,7 +313,7 @@ const HomePage = () => {
               id="features"
               className="w-full justify-center items-center flex flex-col"
             >
-              <div className="w-full bg-[#f8f6ef] pt-8 mx-auto my-4 sm:my-6 md:my-8 lg:my-10">
+              <div className="w-full bg-[#f8f6ef] pt-8 mx-auto my-4 sm:my-6 md:my-8 lg:my-5">
                 <div className="text-black md:flex md:flex-col flex text-center md:text-start gap-2 md:gap-0">
                   <div>
                     {" "}
