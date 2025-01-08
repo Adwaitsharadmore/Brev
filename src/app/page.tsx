@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { FaXTwitter } from "react-icons/fa6";
+import { FaTiktok, FaXTwitter } from "react-icons/fa6";
 import { FaInstagram } from "react-icons/fa";
 import { FaYoutube } from "react-icons/fa";
 import { FaLinkedin } from "react-icons/fa";
@@ -388,119 +388,57 @@ const HomePage = () => {
                 </div>
               </div>
             </div>
-            {/*<div
-            className="pt-20"
-            style={{
-              overflow: "hidden",
-
-              position: "relative",
-            }}
-          >
-            <motion.div
-              style={{
-                display: "flex",
-              }}
-              animate={{
-                x: [-width / 2, 0],
-              }}
-              transition={{
-                duration: 30,
-                repeat: Infinity,
-                repeatType: "loop",
-                ease: "linear",
-              }}
-            >
-              {duplicatedImages.map((src, index) => (
-                <motion.img
-                  key={index}
-                  src={src}
-                  style={{
-                    width: "500px",
-                    height: "500px", // Same as width to make it square
-                    objectFit: "cover",
-                    marginRight: "20px",
-                    borderRadius: "10px", // Optional: for rounded corners
-                  }}
-                  whileHover={{ scale: 1.1 }}
-                  alt={`Infinite scroll image ${index + 1}`}
-                />
-              ))}
-            </motion.div>
-          </div> */}
             <MarqueeDemo></MarqueeDemo>
           </div>
         </section>
-
-        {/* <div className="w-screen relative scroll-smooth">
-          <section id="contact">
-            {" "}
-            <div className="bg-[#0023FF] flex items-center w-full">
-              <div className="pr-20">
-                <div className="pt-[100px] text-center text-white">
-                  <div className="text-7xl font-inter">Brev</div>
-                  <div className="text-2xl font-inter">© 2021 Brev, Inc.</div>
-                </div>
-              </div>
-              <div>
-                {" "}
-                <div className="pt-[100px] text-center font-inter text-7xl items-center flex-col justify-center">
-                  Follow us on our socials.
-                </div>
-                <div className="flex justify-center items-center gap-20 p-10 ">
-                  <Link href="">
-                    <FaXTwitter className="text-7xl hover:text-[#0023FF]" />
-                  </Link>
-                  <Link href="https://www.instagram.com/meetbrev/">
-                    <FaInstagram className="text-7xl hover:text-[#0023FF]" />
-                  </Link>
-                  <Link href="">
-                    <FaYoutube className="text-7xl hover:text-[#0023FF]" />
-                  </Link>
-                  <Link href="">
-                    <FaLinkedin className="text-7xl hover:text-[#0023FF]" />
-                  </Link>
-                </div>
-                <div className="flex justify-center pb-[150px]">
-                  <Link href="">
-                    <button
-                      className="px-8 py-4 bg-white text-black"
-                      style={{
-                        borderRadius: "31px",
-
-                        fontSize: "20px",
-                        font: "Inter",
-                        lineHeight: "27.50px",
-                        border: "none",
-                        cursor: "pointer",
-                      }}
-                    >
-                      Email Us!
-                    </button>
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </section> 
-        </div> */}
-
         <section>
-          <footer className="bg-[#0023FF] flex p-10 grid-flow-col grid-cols-3 justify-between">
-            <div>
-              <div className="text-center text-white col-span-1">
-                <div className="text-7xl font-inter">Brev</div>
+          <footer className="bg-[#0023FF] flex p-10 grid-flow-col md:grid-cols-3 grid-cols-1 justify-center gap-[100px]">
+            <div className="justify-center">
+              <div className="text-center text-white col-span-1 md:col-span-1">
+                <div className="text-7xl font-inter">brev</div>
                 <div className="text-2xl font-inter">© 2021 Brev, Inc.</div>
               </div>
             </div>
-            <div className="flex flex-col items-center col-span-2">
+            <div className="flex flex-col col-span-1 md:col-span-2 py-2">
               <div>
-                <p className="text-2xl">
+                <p className="text-2xl font-semibold">
                   our <br /> socials
                 </p>
               </div>
+              <div className="py-2 space-y-2">
+                <div className="flex items-center text-xl gap-2">
+                  <FaInstagram />
+                  <Link href="#">Instagram</Link>
+                </div>
+                <div className="flex items-center gap-2 text-xl">
+                  <FaXTwitter />
+                  <Link href="#">Twitter</Link>
+                </div>
+                <div className="flex items-center gap-2 text-xl">
+                  <FaYoutube />
+                  <Link href="#">YouTube</Link>
+                </div>
+                <div className="flex items-center gap-2 text-xl">
+                  <FaLinkedin />
+                  <Link href="#">LinkedIn</Link>
+                </div>
+                <div className="flex items-center gap-2 text-xl">
+                  <FaTiktok />
+                  <Link href="#">Tiktok</Link>
+                </div>
+              </div>
             </div>
             <div className="flex flex-col">
-              <div>contact us</div>
-              <div>links</div>
+              <div>Contact
+                <div>mail</div>
+                <div>address</div>
+                <div>number</div>
+              </div>
+              <div>
+                <nav>
+                  
+                </nav>
+              </div>
             </div>
           </footer>
         </section>
