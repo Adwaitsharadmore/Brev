@@ -396,7 +396,7 @@ const HomePage = () => {
             <div className="mx-auto max-w-screen-xl">
               <div className="md:flex md:justify-between">
                 <div className="mb-6 md:mb-0">
-                  <a href="https://flowbite.com" className="flex items-center">
+                  <a href="#" className="flex items-center">
                     <img
                       src="/images/mainlogo.svg"
                       className="mr-3 h-8 rounded-full"
@@ -410,15 +410,15 @@ const HomePage = () => {
                 <div className="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-3">
                   <div>
                     <h2 className="mb-6 text-sm font-semibold text-white uppercase dark:text-white">
-                      Resources
+                      Navigate
                     </h2>
                     <ul className="text-gray-100 dark:text-gray-400">
                       <li className="mb-4">
                         <a
-                          href="https://flowbite.com"
+                          href="#"
                           className="hover:underline"
                         >
-                          Flowbite
+                          Homepage
                         </a>
                       </li>
                       <li>
@@ -426,7 +426,7 @@ const HomePage = () => {
                           href="https://tailwindcss.com/"
                           className="hover:underline"
                         >
-                          Tailwind CSS
+                          Start Breving
                         </a>
                       </li>
                     </ul>
@@ -435,13 +435,29 @@ const HomePage = () => {
                     <h2 className="mb-6 text-sm font-semibold text-white uppercase dark:text-white">
                       Follow us
                     </h2>
-                    <ul className="text-gray-100 dark:text-gray-400">
-                      <li className="mb-4">
+                    <ul className="text-gray-100 dark:text-gray-400 space-y-4">
+                      <li>
                         <a
                           href="https://github.com/themesberg/flowbite"
                           className="hover:underline "
                         >
-                          Github
+                          Instagram
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="https://discord.gg/4eeurUVvTy"
+                          className="hover:underline"
+                        >
+                          TikTok
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="https://discord.gg/4eeurUVvTy"
+                          className="hover:underline"
+                        >
+                          X
                         </a>
                       </li>
                       <li>
@@ -452,6 +468,16 @@ const HomePage = () => {
                           Discord
                         </a>
                       </li>
+                      <li>
+                        <a
+                          href="https://discord.gg/4eeurUVvTy"
+                          className="hover:underline"
+                        >
+                          Linkedin
+                        </a>
+                      </li>
+                     
+
                     </ul>
                   </div>
                   <div>
@@ -478,7 +504,7 @@ const HomePage = () => {
                 <span className="text-sm text-white sm:text-center dark:text-gray-400">
                   © 2025{" "}
                   <a href="https://flowbite.com" className="hover:underline">
-                    Flowbite™
+                    Brev™
                   </a>
                   . All Rights Reserved.
                 </span>
