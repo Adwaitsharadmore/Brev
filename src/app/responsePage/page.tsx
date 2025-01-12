@@ -7,6 +7,12 @@ import fs from "fs";
 import Typewriter from "./p";
 import ScrollProgress from "@/components/ui/scroll-progress";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface Mnemonic {
   text: string;
@@ -37,6 +43,7 @@ const ResponsePage = () => {
   const [html2pdf, setHtml2pdf] = useState<typeof import("html2pdf.js") | null>(
     null
   );
+  const [showDialog, setShowDialog] = useState(false);
 
   useEffect(() => {
     const loadHtml2Pdf = async () => {
@@ -53,6 +60,10 @@ const ResponsePage = () => {
     }
   };
 
+  const handleGenerateClick = () => {
+    setShowDialog(true);
+  };
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
     if (selectedFile) {
@@ -62,27 +73,19 @@ const ResponsePage = () => {
     }
   };
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-
+  const handleSubmit = async (option: "Detailed" | "Precise") => {
     if (!file) {
-      alert("Please upload a file");
+      alert("Please upload a file first");
       return;
     }
 
-    if (!selectedOption) {
-      setErrorMessage(
-        "Please select if you want a detailed or precise cheatsheet first"
-      );
-      return;
-    }
-
+    setSelectedOption(option);
+    setShowDialog(false);
     setLoadingCheatsheet(true);
-    setErrorMessage("");
 
     let customPrompt = textPrompt || "";
 
-    if (selectedOption === "Detailed") {
+    if (option === "Detailed") {
       customPrompt =
         customPrompt ||
         `Generate a comprehensive cheat sheet based on the provided document.Provide explanations, context, and insights to enhance understanding. Use clear and simple language for each detail to ensure a thorough grasp of the topic. If the document is an exam study guide with topics organized by chapters, reference each chapter and summarize its contents. Use the following format strictly:
@@ -115,13 +118,11 @@ Guidelines for content:
 - Ensure each detail provides meaningful information
 - Keep formatting consistent throughout the document
 
-Please structure the content following this format exactly as it matches the frontend rendering system.
-      `;
-    } else if (selectedOption === "Precise") {
+Please structure the content following this format exactly as it matches the frontend rendering system.`;
+    } else if (option === "Precise") {
       customPrompt =
         customPrompt ||
-        `
-       Please create a precise cheat sheet from the provided document. Use the following format strictly:
+        `Please create a precise cheat sheet from the provided document. Use the following format strictly:
 
 ## Main formatting rules:
 1. Start main titles with "TITLE: " (include the space after colon)
@@ -149,9 +150,7 @@ Guidelines for content:
 - Break down complex topics into digestible points
 - Maintain consistent formatting throughout
 
-
-Please structure the content following this format exactly as it matches the frontend rendering system.
-      `;
+Please structure the content following this format exactly as it matches the frontend rendering system.`;
     }
 
     const formData = new FormData();
@@ -176,7 +175,7 @@ Please structure the content following this format exactly as it matches the fro
       console.error("Error fetching cheatsheet content:", error);
       setErrorMessage("Failed to generate cheatsheet. Please try again.");
     } finally {
-      setLoadingCheatsheet(false); // Reset loading state here
+      setLoadingCheatsheet(false);
     }
   };
 
@@ -245,8 +244,7 @@ Separate each question with three dashes (---).`;
     }
 
     setLoadingMnemonics(true);
-      setShowingMnemonics(true);
-
+    setShowingMnemonics(true);
 
     const customPrompt = `Analyze the document and create mnemonics for all the key concepts of the provided document to aid in memorizing key concepts. Use the most effective and suitable mnemonic technique for the respective key concepts. Use the following format strictly:
 
@@ -378,170 +376,6 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
     }
   };
 
-  // const renderCheatsheetAsList = () => {
-  //   if (!cheatsheetContent) return null;
-
-  //   // Split by `---` to get sections and then iterate over each line for parsing
-  //   const sections = cheatsheetContent
-  //     .split("---")
-  //     .filter((section) => section.trim());
-
-  //   // Helper function to format mathematical notation
-  //   const formatMathText = (text:string) => {
-  //     // Format subscripts (e.g., a₀, n₁)
-  //     let formattedText = text.replace(/([a-z])(\d)/gi, "$1₍$2₎");
-
-  //     // Format superscripts (e.g., x², 2ⁿ)
-  //     formattedText = formattedText.replace(/\^(\d+)/g, "⁽$1⁾");
-
-  //     // Format special symbols
-  //     const symbolMap = {
-  //       ">=": "≥",
-  //       "<=": "≤",
-  //       "!=": "≠",
-  //       phi: "φ",
-  //       sqrt: "√",
-  //       "->": "→",
-  //       N0: "ℕ₀",
-  //       N: "ℕ",
-  //       Z: "ℤ",
-  //     };
-
-  //     Object.entries(symbolMap).forEach(([key, value]) => {
-  //       formattedText = formattedText.replace(new RegExp(key, "g"), value);
-  //     });
-
-  //     return formattedText;
-  //   };
-
-  //   // Helper function to handle code-like blocks
-  //   const formatCodeBlock = (text: string) => {
-  //     if (text.includes("{") || text.includes("if") || text.includes("→")) {
-  //       return (
-  //         <pre className="bg-gray-100 p-4 rounded-md font-mono text-sm my-2 whitespace-pre-wrap">
-  //           {text}
-  //         </pre>
-  //       );
-  //     }
-  //     return formatMathText(text);
-  //   };
-
-  //   return (
-  //     <div id="cheatsheet-content" className="text-black max-w-4xl mx-auto">
-  //       {sections.map((section: string, index: number) => {
-  //         const lines = section
-  //           .trim()
-  //           .split("\n")
-  //           .filter((line) => line.trim());
-
-  //         return (
-  //           <div key={index} className="mb-8 bg-white rounded-lg shadow-md p-6">
-  //             {lines.map((line: string, lineIndex: number) => {
-  //               const titleMatch1 = line.match(/^TITLE:\s(.+)/);
-  //               const subtopicMatch = line.match(/^SUBTOPIC:\s(.+)/);
-  //               const detailMatch = line.match(/^DETAIL_\d+:\s(.+)/);
-  //               const mnemonicMatch = line.match(/^MNEMONIC_\d+:\s(.+)/);
-  //               const typeMatch = line.match(/^TYPE:\s(.+)/);
-  //               const explanationMatch = line.match(/^Explanation:\s(.+)/);
-
-  //               if (titleMatch1) {
-  //                 return (
-  //                   <h2
-  //                     key={lineIndex}
-  //                     className="text-3xl font-bold mb-4 text-blue-900 border-b pb-2"
-  //                   >
-  //                     {formatMathText(titleMatch1[1])}
-  //                   </h2>
-  //                 );
-  //               } else if (explanationMatch) {
-  //                 return (
-  //                   <div className="ml-4 mb-4 text-gray-700 bg-blue-50 p-4 rounded-lg">
-  //                     <p className="font-medium text-blue-800 mb-1">
-  //                       Explanation:
-  //                     </p>
-  //                     <p>{explanationMatch[1]}</p>
-  //                   </div>
-  //                 );
-  //               } else if (subtopicMatch) {
-  //                 return (
-  //                   <h3
-  //                     key={lineIndex}
-  //                     className="text-xl font-semibold mb-3 text-blue-700 mt-4"
-  //                   >
-  //                     {formatMathText(subtopicMatch[1])}
-  //                   </h3>
-  //                 );
-  //               } else if (mnemonicMatch) {
-  //                 return (
-  //                   <div className="ml-4 mb-2">
-  //                     <div className="flex items-start">
-  //                       <div className="mr-2 text-blue-500 mt-1"></div>
-  //                       <div className="flex-1">
-  //                         <div className="font-medium text-gray-800 bg-blue-50 p-3 rounded-lg">
-  //                           {mnemonicMatch[1]}
-  //                         </div>
-  //                       </div>
-  //                     </div>
-  //                   </div>
-  //                 );
-  //               } else if (detailMatch) {
-  //                 const detailContent = detailMatch[1].trim();
-  //                 return (
-  //                   <div key={lineIndex} className="ml-4 mb-3">
-  //                     <div className="flex">
-  //                       <div className="mr-2 text-blue-500">•</div>
-  //                       <div className="flex-1">
-  //                         {detailContent.includes("\n") ||
-  //                         detailContent.includes("    ") ? (
-  //                           <div className="font-normal">
-  //                             {detailContent
-  //                               .split("\n")
-  //                               .map((part: string, partIndex: number) => (
-  //                                 <div
-  //                                   key={partIndex}
-  //                                   className={
-  //                                     part.startsWith("    ")
-  //                                       ? "ml-4 font-mono"
-  //                                       : ""
-  //                                   }
-  //                                 >
-  //                                   {formatCodeBlock(part.trim())}
-  //                                 </div>
-  //                               ))}
-  //                           </div>
-  //                         ) : (
-  //                           <div className="font-normal">
-  //                             {formatMathText(detailContent)}
-  //                           </div>
-  //                         )}
-  //                       </div>
-  //                     </div>
-  //                   </div>
-  //                 );
-  //               } else if (typeMatch) {
-  //                 return (
-  //                   <div className="ml-8 mb-4 text-black font-inter">
-  //                     <div className="flex items-center">
-  //                       <span className="text-blue-400 mr-2"></span>
-  //                       {typeMatch[1]}
-  //                     </div>
-  //                   </div>
-  //                 );
-  //               } else {
-  //                 return (
-  //                   <p key={lineIndex} className="ml-4 mb-2 font-normal">
-  //                     {formatMathText(line.trim())}
-  //                   </p>
-  //                 );
-  //               }
-  //             })}
-  //           </div>
-  //         );
-  //       })}
-  //     </div>
-  //   );
-  // };
-
   const parseMnemonics = (content: string) => {
     const sections = content.split("---").filter((section) => section.trim());
     const mnemonics: Mnemonic[] = [];
@@ -579,11 +413,10 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
   const renderCheatsheetAsList = () => {
     if (!cheatsheetContent) return null;
 
-    
-  if (showingMnemonics) {
-    const mnemonics = parseMnemonics(cheatsheetContent);
-    return <MnemonicCards mnemonics={mnemonics} />;
-  }
+    if (showingMnemonics) {
+      const mnemonics = parseMnemonics(cheatsheetContent);
+      return <MnemonicCards mnemonics={mnemonics} />;
+    }
     const sections = cheatsheetContent
       .split("---")
       .filter((section) => section.trim());
@@ -1050,10 +883,7 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
         </div>
 
         <div className="w-full flex justify-center px-4 md:px-0">
-          <form
-            onSubmit={handleSubmit}
-            className="w-full md:w-3/4 bg-black border border-gray-700 shadow-md rounded-lg p-4 md:p-6 mt-6"
-          >
+          <form className="w-full md:w-3/4 bg-black border border-gray-700 shadow-md rounded-lg p-4 md:p-6 mt-6">
             <div className="mb-4">
               <label className="block text-lg font-medium text-white">
                 Upload File
@@ -1098,73 +928,67 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
               <div className="flex flex-col space-y-4">
                 <div className="flex flex-col sm:flex-row gap-4">
                   <button
-                    type="submit"
+                    type="button"
                     className={`bg-${
                       loadingCheatsheet ? "yellow-500" : "white"
                     } text-black px-4 py-2 rounded-full`}
+                    onClick={handleGenerateClick}
                     disabled={loadingCheatsheet}
                   >
                     {loadingCheatsheet
                       ? "Generating Cheatsheet..."
                       : "Generate Cheatsheet"}
                   </button>
+                </div>
+              </div>
 
-                  <div className="flex gap-2">
+              <Dialog open={showDialog} onOpenChange={setShowDialog}>
+                <DialogContent className="sm:max-w-md">
+                  <DialogTitle>Choose Cheatsheet Type</DialogTitle>
+                  <DialogDescription>
+                    Select how you would like your cheatsheet to be generated.
+                  </DialogDescription>
+                  <div className="flex flex-col gap-4 mt-4">
                     <button
-                      type="button"
-                      className={`px-3 py-1 rounded-full ${
-                        selectedOption === "Detailed"
-                          ? "bg-yellow-500 text-black"
-                          : "bg-white text-black"
-                      }`}
-                      onClick={() => toggleSelection("Detailed")}
+                      className="px-4 py-2 rounded-full bg-white text-black hover:bg-yellow-500 transition-colors"
+                      onClick={() => handleSubmit("Detailed")}
                     >
                       Detailed
                     </button>
                     <button
-                      type="button"
-                      className={`px-3 py-1 rounded-full ${
-                        selectedOption === "Precise"
-                          ? "bg-yellow-500 text-black"
-                          : "bg-white text-black"
-                      }`}
-                      onClick={() => toggleSelection("Precise")}
+                      className="px-4 py-2 rounded-full bg-white text-black hover:bg-yellow-500 transition-colors"
+                      onClick={() => handleSubmit("Precise")}
                     >
                       Precise
                     </button>
                   </div>
-                </div>
+                </DialogContent>
+              </Dialog>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <button
+                type="button"
+                className={`bg-${
+                  loadingMnemonics ? "yellow-500" : "white"
+                } text-black px-4 py-2 rounded-full`}
+                onClick={handleGenerateMnemonics}
+                disabled={loadingMnemonics}
+              >
+                {loadingMnemonics
+                  ? "Generating Mnemonics..."
+                  : "Generate Mnemonics"}
+              </button>
 
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <button
-                    type="button"
-                    className={`bg-${
-                      loadingMnemonics ? "yellow-500" : "white"
-                    } text-black px-4 py-2 rounded-full`}
-                    onClick={handleGenerateMnemonics}
-                    disabled={loadingMnemonics}
-                  >
-                    {loadingMnemonics
-                      ? "Generating Mnemonics..."
-                      : "Generate Mnemonics"}
-                  </button>
-
-                  <button
-                    type="button"
-                    className={`bg-${
-                      loadingQuiz ? "yellow-500" : "white"
-                    } text-black px-4 py-2 rounded-full`}
-                    onClick={handleGenerateQuiz}
-                    disabled={loadingQuiz}
-                  >
-                    {loadingQuiz ? "Generating Quiz..." : "Generate Quiz"}
-                  </button>
-                </div>
-              </div>
-
-              {errorMessage && (
-                <p className="text-red-500 mt-2">{errorMessage}</p>
-              )}
+              <button
+                type="button"
+                className={`bg-${
+                  loadingQuiz ? "yellow-500" : "white"
+                } text-black px-4 py-2 rounded-full`}
+                onClick={handleGenerateQuiz}
+                disabled={loadingQuiz}
+              >
+                {loadingQuiz ? "Generating Quiz..." : "Generate Quiz"}
+              </button>
             </div>
           </form>
         </div>
