@@ -198,13 +198,13 @@ const HomePage = () => {
                 </div>
                 <div className="hidden sm:flex gap-4 sm:gap-6 md:gap-8">
                   <div
-                    onClick={() => handleScroll("about")}
+                    onClick={() => handleScroll("features")}
                     className="text-[#0023FF] hover:text-[#0023FF] cursor-pointer"
                   >
                     Key Features
                   </div>
                   <div
-                    onClick={() => handleScroll("features")}
+                    onClick={() => handleScroll("howtobrev")}
                     className="text-[#0023FF] hover:text-[#0023FF] cursor-pointer"
                   >
                     How to Brev
@@ -246,7 +246,7 @@ const HomePage = () => {
                 <div>
                   <div
                     className="hover:text-[#0023FF] text-black"
-                    onClick={() => handleScroll("about")}
+                    onClick={() => handleScroll("howtobrev")}
                   >
                     how to brev
                   </div>
@@ -391,7 +391,7 @@ const HomePage = () => {
             <MarqueeDemo></MarqueeDemo>
           </div>
         </section>
-        <section>
+        <section id="contact">
           <footer className="p-4 bg-[#0023FF] sm:p-6 dark:bg-gray-800">
             <div className="mx-auto max-w-screen-xl">
               <div className="md:flex md:justify-between">
@@ -414,10 +414,7 @@ const HomePage = () => {
                     </h2>
                     <ul className="text-gray-100 dark:text-gray-400">
                       <li className="mb-4">
-                        <a
-                          href="#"
-                          className="hover:underline"
-                        >
+                        <a href="#" className="hover:underline">
                           Homepage
                         </a>
                       </li>
@@ -476,8 +473,6 @@ const HomePage = () => {
                           Linkedin
                         </a>
                       </li>
-                     
-
                     </ul>
                   </div>
                   <div>
