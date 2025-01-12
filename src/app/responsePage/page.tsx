@@ -944,8 +944,10 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
 
               <Dialog open={showDialog} onOpenChange={setShowDialog}>
                 <DialogContent className="sm:max-w-md">
-                  <DialogTitle>Choose Cheatsheet Type</DialogTitle>
-                  <DialogDescription>
+                  <DialogTitle className="text-white">
+                    Choose Cheatsheet Type
+                  </DialogTitle>
+                  <DialogDescription className="text-white">
                     Select how you would like your cheatsheet to be generated.
                   </DialogDescription>
                   <div className="flex flex-col gap-4 mt-4">
@@ -1010,7 +1012,7 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
         {cheatsheetContent && (
           <button
             onClick={handleDownloadPDF}
-            className="mt-4 px-4 py-2 bg-white text-black rounded-full hover:bg-gray-200 transition-colors"
+            className="mt-4 px-4 py-2 bg-[#0023FF] text-white rounded-full hover:bg-[#172688] transition-colors"
           >
             Download as PDF
           </button>
