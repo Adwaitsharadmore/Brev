@@ -851,26 +851,26 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
 
           {/* Phrases Section */}
           <div className="w-full md:pt-[20px] pt-[10px] mx-auto">
-            <div className="w-full pt-10">
-              <span className="text-black tracking-tighter md:text-6xl text-2xl font-semibold leading-tight font-Inter">
+            <div className="w-full pt-[30px]">
+              <span className="text-black tracking-tighter md:text-5xl text-2xl font-semibold leading-tight font-Inter">
                 Don’t worry,{" "}
               </span>
-              <span className="text-[#0023FF] tracking-tighter md:text-6xl text-2xl font-semibold leading-tight font-Inter">
+              <span className="text-[#0023FF] tracking-tighter md:text-5xl text-2xl font-semibold leading-tight font-Inter">
                 {" "}
                 Brev’s
               </span>
-              <span className="text-black tracking-tighter md:text-6xl text-2xl font-semibold leading-tight font-Inter">
+              <span className="text-black tracking-tighter md:text-5xl text-2xl font-semibold leading-tight font-Inter">
                 {" "}
                 got your back.
               </span>
             </div>
-            <div className="text-black tracking-tighter md:text-6xl text-2xl font-light leading-tight font-Inter mt-4">
+            <div className="text-black tracking-tighter md:text-5xl text-2xl font-light leading-tight font-Inter mt-4">
               Just upload a file
             </div>
-            <div className="text-black tracking-tighter md:text-6xl text-2xl font-light leading-tight font-Inter mt-4">
+            <div className="text-black tracking-tighter md:text-5xl text-2xl font-light leading-tight font-Inter mt-4">
               and choose your
             </div>
-            <div className="text-black tracking-tighter md:text-6xl text-2xl gap-4 font-light leading-tight font-Inter mt-4 flex items-center">
+            <div className="text-black tracking-tighter md:text-5xl text-2xl gap-4 font-light leading-tight font-Inter mt-4 flex items-center">
               <span>desired </span>
               {/* <img
                   className="w-[100vw] max-w-[400px] h-auto ml-2 pt-3"
