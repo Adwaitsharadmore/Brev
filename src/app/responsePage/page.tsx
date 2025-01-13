@@ -793,24 +793,24 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
                 <div className="hidden sm:flex gap-4 sm:gap-6 md:gap-8">
                   <div
                     onClick={() => handleScroll("about")}
-                    className="text-[#0023FF] hover:text-[#0023FF] cursor-pointer"
+                    className="text-[#0023FF] hover:text-[#0023FF] cursor-pointer hover:underline"
                   >
                     Key Features
                   </div>
                   <div
                     onClick={() => handleScroll("features")}
-                    className="text-[#0023FF] hover:text-[#0023FF] cursor-pointer"
+                    className="text-[#0023FF] hover:text-[#0023FF] cursor-pointer hover:underline"
                   >
                     How to Brev
                   </div>
                   <div
-                    className="text-[#0023FF] hover:text-[#0023FF] cursor-pointer"
+                    className="text-[#0023FF] hover:text-[#0023FF] cursor-pointer hover:underline"
                     onClick={() => handleScroll("story")}
                   >
                     Our Story
                   </div>
                   <div
-                    className="text-[#0023FF] hover:text-[#0023FF] cursor-pointer"
+                    className="text-[#0023FF] hover:text-[#0023FF] cursor-pointer hover:underline"
                     onClick={() => handleScroll("contact")}
                   >
                     Contact Us
@@ -1002,7 +1002,7 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
           </form>
         </div>
 
-        <div className="w-3/4 bg-white shadow-md rounded-lg p-5 mt-6">
+        <div className="w-full md:w-3/4 bg-white shadow-md rounded-lg p-5 mt-6">
           <div id="cheatsheet-content" className="text-lg text-black">
             {cheatsheetContent ? (
               renderCheatsheetAsList()
