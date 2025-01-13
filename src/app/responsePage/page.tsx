@@ -851,7 +851,7 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
 
           {/* Phrases Section */}
           <div className="w-full md:pt-[20px] pt-[10px] mx-auto">
-            <div className="w-full">
+            <div className="w-full pt-10">
               <span className="text-black tracking-tighter md:text-6xl text-2xl font-semibold leading-tight font-Inter">
                 Don’t worry,{" "}
               </span>
