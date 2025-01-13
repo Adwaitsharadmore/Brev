@@ -398,8 +398,8 @@ const HomePage = () => {
                 <div className="mb-6 md:mb-0">
                   <a href="#" className="flex items-center">
                     <img
-                      src="/images/mainlogo.svg"
-                      className="mr-3 h-8 rounded-full"
+                      src="/images/2.png"
+                      className="mr-1 h-12 rounded-full"
                       alt="Brev Logo"
                     />
                     <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
@@ -498,7 +498,7 @@ const HomePage = () => {
               <div className="sm:flex sm:items-center sm:justify-between">
                 <span className="text-sm text-white sm:text-center dark:text-gray-400">
                   © 2025{" "}
-                  <a href="https://flowbite.com" className="hover:underline">
+                  <a href="https://meetbrev.com" className="hover:underline">
                     Brev™
                   </a>
                   . All Rights Reserved.
