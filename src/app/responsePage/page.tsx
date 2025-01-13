@@ -921,76 +921,77 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
               />
             </div>
 
-            <div className="mb-4">
-              <label className="block text-lg font-medium text-white mb-2">
+            <div className="flex flex-col sm:flex-col gap-4">
+              <label className="block text-lg font-medium text-white mb-2 w-full">
                 Select an option:
               </label>
-              <div className="flex flex-col space-y-4">
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <button
-                    type="button"
-                    className={`bg-${
-                      loadingCheatsheet ? "yellow-500" : "white"
-                    } text-black px-4 py-2 rounded-full`}
-                    onClick={handleGenerateClick}
-                    disabled={loadingCheatsheet}
-                  >
-                    {loadingCheatsheet
-                      ? "Generating Cheatsheet..."
-                      : "Generate Cheatsheet"}
-                  </button>
-                </div>
-              </div>
-
-              <Dialog open={showDialog} onOpenChange={setShowDialog}>
-                <DialogContent className="sm:max-w-md">
-                  <DialogTitle className="text-white">
-                    Choose Cheatsheet Type
-                  </DialogTitle>
-                  <DialogDescription className="text-white">
-                    Select how you would like your cheatsheet to be generated.
-                  </DialogDescription>
-                  <div className="flex flex-col gap-4 mt-4">
+              <div className="flex flex-col gap-4 sm:flex-row">
+                <div className="flex flex-col space-y-4">
+                  <div className="flex flex-col sm:flex-row gap-4">
                     <button
-                      className="px-4 py-2 rounded-full bg-white text-black hover:bg-yellow-500 transition-colors"
-                      onClick={() => handleSubmit("Detailed")}
+                      type="button"
+                      className={`bg-${
+                        loadingCheatsheet ? "yellow-500" : "white"
+                      } text-black px-4 py-2 rounded-full`}
+                      onClick={handleGenerateClick}
+                      disabled={loadingCheatsheet}
                     >
-                      Detailed
-                    </button>
-                    <button
-                      className="px-4 py-2 rounded-full bg-white text-black hover:bg-yellow-500 transition-colors"
-                      onClick={() => handleSubmit("Precise")}
-                    >
-                      Precise
+                      {loadingCheatsheet
+                        ? "Generating Cheatsheet..."
+                        : "Generate Cheatsheet"}
                     </button>
                   </div>
-                </DialogContent>
-              </Dialog>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <button
-                type="button"
-                className={`bg-${
-                  loadingMnemonics ? "yellow-500" : "white"
-                } text-black px-4 py-2 rounded-full`}
-                onClick={handleGenerateMnemonics}
-                disabled={loadingMnemonics}
-              >
-                {loadingMnemonics
-                  ? "Generating Mnemonics..."
-                  : "Generate Mnemonics"}
-              </button>
+                </div>
 
-              <button
-                type="button"
-                className={`bg-${
-                  loadingQuiz ? "yellow-500" : "white"
-                } text-black px-4 py-2 rounded-full`}
-                onClick={handleGenerateQuiz}
-                disabled={loadingQuiz}
-              >
-                {loadingQuiz ? "Generating Quiz..." : "Generate Quiz"}
-              </button>
+                <Dialog open={showDialog} onOpenChange={setShowDialog}>
+                  <DialogContent className="sm:max-w-md">
+                    <DialogTitle className="text-white">
+                      Choose Cheatsheet Type
+                    </DialogTitle>
+                    <DialogDescription className="text-white">
+                      Select how you would like your cheatsheet to be generated.
+                    </DialogDescription>
+                    <div className="flex flex-col gap-4 mt-4">
+                      <button
+                        className="px-4 py-2 rounded-full bg-white text-black hover:bg-yellow-500 transition-colors"
+                        onClick={() => handleSubmit("Detailed")}
+                      >
+                        Detailed
+                      </button>
+                      <button
+                        className="px-4 py-2 rounded-full bg-white text-black hover:bg-yellow-500 transition-colors"
+                        onClick={() => handleSubmit("Precise")}
+                      >
+                        Precise
+                      </button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+
+                <button
+                  type="button"
+                  className={`bg-${
+                    loadingMnemonics ? "yellow-500" : "white"
+                  } text-black px-4 py-2 rounded-full`}
+                  onClick={handleGenerateMnemonics}
+                  disabled={loadingMnemonics}
+                >
+                  {loadingMnemonics
+                    ? "Generating Mnemonics..."
+                    : "Generate Mnemonics"}
+                </button>
+
+                <button
+                  type="button"
+                  className={`bg-${
+                    loadingQuiz ? "yellow-500" : "white"
+                  } text-black px-4 py-2 rounded-full`}
+                  onClick={handleGenerateQuiz}
+                  disabled={loadingQuiz}
+                >
+                  {loadingQuiz ? "Generating Quiz..." : "Generate Quiz"}
+                </button>
+              </div>
             </div>
           </form>
         </div>
