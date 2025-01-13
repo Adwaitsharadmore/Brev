@@ -171,6 +171,7 @@ Please structure the content following this format exactly as it matches the fro
       console.log("Cheatsheet content set:", data.generatedText);
       setCheatsheetContent(data.generatedText);
       setTempFilePath(data.tempFilePath);
+      setShowingMnemonics(false);
     } catch (error) {
       console.error("Error fetching cheatsheet content:", error);
       setErrorMessage("Failed to generate cheatsheet. Please try again.");
@@ -244,7 +245,7 @@ Separate each question with three dashes (---).`;
     }
 
     setLoadingMnemonics(true);
-    setShowingMnemonics(true);
+   
 
     const customPrompt = `Analyze the document and create mnemonics for all the key concepts of the provided document to aid in memorizing key concepts. Use the most effective and suitable mnemonic technique for the respective key concepts. Use the following format strictly:
 
@@ -368,11 +369,13 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
 
       const data = await response.json();
       setCheatsheetContent(data.generatedMnemonics);
+       setShowingMnemonics(true);
     } catch (error) {
       console.error("Error fetching mnemonics:", error);
       setErrorMessage("Failed to generate mnemonics. Please try again.");
     } finally {
       setLoadingMnemonics(false);
+     
     }
   };
 
@@ -417,6 +420,7 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
       const mnemonics = parseMnemonics(cheatsheetContent);
       return <MnemonicCards mnemonics={mnemonics} />;
     }
+
     const sections = cheatsheetContent
       .split("---")
       .filter((section) => section.trim());
@@ -628,6 +632,8 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
       }
     };
 
+    
+
     return (
       <div className="relative w-full mx-auto">
         <Card
@@ -638,18 +644,18 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
         >
           <CardContent className="p-6">
             <div className="text-lg font-semibold text-blue-600 mb-2">
-              {mnemonics[currentIndex].subtopic}
+              {mnemonics[currentIndex]?.subtopic}
             </div>
             <div className="text-lg font-medium text-gray-800 mb-4">
-              {mnemonics[currentIndex].text}
+              {mnemonics[currentIndex]?.text}
             </div>
             <div className="text-sm text-gray-600 mb-2">
               <span className="font-medium">Type:</span>{" "}
-              {mnemonics[currentIndex].type}
+              {mnemonics[currentIndex]?.type}
             </div>
-            {mnemonics[currentIndex].explanation && (
+            {mnemonics[currentIndex]?.explanation && (
               <div className="text-sm text-gray-600 mt-2 bg-white p-3 rounded-lg">
-                {mnemonics[currentIndex].explanation}
+                {mnemonics[currentIndex]?.explanation}
               </div>
             )}
           </CardContent>
