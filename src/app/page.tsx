@@ -399,7 +399,7 @@ const HomePage = () => {
                       </li>
                       <li>
                         <a
-                          href="https://tailwindcss.com/"
+                          href="#"
                           className="hover:underline"
                         >
                           Start Breving
@@ -414,7 +414,7 @@ const HomePage = () => {
                     <ul className="text-gray-100 dark:text-gray-400 space-y-4">
                       <li>
                         <a
-                          href="https://github.com/themesberg/flowbite"
+                          href="https://www.instagram.com/meetbrev/"
                           className="hover:underline "
                         >
                           Instagram
@@ -422,7 +422,7 @@ const HomePage = () => {
                       </li>
                       <li>
                         <a
-                          href="https://discord.gg/4eeurUVvTy"
+                          href="https://www.tiktok.com/@meetbrev"
                           className="hover:underline"
                         >
                           TikTok
@@ -430,7 +430,7 @@ const HomePage = () => {
                       </li>
                       <li>
                         <a
-                          href="https://discord.gg/4eeurUVvTy"
+                          href="https://x.com/meetbrev"
                           className="hover:underline"
                         >
                           X
@@ -446,7 +446,7 @@ const HomePage = () => {
                       </li>
                       <li>
                         <a
-                          href="https://discord.gg/4eeurUVvTy"
+                          href="https://www.linkedin.com/company/meetbrev"
                           className="hover:underline"
                         >
                           Linkedin
