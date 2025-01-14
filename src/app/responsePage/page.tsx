@@ -82,8 +82,6 @@ const ResponsePage = () => {
       return;
     }
 
-    setLoadingCheatsheet(true);
-
     const formData = new FormData();
     formData.append("file", file);
     formData.append("textPrompt", textPrompt);
@@ -102,7 +100,6 @@ const ResponsePage = () => {
       console.log("Generated content:", data.generatedText);
       setCheatsheetContent(data.generatedText);
       setTempFilePath(data.tempFilePath);
-      setShowingMnemonics(false);
     } catch (error) {
       console.error("Error fetching generated content:", error);
       setErrorMessage("Failed to generate content. Please try again.");
@@ -472,8 +469,8 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
 
     // Helper function to format mathematical notation (keeping existing implementation)
     const formatMathText = (text: string) => {
-      let formattedText = text.replace(/([a-z])(\d)/gi, "$1₍$2₎");
-      formattedText = formattedText.replace(/\^(\d+)/g, "⁽$1⁾");
+      let formattedText = text.replace(/([a-z])(\d)/gi, "$1$2");
+      formattedText = formattedText.replace(/\^(\d+)/g, "$1");
       const symbolMap = {
         ">=": "≥",
         "<=": "≤",
