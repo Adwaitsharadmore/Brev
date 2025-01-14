@@ -66,7 +66,7 @@ const Section = ({
 
 const content = [
   {
-    title: "Collaborative Editing",
+    title: "Adaptive Testing and Feedback",
     description:
       "Work together in real time with your team, clients, and stakeholders. Collaborate on documents, share ideas, and make decisions quickly. With our platform, you can streamline your workflow and increase productivity.",
     content: (
@@ -76,7 +76,7 @@ const content = [
     ),
   },
   {
-    title: "Real time changes",
+    title: "Exam-Specific Cheatsheets",
     description:
       "See changes as they happen. With our platform, you can track every modification in real time. No more confusion about the latest version of your project. Say goodbye to the chaos of version control and embrace the simplicity of real-time updates.",
     content: (
@@ -275,18 +275,6 @@ const HomePage = () => {
                     <ShimmerButtonDemo></ShimmerButtonDemo>
                   </div>
                 </div>
-
-                {/* <div className="items-center hidden md:flex-col md:flex justify-center mt-[-30px] w-[100%]">
-                <Image
-                  width={500}
-                  height={300}
-                  src="/images/mainlogo.svg"
-                  alt="Meeet"
-                />
-                <span className="text-[#0023ff] bg-white px-2 font-inter font-bold text-3xl">
-                  <Typewriter></Typewriter>
-                </span>
-              </div> */}
               </motion.div>
             </section>
             <section id="howtobrev">
