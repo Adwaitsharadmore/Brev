@@ -936,9 +936,11 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
                   <div className="flex flex-col sm:flex-row gap-4">
                     <button
                       type="button"
-                      className={`bg-${
-                        loadingCheatsheet ? "yellow-500" : "white"
-                      } text-black px-4 py-2 rounded-full`}
+                      className={`bg-white text-black px-4 py-2 rounded-full ${
+                        loadingCheatsheet
+                          ? "opacity-50 cursor-not-allowed"
+                          : "hover:bg-[#0023FF] hover:text-white"
+                      }`}
                       onClick={handleGenerateClick}
                       disabled={loadingCheatsheet}
                     >
@@ -976,9 +978,11 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
 
                 <button
                   type="button"
-                  className={`bg-${
-                    loadingMnemonics ? "yellow-500" : "white"
-                  } text-black px-4 py-2 rounded-full`}
+                  className={`bg-white text-black px-4 py-2 rounded-full ${
+                    loadingMnemonics
+                      ? "opacity-50 cursor-not-allowed"
+                      : "hover:bg-[#0023FF] hover:text-white"
+                  }`}
                   onClick={handleGenerateMnemonics}
                   disabled={loadingMnemonics}
                 >
@@ -989,9 +993,11 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
 
                 <button
                   type="button"
-                  className={`bg-${
-                    loadingQuiz ? "yellow-500" : "white"
-                  } text-black px-4 py-2 rounded-full`}
+                  className={`bg-white text-black px-4 py-2 rounded-full ${
+                    loadingQuiz
+                      ? "opacity-50 cursor-not-allowed"
+                      : "hover:bg-[#0023FF] hover:text-white"
+                  }`}
                   onClick={handleGenerateQuiz}
                   disabled={loadingQuiz}
                 >
