@@ -22,6 +22,11 @@ interface Mnemonic {
   explanation: string;
 }
 
+interface CustomContentItem {
+  type: "detail" | "text";
+  content: string;
+}
+
 const ResponsePage = () => {
   const [showingMnemonics, setShowingMnemonics] = useState(false);
 
@@ -62,6 +67,48 @@ const ResponsePage = () => {
 
   const handleGenerateClick = () => {
     setShowDialog(true);
+  };
+
+  const handleKeyPress = (event: React.KeyboardEvent) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      handleGenerateContent();
+    }
+  };
+
+  const handleGenerateContent = async () => {
+    if (!file) {
+      alert("Please upload a file first");
+      return;
+    }
+
+    setLoadingCheatsheet(true);
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("textPrompt", textPrompt);
+
+    try {
+      const response = await fetch("/api/doubts", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("Generated content:", data.generatedText);
+      setCheatsheetContent(data.generatedText);
+      setTempFilePath(data.tempFilePath);
+      setShowingMnemonics(false);
+    } catch (error) {
+      console.error("Error fetching generated content:", error);
+      setErrorMessage("Failed to generate content. Please try again.");
+    } finally {
+      setLoadingCheatsheet(false);
+    }
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -245,7 +292,6 @@ Separate each question with three dashes (---).`;
     }
 
     setLoadingMnemonics(true);
-   
 
     const customPrompt = `Analyze the document and create mnemonics for all the key concepts of the provided document to aid in memorizing key concepts. Use the most effective and suitable mnemonic technique for the respective key concepts. Use the following format strictly:
 
@@ -369,13 +415,12 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
 
       const data = await response.json();
       setCheatsheetContent(data.generatedMnemonics);
-       setShowingMnemonics(true);
+      setShowingMnemonics(true);
     } catch (error) {
       console.error("Error fetching mnemonics:", error);
       setErrorMessage("Failed to generate mnemonics. Please try again.");
     } finally {
       setLoadingMnemonics(false);
-     
     }
   };
 
@@ -434,7 +479,6 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
         "<=": "≤",
         "!=": "≠",
         "->": "→",
-        N0: "ℕ₀",
         N: "N",
         Z: "Z",
       };
@@ -469,6 +513,7 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
           let currentExplanation = "";
           let mnemonics: Mnemonic[] = [];
           let currentMnemonic: Mnemonic | null = null;
+          let customContent: CustomContentItem[] = [];
 
           lines.forEach((line) => {
             const titleMatch = line.match(/^TITLE:\s(.+)/);
@@ -476,6 +521,7 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
             const explanationMatch = line.match(/^Explanation:\s(.+)/);
             const mnemonicMatch = line.match(/^MNEMONIC_\d+:\s(.+)/);
             const typeMatch = line.match(/^TYPE:\s(.+)/);
+            const detailMatch = line.match(/^DETAIL_\d+:\s(.+)/);
 
             if (titleMatch) {
               currentTitle = titleMatch[1];
@@ -495,6 +541,10 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
               currentMnemonic.type = typeMatch[1];
               mnemonics.push(currentMnemonic);
               currentMnemonic = null;
+            } else if (detailMatch) {
+              customContent.push({ type: "detail", content: detailMatch[1] });
+            } else {
+              customContent.push({ type: "text", content: line });
             }
           });
 
@@ -570,6 +620,28 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
                 }
               })}
 
+              {customContent.length > 0 && (
+                <div className="mt-4">
+                  <h4 className="text-lg font-semibold mb-2 text-blue-800">
+                    Additional Content
+                  </h4>
+                  {customContent.map((item, idx) => (
+                    <div key={idx} className="ml-4 mb-2">
+                      {item.type === "detail" ? (
+                        <div className="flex">
+                          <div className="mr-2 text-blue-500">•</div>
+                          <div className="flex-1">
+                            {formatMathText(item.content)}
+                          </div>
+                        </div>
+                      ) : (
+                        <p>{formatMathText(item.content)}</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+
               {mnemonics.length > 0 && (
                 <div className="mt-6">
                   <h4 className="text-lg font-semibold mb-3 text-blue-800">
@@ -631,8 +703,6 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
         setCurrentIndex(currentIndex - 1);
       }
     };
-
-    
 
     return (
       <div className="relative w-full mx-auto">
@@ -878,11 +948,6 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
             </div>
             <div className="text-black tracking-tighter md:text-5xl text-2xl gap-4 font-light leading-tight font-Inter mt-4 flex items-center">
               <span>desired </span>
-              {/* <img
-                  className="w-[100vw] max-w-[400px] h-auto ml-2 pt-3"
-                  src="/images/msg1.gif"
-                  alt="Message GIF"
-                /> */}
               <Typewriter></Typewriter>
             </div>
           </div>
@@ -922,6 +987,7 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
                 type="text"
                 value={textPrompt}
                 onChange={(e) => setTextPrompt(e.target.value)}
+                onKeyDown={handleKeyPress}
                 className="mt-2 p-2 border border-gray-500 rounded w-full bg-black text-white"
                 placeholder="Enter any additional prompt (optional)"
               />
