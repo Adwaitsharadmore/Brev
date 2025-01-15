@@ -49,6 +49,7 @@ const ResponsePage = () => {
     null
   );
   const [showDialog, setShowDialog] = useState(false);
+   const [isCustomPrompt, setIsCustomPrompt] = useState(false);
 
   useEffect(() => {
     const loadHtml2Pdf = async () => {
@@ -81,6 +82,7 @@ const ResponsePage = () => {
       alert("Please upload a file first");
       return;
     }
+      setIsCustomPrompt(true);
 
     const formData = new FormData();
     formData.append("file", file);
@@ -122,6 +124,7 @@ const ResponsePage = () => {
       alert("Please upload a file first");
       return;
     }
+    setIsCustomPrompt(false);
 
     setSelectedOption(option);
     setShowDialog(false);
@@ -617,7 +620,7 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
                 }
               })}
 
-              {customContent.length > 0 && (
+              {isCustomPrompt && customContent.length > 0 && (
                 <div className="mt-4">
                   <h4 className="text-lg font-semibold mb-2 text-blue-800">
                     Additional Content
