@@ -7,6 +7,7 @@ import fs from "fs";
 import Typewriter from "./p";
 import ScrollProgress from "@/components/ui/scroll-progress";
 import { Card, CardContent } from "@/components/ui/card";
+
 import {
   Dialog,
   DialogContent,
@@ -49,7 +50,8 @@ const ResponsePage = () => {
     null
   );
   const [showDialog, setShowDialog] = useState(false);
-   const [isCustomPrompt, setIsCustomPrompt] = useState(false);
+  const [isCustomPrompt, setIsCustomPrompt] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const loadHtml2Pdf = async () => {
@@ -59,6 +61,12 @@ const ResponsePage = () => {
     loadHtml2Pdf();
   }, []);
 
+    useEffect(() => {
+      if (isCustomPrompt) {
+        handleGenerateContent();
+      }
+    }, [isCustomPrompt]);
+
   const handleScroll = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -67,6 +75,7 @@ const ResponsePage = () => {
   };
 
   const handleGenerateClick = () => {
+    setIsCustomPrompt(false);
     setShowDialog(true);
   };
 
@@ -82,6 +91,9 @@ const ResponsePage = () => {
       alert("Please upload a file first");
       return;
     }
+   
+        
+setIsLoading(true);
       setIsCustomPrompt(true);
 
     const formData = new FormData();
@@ -107,6 +119,8 @@ const ResponsePage = () => {
       setErrorMessage("Failed to generate content. Please try again.");
     } finally {
       setLoadingCheatsheet(false);
+      setIsLoading(false);
+
     }
   };
 
@@ -619,12 +633,8 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
                   );
                 }
               })}
-
               {isCustomPrompt && customContent.length > 0 && (
                 <div className="mt-4">
-                  <h4 className="text-lg font-semibold mb-2 text-blue-800">
-                    Additional Content
-                  </h4>
                   {customContent.map((item, idx) => (
                     <div key={idx} className="ml-4 mb-2">
                       {item.type === "detail" ? (
@@ -641,7 +651,7 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
                   ))}
                 </div>
               )}
-
+              
               {mnemonics.length > 0 && (
                 <div className="mt-6">
                   <h4 className="text-lg font-semibold mb-3 text-blue-800">
@@ -987,7 +997,12 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
                 type="text"
                 value={textPrompt}
                 onChange={(e) => setTextPrompt(e.target.value)}
-                onKeyDown={handleKeyPress}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleKeyPress(e);
+                    setTextPrompt("");
+                  }
+                }}
                 className="mt-2 p-2 border border-gray-500 rounded w-full bg-black text-white"
                 placeholder="Enter any additional prompt (optional)"
               />
@@ -1076,13 +1091,18 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
 
         <div className="w-full md:w-3/4 bg-white shadow-md rounded-lg p-5 mt-6">
           <div id="cheatsheet-content" className="text-lg text-black">
-            {cheatsheetContent ? (
+            {loadingCheatsheet || loadingMnemonics || loadingQuiz || isLoading ? (
+              <div className="flex flex-col items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+                <p className="mt-4 text-gray-600">
+                  Generating...
+                </p>
+              </div>
+            ) : cheatsheetContent ? (
               renderCheatsheetAsList()
             ) : (
-              <p>
-                {loadingCheatsheet
-                  ? "Generating your cheatsheet..."
-                  : "Your cheatsheet content will be displayed here once generated."}
+              <p className="text-gray-500">
+                Your cheatsheet content will be displayed here once generated.
               </p>
             )}
           </div>
