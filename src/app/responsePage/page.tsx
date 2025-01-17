@@ -849,53 +849,6 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
                 <div className="text-[#0023FF] text-3xl sm:text-4xl font-extrabold font-inter capitalize">
                   <Link href="/">Brev</Link>
                 </div>
-                <div className="sm:hidden">
-                  <button
-                    onClick={toggleMenu}
-                    className="text-[#0023FF] hover:text-[#0023FF] transition-colors duration-200"
-                  >
-                    <svg
-                      className="w-6 h-6"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M4 6h16M4 12h16M4 18h16"
-                      />
-                    </svg>
-                  </button>
-                </div>
-                <div className="hidden sm:flex gap-4 sm:gap-6 md:gap-8">
-                  <div
-                    onClick={() => handleScroll("about")}
-                    className="text-[#0023FF] hover:text-[#0023FF] cursor-pointer hover:underline"
-                  >
-                    Key Features
-                  </div>
-                  <div
-                    onClick={() => handleScroll("features")}
-                    className="text-[#0023FF] hover:text-[#0023FF] cursor-pointer hover:underline"
-                  >
-                    How to Brev
-                  </div>
-                  <div
-                    className="text-[#0023FF] hover:text-[#0023FF] cursor-pointer hover:underline"
-                    onClick={() => handleScroll("story")}
-                  >
-                    Our Story
-                  </div>
-                  <div
-                    className="text-[#0023FF] hover:text-[#0023FF] cursor-pointer hover:underline"
-                    onClick={() => handleScroll("contact")}
-                  >
-                    Contact Us
-                  </div>
-                </div>
               </div>
             </div>
 
