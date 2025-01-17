@@ -66,9 +66,9 @@ const Section = ({
 
 const content = [
   {
-    title: "Exam-Specific Cheatsheets",
+    title: "Personalized Cheat Sheets",
     description:
-      "Work together in real time with your team, clients, and stakeholders. Collaborate on documents, share ideas, and make decisions quickly. With our platform, you can streamline your workflow and increase productivity.",
+      "Transform your study materials into perfectly organized cheat sheets in seconds. Whether you need a quick-glance summary or an in-depth review, our AI crafts custom study guides that highlight exactly what you need to know.",
     content: (
       <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--cyan-500),var(--emerald-500))] flex items-center justify-center text-white">
         Collaborative Editing
@@ -76,9 +76,9 @@ const content = [
     ),
   },
   {
-    title: "Memory aides and mnemonics",
+    title: "Memory-Boosting Mnemonics",
     description:
-      "See changes as they happen. With our platform, you can track every modification in real time. No more confusion about the latest version of your project. Say goodbye to the chaos of version control and embrace the simplicity of real-time updates.",
+      "Turn complex concepts into unforgettable memory hooks. Upload your study material and watch as clever acronyms, rhymes, and memorable phrases make learning effortless. No more struggling to remember key facts—our mnemonics stick with you.",
     content: (
       <div className="h-full w-full  flex items-center justify-center text-white">
         <Image
@@ -94,14 +94,13 @@ const content = [
   {
     title: "Adaptive testing and feedback",
     description:
-      "Experience real-time updates and never stress about version control again. Our platform ensures that you're always working on the most recent version of your project, eliminating the need for constant manual updates. Stay in the loop, keep your team aligned, and maintain the flow of your work without any interruptions.",
+      "Take the guesswork out of exam prep with adaptive quizzes that evolve with your learning. Our system identifies your knowledge gaps and automatically adjusts to strengthen your weak spots, ensuring you're fully prepared for exam day.",
     content: (
       <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--orange-500),var(--yellow-500))] flex items-center justify-center text-white">
         Version control
       </div>
     ),
   },
-
 ];
 
 const HomePage = () => {
