@@ -1,7 +1,7 @@
 {
   "rewrites": [{ "source": "/(.*)", "destination": "/" }],
   "functions": {
-    "api/upload-and-generate.js": {
+    "/api/*.js": {
       "maxDuration": 60
     }
   }
