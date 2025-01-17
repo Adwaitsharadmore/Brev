@@ -160,7 +160,7 @@ const HomePage = () => {
       <div className="w-screen h-screen items-center scroll-smooth">
         <div className="mx-auto flex flex-col items-center">
           <div className="w-screen sticky top-0 z-50 bg-[#f8f6ef] supports-backdrop-blur:bg-background/90 bg-background/40 backdrop-blur-lg justify-between gap-between">
-            <ScrollProgress className="top-[65px]" />
+            <ScrollProgress className="top-[60px]" />
             <div className="w-3/4 mx-auto gap-between justify-between">
               <div className="flex justify-between items-center px-4 py-3 gap-between">
                 <div className="text-[#0023FF] text-3xl sm:text-4xl font-extrabold font-inter capitalize">
@@ -291,9 +291,9 @@ const HomePage = () => {
 
             <section
               id="features"
-              className="w-full justify-center items-center flex flex-col pt-10"
+              className="w-full justify-center items-center flex flex-col md:pt-10 pt-0"
             >
-              <div className="w-full bg-[#f8f6ef] pt-8 mx-auto my-4 sm:my-6 md:my-8 lg:my-5">
+              <div className="w-full bg-[#f8f6ef] pt-8 mx-auto my-0 md:my-8">
                 <div className="text-black md:flex md:flex-col flex text-center md:text-start gap-2 md:gap-0">
                   <div>
                     {" "}
