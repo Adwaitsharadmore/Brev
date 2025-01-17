@@ -253,11 +253,12 @@ const HomePage = () => {
           </div>
 
           <BlurFade delay={0.25} inView>
-            <section id="about" className="pt-[250px]">
+            <section id="about" className="pt-[200px]">
               <motion.div className="relative mx-auto md:items-center justify-center my-50 pb-50">
                 <div className="flex flex-col md:items-center items-center justify-center md:leading-tight">
                   <div className="text-black text-4xl md:text-center text-center sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl font-semibold leading-tight tracking-tighter font-Inter">
-                    Your go-to tool for smarter learning
+                    streamline your exam prep with{" "}
+                    <span className="text-[#0023FF]"> Brev</span>
                   </div>{" "}
                   <div className="text-black md:text-center text-center md:items-start items-center md:w-[53%] text-lg md:text-2xl font-light md:leading-none tracking-tighter font-Inter pb-2">
                     acheive more with less stress
