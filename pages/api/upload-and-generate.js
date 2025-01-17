@@ -91,6 +91,7 @@ export default async function handler(req, res) {
       { text: textPrompt }
     ]);
 
+
     res.status(200).json({
       message: "Content generated successfully",
       generatedText: result.response.text()
@@ -111,5 +112,7 @@ export default async function handler(req, res) {
 export const config = {
   api: {
     bodyParser: false,
+        responseLimit: false,
+    externalResolver: true,
   },
 };
