@@ -398,10 +398,7 @@ const HomePage = () => {
                         </a>
                       </li>
                       <li>
-                        <a
-                          href="#"
-                          className="hover:underline"
-                        >
+                        <a href="#" className="hover:underline">
                           Start Breving
                         </a>
                       </li>
@@ -483,12 +480,23 @@ const HomePage = () => {
                   . All Rights Reserved.
                 </span>
                 <div className="flex mt-4 space-x-6 text-white sm:justify-center sm:mt-0">
-                  <FaLinkedin />
-                  <FaYoutube />
-                  <FaInstagram />
-                  <FaXTwitter />
-                  <FaTiktok />
-        
+                  <FaLinkedin
+                    className="hover:text-slate-400"
+                    href="https://www.linkedin.com/company/meetbrev"
+                  />
+                  <FaYoutube className="hover:text-slate-400" href="#" />
+                  <FaInstagram
+                    className="hover:text-slate-400"
+                    href="https://www.instagram.com/meetbrev/"
+                  />
+                  <FaXTwitter
+                    className="hover:text-slate-400"
+                    href="https://x.com/meetbrev"
+                  />
+                  <FaTiktok
+                    className="hover:text-slate-400"
+                    href="https://www.tiktok.com/@meetbrev"
+                  />
                 </div>
               </div>
             </div>
