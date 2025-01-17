@@ -261,7 +261,7 @@ const HomePage = () => {
                     <span className="text-[#0023FF]"> Brev</span>
                   </div>{" "}
                   <div className="text-black md:text-center text-center md:items-start items-center md:w-[53%] text-lg md:text-2xl font-light md:leading-none tracking-tighter font-Inter pb-2">
-                    acheive more with less stress
+                    achieve more with less stress
                   </div>
                   <div className="z-10 pt-5">
                     <ShimmerButtonDemo></ShimmerButtonDemo>
