@@ -7,6 +7,7 @@ import fs from "fs";
 import Typewriter from "./p";
 import ScrollProgress from "@/components/ui/scroll-progress";
 import { Card, CardContent } from "@/components/ui/card";
+import { BookOpen, CheckCircle2, AlertCircle } from "lucide-react";
 
 import {
   Dialog,
@@ -14,6 +15,7 @@ import {
   DialogDescription,
   DialogTitle,
 } from "@/components/ui/dialog";
+import CheatsheetList from "./Cheatsheetcontainer";
 
 interface Mnemonic {
   text: string;
@@ -61,11 +63,11 @@ const ResponsePage = () => {
     loadHtml2Pdf();
   }, []);
 
-    useEffect(() => {
-      if (isCustomPrompt) {
-        handleGenerateContent();
-      }
-    }, [isCustomPrompt]);
+  useEffect(() => {
+    if (isCustomPrompt) {
+      handleGenerateContent();
+    }
+  }, [isCustomPrompt]);
 
   const handleScroll = (id: string) => {
     const element = document.getElementById(id);
@@ -91,10 +93,9 @@ const ResponsePage = () => {
       alert("Please upload a file first");
       return;
     }
-   
-        
-setIsLoading(true);
-      setIsCustomPrompt(true);
+
+    setIsLoading(true);
+    setIsCustomPrompt(true);
 
     const formData = new FormData();
     formData.append("file", file);
@@ -120,26 +121,26 @@ setIsLoading(true);
     } finally {
       setLoadingCheatsheet(false);
       setIsLoading(false);
-
     }
   };
 
-const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  const selectedFile = event.target.files?.[0];
-  if (selectedFile) {
-    const maxSizeInBytes = 200 * 100 * 1024; // 200 pages * 100KB per page
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.target.files?.[0];
+    if (selectedFile) {
+      const maxSizeInBytes = 200 * 100 * 1024; // 200 pages * 100KB per page
 
-    if (selectedFile.size > maxSizeInBytes) {
-      alert("File is too large. Please upload a file with 200 pages or less.");
-      event.target.value = ""; // Reset the file input
+      if (selectedFile.size > maxSizeInBytes) {
+        alert(
+          "File is too large. Please upload a file with 200 pages or less."
+        );
+        event.target.value = ""; // Reset the file input
+      } else {
+        setFile(selectedFile);
+      }
     } else {
-      setFile(selectedFile);
+      alert("No file selected. Please try again.");
     }
-  } else {
-    alert("No file selected. Please try again.");
-  }
-};
-
+  };
 
   const handleSubmit = async (option: "Detailed" | "Precise") => {
     if (!file) {
@@ -157,37 +158,107 @@ const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (option === "Detailed") {
       customPrompt =
         customPrompt ||
-        `Generate a comprehensive cheat sheet based on the provided document.Provide explanations, context, and insights to enhance understanding. Use clear and simple language for each detail to ensure a thorough grasp of the topic. If the document is an exam study guide with topics organized by chapters, reference each chapter and summarize its contents. Use the following format strictly:
+        `Generate a detailed and comprehensive study guide that covers every aspect of the provided document. Structure the content as follows:
 
-## Main formatting rules:
-1. Start main titles with "TITLE: " (include the space after colon)
-2. Start subtopics with "SUBTOPIC: " (include the space after colon)
-3. Start details with "DETAIL_N: " where N is a number (include the space after colon)
-4. Use three dashes (---) to separate different sections
-5. Do not use any markdown symbols, asterisks, double asterisks or other formatting characters
-6. Maintain consistent indentation
-7. Keep all text in normal font
+## Content Organization Rules:
+1. Start each major topic with "TITLE: " followed by the main concept
+2. Each TITLE section must include an "Explanation: " that provides context and importance
+3. Break down topics into "SUBTOPIC: " sections
+4. List all details with "DETAIL_N: " where N is a sequential number
+5. Use three dashes (---) to separate major sections
 
-Example format:
-TITLE: Your Main Title
-SUBTOPIC: Your Subtopic
-DETAIL_1: Your first detail point
-DETAIL_2: Your second detail point
-DETAIL_3: Your third detail point
+Required Content Structure:
+TITLE: [Main Topic]
+Explanation: [Why this topic is important and how it connects to other concepts]
+SUBTOPIC: [Key Component/Concept]
+DETAIL_1: [Core concept with detailed explanation]
+DETAIL_2: [Implementation details or specific use cases]
+DETAIL_3: [Code examples or practical applications]
+DETAIL_4: [Common pitfalls or edge cases to remember]
+DETAIL_5: [Best practices and optimization tips]
 ---
-TITLE: Your Next Section
-[and so on...]
 
-Guidelines for content:
-- Provide clear explanations and context for each topic
-- Use simple, straightforward language
-- If working with an exam study guide, reference chapters clearly
-- Include relevant examples where appropriate
-- Break down complex topics into digestible details
-- Ensure each detail provides meaningful information
-- Keep formatting consistent throughout the document
+Content Guidelines:
+1. Core Concepts Coverage:
+   - Include every function, method, and property mentioned
+   - Explain all parameters and return values
+   - Document all possible options and configurations
+   - Cover error handling and edge cases
 
-Please structure the content following this format exactly as it matches the frontend rendering system.`;
+2. Implementation Details:
+   - Provide complete code examples
+   - Include typical usage patterns
+   - Document performance considerations
+   - List all relevant syntax variations
+
+3. Special Cases:
+   - Document conditional behaviors
+   - List exceptions and special handling
+   - Include version-specific features
+   - Note deprecated or legacy features
+
+4. Integration Points:
+   - Show how components interact
+   - Document dependencies
+   - Explain data flow
+   - Cover lifecycle methods
+
+5. Best Practices:
+   - Include optimization techniques
+   - List performance tips
+   - Cover security considerations
+   - Note accessibility requirements
+
+Required Sections (based on provided document):
+1. Component Structure:
+   - Component initialization
+   - Props and state management
+   - Rendering logic
+   - Helper functions
+
+2. Data Processing:
+   - Content parsing
+   - Mathematical notation handling
+   - Text formatting
+   - Section organization
+
+3. UI Elements:
+   - Card components
+   - Section formatting
+   - Visual hierarchy
+   - Style management
+
+4. Interactive Features:
+   - Event handling
+   - User interactions
+   - State updates
+   - Display conditions
+
+5. Utility Functions:
+   - Text formatting
+   - Mathematical notation
+   - Symbol mapping
+   - Code block handling
+
+Note: Each section must be exhaustive and include all relevant information from the source document.
+
+Example Section Format:
+TITLE: Component Rendering Logic
+Explanation: Understanding how the component processes and displays content is crucial for maintaining and extending the application
+SUBTOPIC: Content Processing
+DETAIL_1: Content splitting mechanism using "---" delimiter
+DETAIL_2: Line parsing and filtering implementation
+DETAIL_3: Section identification and categorization
+DETAIL_4: Mathematical notation formatting rules
+DETAIL_5: Code block detection and formatting
+---
+
+Special Instructions:
+1. Document all conditional logic (if statements, ternary operators)
+2. List all string manipulation operations
+3. Include all regular expressions and their purposes
+4. Document all mapping operations and transformations
+5. Cover all styling rules and class assignments`;
     } else if (option === "Precise") {
       customPrompt =
         customPrompt ||
@@ -487,7 +558,15 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
       const mnemonics = parseMnemonics(cheatsheetContent);
       return <MnemonicCards mnemonics={mnemonics} />;
     }
-
+    const [expandedSections, setExpandedSections] = useState<{
+      [key: number]: boolean;
+    }>({});
+    const toggleSection = (index: number) => {
+      setExpandedSections((prev) => ({
+        ...prev,
+        [index]: !prev[index],
+      }));
+    };
     const sections = cheatsheetContent
       .split("---")
       .filter((section) => section.trim());
@@ -524,6 +603,7 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
     return (
       <div id="cheatsheet-content" className="text-black max-w-4xl mx-auto">
         {sections.map((section, index) => {
+         
           const lines = section
             .trim()
             .split("\n")
@@ -569,78 +649,99 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
               customContent.push({ type: "text", content: line });
             }
           });
-
+ const isExpanded = expandedSections[index] ?? true;
           return (
-            <div key={index} className="mb-8 bg-white rounded-lg shadow-md p-6">
-              {lines.map((line, lineIndex) => {
-                const titleMatch = line.match(/^TITLE:\s(.+)/);
-                const subtopicMatch = line.match(/^SUBTOPIC:\s(.+)/);
-                const detailMatch = line.match(/^DETAIL_\d+:\s(.+)/);
-                const explanationMatch = line.match(/^Explanation:\s(.+)/);
+            <div
+              key={index}
+              className="mb-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300"
+            >
+              <div className="p-6">
+                {lines.map((line, lineIndex) => {
+                  const titleMatch = line.match(/^TITLE:\s(.+)/);
+                  const subtopicMatch = line.match(/^SUBTOPIC:\s(.+)/);
+                  const detailMatch = line.match(/^DETAIL_\d+:\s(.+)/);
+                  const explanationMatch = line.match(/^Explanation:\s(.+)/);
 
-                if (titleMatch) {
-                  return (
-                    <h2
-                      key={lineIndex}
-                      className="text-3xl font-bold mb-4 text-blue-900 border-b pb-2"
-                    >
-                      {formatMathText(titleMatch[1])}
-                    </h2>
-                  );
-                } else if (explanationMatch) {
-                  return (
-                    <div className="ml-4 mb-4 text-gray-700 bg-blue-50 p-4 rounded-lg">
-                      <p className="font-medium text-blue-800 mb-1">
-                        Explanation:
-                      </p>
-                      <p>{explanationMatch[1]}</p>
-                    </div>
-                  );
-                } else if (subtopicMatch) {
-                  return (
-                    <h3
-                      key={lineIndex}
-                      className="text-xl font-semibold mb-3 text-blue-700 mt-4"
-                    >
-                      {formatMathText(subtopicMatch[1])}
-                    </h3>
-                  );
-                } else if (detailMatch) {
-                  const detailContent = detailMatch[1].trim();
-                  return (
-                    <div key={lineIndex} className="ml-4 mb-3">
-                      <div className="flex">
-                        <div className="mr-2 text-blue-500">•</div>
-                        <div className="flex-1">
-                          {detailContent.includes("\n") ||
-                          detailContent.includes("    ") ? (
-                            <div className="font-normal">
-                              {detailContent
-                                .split("\n")
-                                .map((part, partIndex) => (
-                                  <div
-                                    key={partIndex}
-                                    className={
-                                      part.startsWith("    ")
-                                        ? "ml-4 font-mono"
-                                        : ""
-                                    }
-                                  >
-                                    {formatCodeBlock(part.trim())}
-                                  </div>
-                                ))}
-                            </div>
-                          ) : (
-                            <div className="font-normal">
-                              {formatMathText(detailContent)}
-                            </div>
-                          )}
+                  if (titleMatch) {
+                    return (
+                      <div
+                        key={lineIndex}
+                        className="flex items-center space-x-3 cursor-pointer"
+                        onClick={() => toggleSection(index)}
+                      >
+                        <BookOpen className="w-6 h-6 text-purple-600" />
+                        <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                          {formatMathText(titleMatch[1])}
+                        </h2>
+                      </div>
+                    );
+                  }
+
+                  if (explanationMatch) {
+                    return (
+                      <div className="mt-4 p-4 bg-purple-50 rounded-lg border-l-4 border-purple-400">
+                        <div className="flex items-center space-x-2 mb-2">
+                          <AlertCircle className="w-5 h-5 text-purple-600" />
+                          <span className="font-semibold text-purple-800">
+                            Key Points:
+                          </span>
+                        </div>
+                        <p className="text-gray-700">{explanationMatch[1]}</p>
+                      </div>
+                    );
+                  }
+
+                  if (subtopicMatch) {
+                    return (
+                      <div className="mt-6 mb-3">
+                        <div className="flex items-center space-x-2">
+                          <CheckCircle2 className="w-5 h-5 text-green-500" />
+                          <h3 className="text-xl font-semibold text-gray-800">
+                            {formatMathText(subtopicMatch[1])}
+                          </h3>
                         </div>
                       </div>
-                    </div>
-                  );
-                }
-              })}
+                    );
+                  }
+
+                  if (detailMatch) {
+                    const detailContent = detailMatch[1].trim();
+                    return (
+                      <div className="ml-8 mb-4 group">
+                        <div className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200">
+                          <div className="w-2 h-2 rounded-full bg-blue-500 mt-2 flex-shrink-0" />
+                          <div className="flex-1">
+                            {detailContent.includes("\n") ||
+                            detailContent.includes("    ") ? (
+                              <div className="font-normal">
+                                {detailContent
+                                  .split("\n")
+                                  .map((part, partIndex) => (
+                                    <div
+                                      key={partIndex}
+                                      className={
+                                        part.startsWith("    ")
+                                          ? "ml-4 font-mono"
+                                          : ""
+                                      }
+                                    >
+                                      {formatCodeBlock(part.trim())}
+                                    </div>
+                                  ))}
+                              </div>
+                            ) : (
+                              <div className="font-normal text-gray-700">
+                                {formatMathText(detailContent)}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  }
+                  return null;
+                })}
+              </div>
               {isCustomPrompt && customContent.length > 0 && (
                 <div className="mt-4">
                   {customContent.map((item, idx) => (
@@ -659,7 +760,7 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
                   ))}
                 </div>
               )}
-              
+
               {mnemonics.length > 0 && (
                 <div className="mt-6">
                   <h4 className="text-lg font-semibold mb-3 text-blue-800">
@@ -1052,19 +1153,37 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
 
         <div className="w-full md:w-3/4 bg-white shadow-md rounded-lg p-5 mt-6">
           <div id="cheatsheet-content" className="text-lg text-black">
-            {loadingCheatsheet || loadingMnemonics || loadingQuiz || isLoading ? (
-              <div className="flex flex-col items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
-                <p className="mt-4 text-gray-600">
-                  Generating...
+            {loadingCheatsheet ||
+            loadingMnemonics ||
+            loadingQuiz ||
+            isLoading ? (
+              <div className="flex flex-col items-center justify-center min-h-[200px]">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+                <p className="mt-4 text-gray-600 font-medium">
+                  Generating your study materials...
                 </p>
               </div>
             ) : cheatsheetContent ? (
-              renderCheatsheetAsList()
+              <CheatsheetList
+                loadingCheatsheet={loadingCheatsheet}
+                loadingMnemonics={loadingMnemonics}
+                loadingQuiz={loadingQuiz}
+                isLoading={isLoading}
+                cheatsheetContent={cheatsheetContent}
+                showingMnemonics={showingMnemonics}
+                parseMnemonics={parseMnemonics}
+                isCustomPrompt={isCustomPrompt}
+                MnemonicCards={MnemonicCards}
+              />
             ) : (
-              <p className="text-gray-500">
-                Your cheatsheet content will be displayed here once generated.
-              </p>
+              <div className="flex flex-col items-center justify-center min-h-[200px] text-center">
+                <p className="text-gray-500 mb-2">
+                  Your study materials will appear here once generated.
+                </p>
+                <p className="text-sm text-gray-400">
+                  Start by providing your study content above
+                </p>
+              </div>
             )}
           </div>
         </div>
