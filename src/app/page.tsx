@@ -28,6 +28,7 @@ import { Dock } from "@/components/magicui/dock";
 import { StickyScroll } from "@/components/ui/sticky-scroll-reveal";
 import { ContainerScroll } from "@/components/ui/container-scroll-animation";
 import { Linkedin } from "lucide-react";
+import { Video } from "lucide-react";
 
 const Section = ({
   children,
@@ -282,9 +283,11 @@ const HomePage = () => {
                   </>
                 }
               >
-                <div className="space-y-4">
+                <div>
                   {/* Add your content here */}
-                  <p className="text-black">Content goes here</p>
+                  <video autoPlay muted loop className="rounded-lg w-[100%]">
+                    <source src="/videos/how to use brev tut.mp4" />
+                  </video>
                 </div>
               </ContainerScroll>
             </section>
