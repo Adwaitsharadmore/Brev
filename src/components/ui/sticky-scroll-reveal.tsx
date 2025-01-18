@@ -12,11 +12,13 @@ export const StickyScroll = ({
     title: string;
     description: string;
     content?: React.ReactNode | any;
+    videoSrc: string;
   }[];
   contentClassName?: string;
 }) => {
   const [activeCard, setActiveCard] = React.useState(0);
   const ref = useRef<any>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const { scrollYProgress } = useScroll({
     // uncomment line 22 and comment line 23 if you DONT want the overflow container and want to have it change on the entire page scroll
     // target: ref
@@ -51,7 +53,11 @@ export const StickyScroll = ({
   );
 
   useEffect(() => {
-    setBackgroundGradient(linearGradients[activeCard % linearGradients.length]);
+    if (videoRef.current) {
+      videoRef.current.src = content[activeCard].videoSrc;
+      videoRef.current.load();
+      videoRef.current.play();
+    }
   }, [activeCard]);
 
   return (
@@ -91,13 +97,20 @@ export const StickyScroll = ({
         </div>
       </div>
       <div
-        style={{ background: backgroundGradient }}
         className={cn(
           "hidden lg:block h-60 w-80 rounded-md bg-white sticky top-10 overflow-hidden",
           contentClassName
         )}
       >
-        {content[activeCard].content ?? null}
+        <video
+          ref={videoRef}
+          autoPlay
+          muted
+          loop
+          className="rounded-lg w-[100%] h-[100%] object-cover"
+        >
+          <source src={content[activeCard].videoSrc} type="video/mp4" />
+        </video>
       </div>
     </motion.div>
   );

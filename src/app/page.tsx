@@ -71,37 +71,19 @@ const content = [
     title: "Personalized Cheat Sheets",
     description:
       "Transform your study materials into perfectly organized cheat sheets in seconds. Whether you need a quick-glance summary or an in-depth review, our AI crafts custom study guides that highlight exactly what you need to know.",
-    content: (
-      <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--cyan-500),var(--emerald-500))] flex items-center justify-center text-white">
-        Collaborative Editing
-      </div>
-    ),
+    videoSrc: "/videos/cheatsheet.mp4",
   },
   {
     title: "Memory-Boosting Mnemonics",
     description:
       "Turn complex concepts into unforgettable memory hooks. Upload your study material and watch as clever acronyms, rhymes, and memorable phrases make learning effortless. No more struggling to remember key facts—our mnemonics stick with you.",
-    content: (
-      <div className="h-full w-full  flex items-center justify-center text-white">
-        <Image
-          src="/linear.webp"
-          width={300}
-          height={300}
-          className="h-full w-full object-cover"
-          alt="linear board demo"
-        />
-      </div>
-    ),
+    videoSrc: "/videos/mnemonics.mp4",
   },
   {
     title: "Adaptive testing and feedback",
     description:
       "Take the guesswork out of exam prep with adaptive quizzes that evolve with your learning. Our system identifies your knowledge gaps and automatically adjusts to strengthen your weak spots, ensuring you're fully prepared for exam day.",
-    content: (
-      <div className="h-full w-full bg-[linear-gradient(to_bottom_right,var(--orange-500),var(--yellow-500))] flex items-center justify-center text-white">
-        Version control
-      </div>
-    ),
+    videoSrc: "/videos/testing.mp4", // Assuming you have this video
   },
 ];
 
