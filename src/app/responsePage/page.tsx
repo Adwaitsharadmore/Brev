@@ -15,7 +15,7 @@ import {
   DialogDescription,
   DialogTitle,
 } from "@/components/ui/dialog";
-import CheatsheetList from "./Cheatsheetcontainer";
+import CheatsheetList from "./CheatsheetContainer";
 
 interface Mnemonic {
   text: string;
@@ -603,7 +603,6 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
     return (
       <div id="cheatsheet-content" className="text-black max-w-4xl mx-auto">
         {sections.map((section, index) => {
-         
           const lines = section
             .trim()
             .split("\n")
@@ -649,7 +648,7 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
               customContent.push({ type: "text", content: line });
             }
           });
- const isExpanded = expandedSections[index] ?? true;
+          const isExpanded = expandedSections[index] ?? true;
           return (
             <div
               key={index}
