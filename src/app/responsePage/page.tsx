@@ -124,14 +124,22 @@ setIsLoading(true);
     }
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = event.target.files?.[0];
-    if (selectedFile) {
-      setFile(selectedFile);
+const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const selectedFile = event.target.files?.[0];
+  if (selectedFile) {
+    const maxSizeInBytes = 200 * 100 * 1024; // 200 pages * 100KB per page
+
+    if (selectedFile.size > maxSizeInBytes) {
+      alert("File is too large. Please upload a file with 200 pages or less.");
+      event.target.value = ""; // Reset the file input
     } else {
-      alert("No file selected. Please try again.");
+      setFile(selectedFile);
     }
-  };
+  } else {
+    alert("No file selected. Please try again.");
+  }
+};
+
 
   const handleSubmit = async (option: "Detailed" | "Precise") => {
     if (!file) {
