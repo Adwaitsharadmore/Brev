@@ -258,7 +258,10 @@ Special Instructions:
 2. List all string manipulation operations
 3. Include all regular expressions and their purposes
 4. Document all mapping operations and transformations
-5. Cover all styling rules and class assignments`;
+5. Cover all styling rules and class assignments
+
+
+Please structure the content following this format exactly as it matches the frontend rendering system.`;
     } else if (option === "Precise") {
       customPrompt =
         customPrompt ||
