@@ -15,7 +15,7 @@ import {
   DialogDescription,
   DialogTitle,
 } from "@/components/ui/dialog";
-import CheatsheetList from "@/app/responsePage/Cheatsheetcontainer";
+import CheatsheetList from "./Cheatsheetcontainer";
 
 interface Mnemonic {
   text: string;
