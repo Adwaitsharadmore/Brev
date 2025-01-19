@@ -1,13 +1,7 @@
 import React, { useState } from "react";
-import {
-  BookOpen,
-  Code,
-  Terminal,
-  FileCode,
-  Command,
-  Hash,
-  ChevronRight,
-} from "lucide-react";
+import { Paper, Typography, Box, Card, CardContent } from "@mui/material";
+import Masonry from "@mui/lab/Masonry";
+import { ChevronRight } from "lucide-react";
 
 interface Mnemonic {
   text: string;
@@ -42,18 +36,33 @@ const formatMathText = (text: string) => {
 const formatCodeBlock = (text: string, type: "detail" | "text" | "command") => {
   if (type === "command") {
     return (
-      <div className="flex items-start gap-2 rounded-md p-2 font-inter text-sm text-zinc-100">
-       
-        <p className="whitespace-pre-wrap">{text}</p>
-      </div>
+      <Box
+        display="flex"
+        alignItems="start"
+        gap={1}
+        sx={{
+          p: 1,
+          fontFamily: "Inter, sans-serif",
+          fontSize: "0.875rem",
+          color: "text.primary",
+        }}
+      >
+        <Typography sx={{ whiteSpace: "pre-wrap" }}>{text}</Typography>
+      </Box>
     );
   }
 
   if (text.includes("{") || text.includes("if") || text.includes("→")) {
     return (
-      <p className="my-2 whitespace-pre-wrap rounded-md text-zinc-950">
+      <Typography
+        sx={{
+          my: 1,
+          whiteSpace: "pre-wrap",
+          color: "text.primary",
+        }}
+      >
         {text}
-      </p>
+      </Typography>
     );
   }
   return formatMathText(text);
@@ -98,9 +107,19 @@ const CheatsheetList = ({
     .filter((section) => section.trim());
 
   return (
-    <div className="min-h-[210mm] w-[297mm] bg-gradient-to-b from-purple-50 to-white p-8">
-      <div className="max-w-[1200px] mx-auto">
-        <div className="columns-1 md:columns-2 gap-6">
+    <Box
+      sx={{
+        minHeight: "210mm",
+        background: "linear-gradient(to bottom, #F3E8FF, #FFFFFF)",
+        p: 4,
+      }}
+    >
+      <Box sx={{ maxWidth: "1200px", mx: "auto" }}>
+        <Masonry
+          columns={{ xs: 1, sm: 2, md: 3 }}
+          spacing={3}
+          sx={{ width: "auto" }}
+        >
           {sections.map((section: string, sectionIndex: number) => {
             const lines = section
               .trim()
@@ -154,55 +173,79 @@ const CheatsheetList = ({
             });
 
             return (
-              <div
+              <Paper
                 key={sectionIndex}
-                className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-all mb-6 break-inside-avoid-column"
+                elevation={1}
+                sx={{
+                  p: 3,
+                  borderRadius: 2,
+                  "&:hover": {
+                    boxShadow: 3,
+                    transition: "box-shadow 0.3s ease-in-out",
+                  },
+                }}
               >
-                <div className="flex items-center gap-3 mb-4">
-                  <h2 className="text-xl font-semibold text-gray-800">
+                <Box display="flex" alignItems="center" gap={1} mb={2}>
+                  <Typography variant="h6" color="text.primary">
                     {`${sectionIndex + 1}. ${currentTitle}`}
-                  </h2>
-                </div>
+                  </Typography>
+                </Box>
 
                 {currentExplanation && (
-                  <p className="text-sm text-gray-600 mb-4 font-inter">
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mb: 2, fontFamily: "Inter, sans-serif" }}
+                  >
                     {currentExplanation}
-                  </p>
+                  </Typography>
                 )}
 
                 {currentSubtopic && (
-                  <h3 className="text-lg font-semibold text-gray-700 mb-3">
+                  <Typography
+                    variant="h6"
+                    color="text.secondary"
+                    sx={{ mb: 1.5 }}
+                  >
                     {currentSubtopic}
-                  </h3>
+                  </Typography>
                 )}
 
-                <div className="space-y-4">
+                <Box sx={{ mt: 2 }}>
                   {customContent.map((item, idx) => (
-                    <div key={idx} className="flex items-start gap-2">
-                      <ChevronRight className="w-4 h-4 text-purple-500 mt-1" />
-                      <div className="flex-1 font-inter">
+                    <Box key={idx} display="flex" alignItems="start" gap={1}>
+                      <ChevronRight className="w-2 h-2 text-blue-600 mt-0.5" />
+                      <Box sx={{ flex: 1, fontFamily: "Inter, sans-serif", fontSize:"1rem"}}>
                         {formatCodeBlock(item.content, item.type)}
-                      </div>
-                    </div>
+                      </Box>
+                    </Box>
                   ))}
-                </div>
+                </Box>
 
                 {mnemonics.length > 0 && (
-                  <div className="mt-6 bg-purple-50 rounded-lg p-4">
-                    <h4 className="text-lg font-semibold mb-3 text-purple-700">
-                      Memory Aids
-                    </h4>
-                    <div className="ml-4">
-                      <MnemonicCards mnemonics={mnemonics} />
-                    </div>
-                  </div>
+                  <Card
+                    sx={{ mt: 3, bgcolor: "primary.light", borderRadius: 2 }}
+                  >
+                    <CardContent>
+                      <Typography
+                        variant="h2"
+                        color="primary.dark"
+                        sx={{ mb: 1.5 }}
+                      >
+                        Memory Aids
+                      </Typography>
+                      <Box sx={{ ml: 2 }}>
+                        <MnemonicCards mnemonics={mnemonics} />
+                      </Box>
+                    </CardContent>
+                  </Card>
                 )}
-              </div>
+              </Paper>
             );
           })}
-        </div>
-      </div>
-    </div>
+        </Masonry>
+      </Box>
+    </Box>
   );
 };
 
