@@ -158,110 +158,46 @@ const ResponsePage = () => {
     if (option === "Detailed") {
       customPrompt =
         customPrompt ||
-        `Generate a detailed and comprehensive study guide that covers every aspect of the provided document. Structure the content as follows:
+        `Imagine you are a student and you need to prepare for an exam based on the provided document. It is essential to understand the key concepts and details to perform well. You need a cheatsheet to help you study effectively. Your task is to generate a concise cheatsheet summarizing the key points of the provided document and explaining the key concepts in minimum words. Structure the content as follows:
+        
+        
+        Generate a concise study guide summarizing the key points of the provided document. Structure the content as follows:
 
 ## Content Organization Rules:
-1. Start each major topic with "TITLE: " followed by the main concept
-2. Each TITLE section must include an "Explanation: " that provides context and importance
-3. Break down topics into "SUBTOPIC: " sections
-4. List all details with "DETAIL_N: " where N is a sequential number
-5. Use three dashes (---) to separate major sections
+1. Begin each major topic with "TITLE: " followed by the main concept.
+2. Each TITLE section must include an "Explanation: " that provides brief context and importance.
+3. Break down topics into "SUBTOPIC: " sections.
+4. List all details with "DETAIL_N: " where N is a sequential number.
+5. Use three dashes (---) to separate major sections.
 
 Required Content Structure:
 TITLE: [Main Topic]
-Explanation: [Why this topic is important and how it connects to other concepts]
+Explanation: [Brief context and significance]
 SUBTOPIC: [Key Component/Concept]
-DETAIL_1: [Core concept with detailed explanation]
-DETAIL_2: [Implementation details or specific use cases]
-DETAIL_3: [Code examples or practical applications]
-DETAIL_4: [Common pitfalls or edge cases to remember]
-DETAIL_5: [Best practices and optimization tips]
+DETAIL_1: [Core concept summarized]
+DETAIL_2: [Implementation details or use cases]
+DETAIL_3: [Examples or applications]
+DETAIL_4: [Common pitfalls to avoid]
+DETAIL_5: [Best practices]
 ---
 
-Content Guidelines:
-1. Core Concepts Coverage:
-   - Include every function, method, and property mentioned
-   - Explain all parameters and return values
-   - Document all possible options and configurations
-   - Cover error handling and edge cases
 
-2. Implementation Details:
-   - Provide complete code examples
-   - Include typical usage patterns
-   - Document performance considerations
-   - List all relevant syntax variations
-
-3. Special Cases:
-   - Document conditional behaviors
-   - List exceptions and special handling
-   - Include version-specific features
-   - Note deprecated or legacy features
-
-4. Integration Points:
-   - Show how components interact
-   - Document dependencies
-   - Explain data flow
-   - Cover lifecycle methods
-
-5. Best Practices:
-   - Include optimization techniques
-   - List performance tips
-   - Cover security considerations
-   - Note accessibility requirements
-
-Required Sections (based on provided document):
-1. Component Structure:
-   - Component initialization
-   - Props and state management
-   - Rendering logic
-   - Helper functions
-
-2. Data Processing:
-   - Content parsing
-   - Mathematical notation handling
-   - Text formatting
-   - Section organization
-
-3. UI Elements:
-   - Card components
-   - Section formatting
-   - Visual hierarchy
-   - Style management
-
-4. Interactive Features:
-   - Event handling
-   - User interactions
-   - State updates
-   - Display conditions
-
-5. Utility Functions:
-   - Text formatting
-   - Mathematical notation
-   - Symbol mapping
-   - Code block handling
-
-Note: Each section must be exhaustive and include all relevant information from the source document.
+Note: Each section must be concise, focusing on key points to ensure the study guide fits within one to two pages.
 
 Example Section Format:
 TITLE: Component Rendering Logic
-Explanation: Understanding how the component processes and displays content is crucial for maintaining and extending the application
+Explanation: Understanding content processing and display is crucial for application maintenance.
 SUBTOPIC: Content Processing
-DETAIL_1: Content splitting mechanism using "---" delimiter
-DETAIL_2: Line parsing and filtering implementation
-DETAIL_3: Section identification and categorization
-DETAIL_4: Mathematical notation formatting rules
-DETAIL_5: Code block detection and formatting
+DETAIL_1: Mechanism for splitting content using "---" delimiter.
+DETAIL_2: Implementation of line parsing and filtering.
+DETAIL_3: Identification and categorization of sections.
+DETAIL_4: Rules for formatting mathematical notation.
+DETAIL_5: Detection and formatting of code blocks.
 ---
 
-Special Instructions:
-1. Document all conditional logic (if statements, ternary operators)
-2. List all string manipulation operations
-3. Include all regular expressions and their purposes
-4. Document all mapping operations and transformations
-5. Cover all styling rules and class assignments
+Please ensure the content is concise and fits within one to two pages for quick reference. Keep the font normal for everything
 
-
-Please structure the content following this format exactly as it matches the frontend rendering system.`;
+Please structure the content following this format exactly as it matches the frontend rendering system. Dont't use any markdown symbols, asterisks, double asterisks or other formatting characters.`;
     } else if (option === "Precise") {
       customPrompt =
         customPrompt ||
@@ -294,6 +230,11 @@ Guidelines for content:
 - Maintain consistent formatting throughout
 
 Please structure the content following this format exactly as it matches the frontend rendering system.`;
+    }
+    else if (option === "Exam") {
+      customPrompt =
+        customPrompt ||
+        ""
     }
 
     const formData = new FormData();
@@ -552,238 +493,6 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
     });
 
     return mnemonics;
-  };
-
-  const renderCheatsheetAsList = () => {
-    if (!cheatsheetContent) return null;
-
-    if (showingMnemonics) {
-      const mnemonics = parseMnemonics(cheatsheetContent);
-      return <MnemonicCards mnemonics={mnemonics} />;
-    }
-    const [expandedSections, setExpandedSections] = useState<{
-      [key: number]: boolean;
-    }>({});
-    const toggleSection = (index: number) => {
-      setExpandedSections((prev) => ({
-        ...prev,
-        [index]: !prev[index],
-      }));
-    };
-    const sections = cheatsheetContent
-      .split("---")
-      .filter((section) => section.trim());
-
-    // Helper function to format mathematical notation (keeping existing implementation)
-    const formatMathText = (text: string) => {
-      let formattedText = text.replace(/([a-z])(\d)/gi, "$1$2");
-      formattedText = formattedText.replace(/\^(\d+)/g, "$1");
-      const symbolMap = {
-        ">=": "≥",
-        "<=": "≤",
-        "!=": "≠",
-        "->": "→",
-        N: "N",
-        Z: "Z",
-      };
-      Object.entries(symbolMap).forEach(([key, value]) => {
-        formattedText = formattedText.replace(new RegExp(key, "g"), value);
-      });
-      return formattedText;
-    };
-
-    const formatCodeBlock = (text: string) => {
-      if (text.includes("{") || text.includes("if") || text.includes("→")) {
-        return (
-          <pre className="bg-gray-100 p-4 rounded-md font-mono text-sm my-2 whitespace-pre-wrap">
-            {text}
-          </pre>
-        );
-      }
-      return formatMathText(text);
-    };
-
-    return (
-      <div id="cheatsheet-content" className="text-black max-w-4xl mx-auto">
-        {sections.map((section, index) => {
-          const lines = section
-            .trim()
-            .split("\n")
-            .filter((line) => line.trim());
-
-          // Extract all mnemonics and their associated info for this section
-          let currentTitle = "";
-          let currentSubtopic = "";
-          let currentExplanation = "";
-          let mnemonics: Mnemonic[] = [];
-          let currentMnemonic: Mnemonic | null = null;
-          let customContent: CustomContentItem[] = [];
-
-          lines.forEach((line) => {
-            const titleMatch = line.match(/^TITLE:\s(.+)/);
-            const subtopicMatch = line.match(/^SUBTOPIC:\s(.+)/);
-            const explanationMatch = line.match(/^Explanation:\s(.+)/);
-            const mnemonicMatch = line.match(/^MNEMONIC_\d+:\s(.+)/);
-            const typeMatch = line.match(/^TYPE:\s(.+)/);
-            const detailMatch = line.match(/^DETAIL_\d+:\s(.+)/);
-
-            if (titleMatch) {
-              currentTitle = titleMatch[1];
-            } else if (subtopicMatch) {
-              currentSubtopic = subtopicMatch[1];
-            } else if (explanationMatch) {
-              currentExplanation = explanationMatch[1];
-            } else if (mnemonicMatch) {
-              currentMnemonic = {
-                text: mnemonicMatch[1],
-                type: "",
-                title: currentTitle,
-                subtopic: currentSubtopic,
-                explanation: currentExplanation,
-              };
-            } else if (typeMatch && currentMnemonic) {
-              currentMnemonic.type = typeMatch[1];
-              mnemonics.push(currentMnemonic);
-              currentMnemonic = null;
-            } else if (detailMatch) {
-              customContent.push({ type: "detail", content: detailMatch[1] });
-            } else {
-              customContent.push({ type: "text", content: line });
-            }
-          });
-          const isExpanded = expandedSections[index] ?? true;
-          return (
-            <div
-              key={index}
-              className="mb-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300"
-            >
-              <div className="p-6">
-                {lines.map((line, lineIndex) => {
-                  const titleMatch = line.match(/^TITLE:\s(.+)/);
-                  const subtopicMatch = line.match(/^SUBTOPIC:\s(.+)/);
-                  const detailMatch = line.match(/^DETAIL_\d+:\s(.+)/);
-                  const explanationMatch = line.match(/^Explanation:\s(.+)/);
-
-                  if (titleMatch) {
-                    return (
-                      <div
-                        key={lineIndex}
-                        className="flex items-center space-x-3 cursor-pointer"
-                        onClick={() => toggleSection(index)}
-                      >
-                        <BookOpen className="w-6 h-6 text-purple-600" />
-                        <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                          {formatMathText(titleMatch[1])}
-                        </h2>
-                      </div>
-                    );
-                  }
-
-                  if (explanationMatch) {
-                    return (
-                      <div className="mt-4 p-4 bg-purple-50 rounded-lg border-l-4 border-purple-400">
-                        <div className="flex items-center space-x-2 mb-2">
-                          <AlertCircle className="w-5 h-5 text-purple-600" />
-                          <span className="font-semibold text-purple-800">
-                            Key Points:
-                          </span>
-                        </div>
-                        <p className="text-gray-700">{explanationMatch[1]}</p>
-                      </div>
-                    );
-                  }
-
-                  if (subtopicMatch) {
-                    return (
-                      <div className="mt-6 mb-3">
-                        <div className="flex items-center space-x-2">
-                          <CheckCircle2 className="w-5 h-5 text-green-500" />
-                          <h3 className="text-xl font-semibold text-gray-800">
-                            {formatMathText(subtopicMatch[1])}
-                          </h3>
-                        </div>
-                      </div>
-                    );
-                  }
-
-                  if (detailMatch) {
-                    const detailContent = detailMatch[1].trim();
-                    return (
-                      <div className="ml-8 mb-4 group">
-                        <div className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200">
-                          <div className="w-2 h-2 rounded-full bg-blue-500 mt-2 flex-shrink-0" />
-                          <div className="flex-1">
-                            {detailContent.includes("\n") ||
-                            detailContent.includes("    ") ? (
-                              <div className="font-normal">
-                                {detailContent
-                                  .split("\n")
-                                  .map((part, partIndex) => (
-                                    <div
-                                      key={partIndex}
-                                      className={
-                                        part.startsWith("    ")
-                                          ? "ml-4 font-mono"
-                                          : ""
-                                      }
-                                    >
-                                      {formatCodeBlock(part.trim())}
-                                    </div>
-                                  ))}
-                              </div>
-                            ) : (
-                              <div className="font-normal text-gray-700">
-                                {formatMathText(detailContent)}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  }
-                  return null;
-                })}
-              </div>
-              {isCustomPrompt && customContent.length > 0 && (
-                <div className="mt-4">
-                  {customContent.map((item, idx) => (
-                    <div key={idx} className="ml-4 mb-2">
-                      {item.type === "detail" ? (
-                        <div className="flex">
-                          <div className="mr-2 text-blue-500">•</div>
-                          <div className="flex-1">
-                            {formatMathText(item.content)}
-                          </div>
-                        </div>
-                      ) : (
-                        <p>{formatMathText(item.content)}</p>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {mnemonics.length > 0 && (
-                <div className="mt-6">
-                  <h4 className="text-lg font-semibold mb-3 text-blue-800">
-                    Mnemonics
-                  </h4>
-                  <MnemonicCards
-                    mnemonics={mnemonics.map((m) => ({
-                      text: m.text,
-                      type: m.type,
-                      title: m.title,
-                      subtopic: m.subtopic,
-                      explanation: m.explanation,
-                    }))}
-                  />
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
-    );
   };
 
   const MnemonicCards = ({ mnemonics }: { mnemonics: Mnemonic[] }) => {
