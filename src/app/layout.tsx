@@ -9,13 +9,19 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <body>
-        {children}
+      <body className="min-h-screen">
+        <div className="background-gradient">
+          <div className="gradient-orb orb-1"></div>
+          <div className="gradient-orb orb-2"></div>
+        </div>
+        <main className="relative z-10">
+          {children}
+        </main>
       </body>
     </html>
   );
