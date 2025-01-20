@@ -1,7 +1,19 @@
-import React, { useState } from "react";
-import { Paper, Typography, Box, Card, CardContent } from "@mui/material";
+import React, { useState, useCallback } from "react";
+import {
+  Paper,
+  Typography,
+  Box,
+  Card,
+  CardContent,
+  SpeedDial,
+  SpeedDialAction,
+  IconButton,
+  Tooltip,
+  Menu,
+  MenuItem,
+} from "@mui/material";
 import Masonry from "@mui/lab/Masonry";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Highlighter, X, Palette } from "lucide-react";
 
 interface Mnemonic {
   text: string;
@@ -15,6 +27,34 @@ interface CustomContentItem {
   type: "detail" | "text" | "command";
   content: string;
 }
+interface Selection {
+  text: string;
+  elementId: string;
+  startOffset: number;
+  endOffset: number;
+}
+
+interface Highlight {
+  id: string;
+  text: string;
+  color: string;
+  sectionId: number;
+  elementId: string;
+  startOffset: number;
+  endOffset: number;
+}
+interface PendingHighlight {
+  selections: Selection[];
+  color: string;
+}
+
+const HIGHLIGHT_COLORS = [
+  { name: "Yellow", value: "#fef08a" },
+  { name: "Green", value: "#bbf7d0" },
+  { name: "Blue", value: "#bfdbfe" },
+  { name: "Pink", value: "#fbcfe8" },
+  { name: "Purple", value: "#e9d5ff" },
+];
 
 const formatMathText = (text: string) => {
   let formattedText = text.replace(/([a-z])(\d)/gi, "$1$2");
@@ -94,6 +134,10 @@ const CheatsheetList = ({
   const [expandedSections, setExpandedSections] = useState<
     Record<number, boolean>
   >({});
+  const [highlights, setHighlights] = useState<Highlight[]>([]);
+  const [isHighlighting, setIsHighlighting] = useState(false);
+  const [currentColor, setCurrentColor] = useState(HIGHLIGHT_COLORS[0].value);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   if (!cheatsheetContent) return null;
 
@@ -105,6 +149,114 @@ const CheatsheetList = ({
   const sections = cheatsheetContent
     .split("---")
     .filter((section) => section.trim());
+  
+  const handleTextSelection = (elementId: string) => {
+    if (!isHighlighting) return;
+
+    const selection = window.getSelection();
+    if (
+      !selection ||
+      selection.rangeCount === 0 ||
+      selection.toString().trim() === ""
+    )
+      return;
+
+    const range = selection.getRangeAt(0);
+
+    const newHighlight: Highlight = {
+      id: Math.random().toString(36).substr(2, 9),
+      text: selection.toString(),
+      elementId,
+      startOffset: range.startOffset,
+      endOffset: range.endOffset,
+      color: "#fef08a",  // Default yellow highlight
+      sectionId: parseInt(elementId.split("-")[1])
+    };
+
+    setHighlights((prev) => [...prev, newHighlight]);
+  };
+
+  const removeHighlight = (highlightId: string, event: React.MouseEvent) => {
+    event.stopPropagation();
+    setHighlights((prev) => prev.filter((h) => h.id !== highlightId));
+  };
+
+  const renderHighlightedText = (text: string, elementId: string) => {
+    const relevantHighlights = highlights
+      .filter((h) => h.elementId === elementId)
+      .sort((a, b) => a.startOffset - b.startOffset);
+
+    if (relevantHighlights.length === 0) {
+      return (
+        <span onMouseUp={() => handleTextSelection(elementId)}>{text}</span>
+      );
+    }
+
+    let lastIndex = 0;
+    const segments = [];
+
+    relevantHighlights.forEach((highlight, index) => {
+      if (highlight.startOffset > lastIndex) {
+        segments.push(
+          <span key={`text-${index}`}>
+            {text.slice(lastIndex, highlight.startOffset)}
+          </span>
+        );
+      }
+
+      const highlightedText = text.slice(
+        highlight.startOffset,
+        highlight.endOffset
+      );
+      segments.push(
+        <span
+          key={highlight.id}
+          style={{
+            backgroundColor: "#fef08a", // Light yellow highlight color
+            position: "relative",
+            padding: "0 1px",
+            margin: "0 -1px",
+          }}
+        >
+          {highlightedText}
+          <IconButton
+            size="small"
+            onClick={(e) => removeHighlight(highlight.id, e)}
+            sx={{
+              position: "absolute",
+              top: "-8px",
+              right: "-8px",
+              padding: "2px",
+              backgroundColor: "white",
+              boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
+              opacity: 0,
+              transition: "opacity 0.2s",
+              "&:hover": { opacity: 1 },
+              ".highlighted-text:hover &": { opacity: 1 },
+            }}
+          >
+            <X size={12} />
+          </IconButton>
+        </span>
+      );
+
+      lastIndex = highlight.endOffset;
+    });
+
+    if (lastIndex < text.length) {
+      segments.push(<span key="text-final">{text.slice(lastIndex)}</span>);
+    }
+
+    return (
+      <span
+        className="highlighted-text"
+        onMouseUp={() => handleTextSelection(elementId)}
+      >
+        {segments}
+      </span>
+    );
+  };
+
 
   return (
     <Box
@@ -112,6 +264,7 @@ const CheatsheetList = ({
         minHeight: "210mm",
         background: "linear-gradient(to bottom, #F3E8FF, #FFFFFF)",
         p: 4,
+        position: "relative",
       }}
     >
       <Box sx={{ maxWidth: "1200px", mx: "auto" }}>
@@ -179,6 +332,7 @@ const CheatsheetList = ({
                 sx={{
                   p: 3,
                   borderRadius: 2,
+                  cursor: isHighlighting ? "text" : "default",
                   "&:hover": {
                     boxShadow: 3,
                     transition: "box-shadow 0.3s ease-in-out",
@@ -210,13 +364,17 @@ const CheatsheetList = ({
                     {currentSubtopic}
                   </Typography>
                 )}
-
                 <Box sx={{ mt: 2 }}>
                   {customContent.map((item, idx) => (
                     <Box key={idx} display="flex" alignItems="start" gap={1}>
-                      <ChevronRight className="w-2 h-2 text-blue-600 mt-0.5" />
-                      <Box sx={{ flex: 1, fontFamily: "Inter, sans-serif", fontSize:"1rem"}}>
-                        {formatCodeBlock(item.content, item.type)}
+                      <ChevronRight className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                      <Box sx={{ flex: 1, fontFamily: "Inter, sans-serif" }}>
+                        {typeof item.content === "string"
+                          ? renderHighlightedText(
+                              item.content,
+                              `section-${sectionIndex}-item-${idx}`
+                            )
+                          : formatCodeBlock(item.content, item.type)}
                       </Box>
                     </Box>
                   ))}
@@ -244,6 +402,23 @@ const CheatsheetList = ({
             );
           })}
         </Masonry>
+        <Tooltip title={isHighlighting ? "Disable Highlighting" : "Enable Highlighting"}>
+          <IconButton
+            onClick={() => setIsHighlighting(!isHighlighting)}
+            sx={{
+              position: 'fixed',
+              bottom: 16,
+              right: 16,
+              backgroundColor: isHighlighting ? '#fef08a' : 'white',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+              '&:hover': {
+                backgroundColor: isHighlighting ? '#fde047' : '#f5f5f5'
+              }
+            }}
+          >
+            <Highlighter />
+          </IconButton>
+        </Tooltip>
       </Box>
     </Box>
   );
