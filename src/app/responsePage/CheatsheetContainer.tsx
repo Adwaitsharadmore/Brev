@@ -149,7 +149,7 @@ const CheatsheetList = ({
   const sections = cheatsheetContent
     .split("---")
     .filter((section) => section.trim());
-  
+
   const handleTextSelection = (elementId: string) => {
     if (!isHighlighting) return;
 
@@ -169,17 +169,25 @@ const CheatsheetList = ({
       elementId,
       startOffset: range.startOffset,
       endOffset: range.endOffset,
-      color: "#fef08a",  // Default yellow highlight
-      sectionId: parseInt(elementId.split("-")[1])
+      color: currentColor, // Use the currently selected color
+      sectionId: parseInt(elementId.split("-")[1]),
     };
 
     setHighlights((prev) => [...prev, newHighlight]);
+    selection.removeAllRanges(); // Clear the selection after highlighting
   };
 
   const removeHighlight = (highlightId: string, event: React.MouseEvent) => {
     event.stopPropagation();
     setHighlights((prev) => prev.filter((h) => h.id !== highlightId));
   };
+
+const handleColorChange = (color: string) => {
+  setCurrentColor(color);
+  setAnchorEl(null);
+  setIsHighlighting(true); // Automatically start highlighting mode
+};
+[1];
 
   const renderHighlightedText = (text: string, elementId: string) => {
     const relevantHighlights = highlights
@@ -212,7 +220,7 @@ const CheatsheetList = ({
         <span
           key={highlight.id}
           style={{
-            backgroundColor: "#fef08a", // Light yellow highlight color
+            backgroundColor: highlight.color, // Light yellow highlight color
             position: "relative",
             padding: "0 1px",
             margin: "0 -1px",
@@ -256,7 +264,6 @@ const CheatsheetList = ({
       </span>
     );
   };
-
 
   return (
     <Box
@@ -402,23 +409,33 @@ const CheatsheetList = ({
             );
           })}
         </Masonry>
-        <Tooltip title={isHighlighting ? "Disable Highlighting" : "Enable Highlighting"}>
-          <IconButton
-            onClick={() => setIsHighlighting(!isHighlighting)}
-            sx={{
-              position: 'fixed',
-              bottom: 16,
-              right: 16,
-              backgroundColor: isHighlighting ? '#fef08a' : 'white',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-              '&:hover': {
-                backgroundColor: isHighlighting ? '#fde047' : '#f5f5f5'
-              }
-            }}
-          >
+        <Tooltip title="Choose Highlight Color">
+          <IconButton onClick={(e) => setAnchorEl(e.currentTarget)}>
             <Highlighter />
           </IconButton>
         </Tooltip>
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={() => setAnchorEl(null)}
+        >
+          {HIGHLIGHT_COLORS.map((color) => (
+            <MenuItem
+              key={color.value}
+              onClick={() => handleColorChange(color.value)}
+            >
+              <Box
+                sx={{
+                  width: 20,
+                  height: 20,
+                  backgroundColor: color.value,
+                  mr: 1,
+                }}
+              />
+              {color.name}
+            </MenuItem>
+          ))}
+        </Menu>
       </Box>
     </Box>
   );
