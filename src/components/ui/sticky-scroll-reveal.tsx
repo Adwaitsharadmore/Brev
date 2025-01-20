@@ -62,7 +62,7 @@ export const StickyScroll = ({
 
   return (
     <motion.div
-      className="w-full h-[30rem] overflow-y-auto flex justify-between relative rounded-md bg-[#f8f6ef] scrollbar-hide "
+      className="w-full h-[30rem] overflow-y-auto flex justify-between relative rounded-md scrollbar-hide "
       ref={ref}
     >
       <div className="div relative flex items-start ">
@@ -98,7 +98,7 @@ export const StickyScroll = ({
       </div>
       <div
         className={cn(
-          "hidden lg:block h-60 w-80 rounded-md bg-white sticky top-10 overflow-hidden",
+          "hidden lg:block h-60 w-80 rounded-md sticky top-10 overflow-hidden",
           contentClassName
         )}
       >
