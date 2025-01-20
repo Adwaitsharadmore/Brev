@@ -13,7 +13,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import Masonry from "@mui/lab/Masonry";
-import { ChevronRight, Highlighter, X, Palette } from "lucide-react";
+import { ChevronRight, Highlighter, X, Palette, Underline } from "lucide-react";
 
 interface Mnemonic {
   text: string;
@@ -42,18 +42,20 @@ interface Highlight {
   elementId: string;
   startOffset: number;
   endOffset: number;
+  markType: "highlight" | "underline";
 }
 interface PendingHighlight {
   selections: Selection[];
   color: string;
 }
-
-const HIGHLIGHT_COLORS = [
+type MarkingMode = "highlight" | "underline" | "none";
+const MARK_COLORS = [
   { name: "Yellow", value: "#fef08a" },
   { name: "Green", value: "#bbf7d0" },
   { name: "Blue", value: "#bfdbfe" },
   { name: "Pink", value: "#fbcfe8" },
   { name: "Purple", value: "#e9d5ff" },
+  { name: "Black", value: "#000" },
 ];
 
 const formatMathText = (text: string) => {
@@ -134,10 +136,11 @@ const CheatsheetList = ({
   const [expandedSections, setExpandedSections] = useState<
     Record<number, boolean>
   >({});
-  const [highlights, setHighlights] = useState<Highlight[]>([]);
-  const [isHighlighting, setIsHighlighting] = useState(false);
-  const [currentColor, setCurrentColor] = useState(HIGHLIGHT_COLORS[0].value);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+ const [marks, setMarks] = useState<Highlight[]>([]);
+ const [markingMode, setMarkingMode] = useState<MarkingMode>("none");
+ const [currentColor, setCurrentColor] = useState(MARK_COLORS[0].value);
+ const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   if (!cheatsheetContent) return null;
 
@@ -150,120 +153,129 @@ const CheatsheetList = ({
     .split("---")
     .filter((section) => section.trim());
 
-  const handleTextSelection = (elementId: string) => {
-    if (!isHighlighting) return;
+   const handleTextSelection = (elementId: string) => {
+     if (markingMode === "none") return;
 
-    const selection = window.getSelection();
-    if (
-      !selection ||
-      selection.rangeCount === 0 ||
-      selection.toString().trim() === ""
-    )
-      return;
+     const selection = window.getSelection();
+     if (
+       !selection ||
+       selection.rangeCount === 0 ||
+       selection.toString().trim() === ""
+     )
+       return;
 
-    const range = selection.getRangeAt(0);
+     const range = selection.getRangeAt(0);
 
-    const newHighlight: Highlight = {
-      id: Math.random().toString(36).substr(2, 9),
-      text: selection.toString(),
-      elementId,
-      startOffset: range.startOffset,
-      endOffset: range.endOffset,
-      color: currentColor, // Use the currently selected color
-      sectionId: parseInt(elementId.split("-")[1]),
-    };
+     const newMark: Highlight = {
+       id: Math.random().toString(36).substr(2, 9),
+       text: selection.toString(),
+       elementId,
+       startOffset: range.startOffset,
+       endOffset: range.endOffset,
+       color: currentColor,
+       sectionId: parseInt(elementId.split("-")[1]),
+       markType: markingMode,
+     };
 
-    setHighlights((prev) => [...prev, newHighlight]);
-    selection.removeAllRanges(); // Clear the selection after highlighting
-  };
+     setMarks((prev) => [...prev, newMark]);
+     selection.removeAllRanges();
+   };
 
-  const removeHighlight = (highlightId: string, event: React.MouseEvent) => {
-    event.stopPropagation();
-    setHighlights((prev) => prev.filter((h) => h.id !== highlightId));
-  };
+   const removeMark = (markId: string, event: React.MouseEvent) => {
+     event.stopPropagation();
+     setMarks((prev) => prev.filter((m) => m.id !== markId));
+   };
 
-const handleColorChange = (color: string) => {
-  setCurrentColor(color);
-  setAnchorEl(null);
-  setIsHighlighting(true); // Automatically start highlighting mode
-};
-[1];
+   const handleColorChange = (color: string) => {
+     setCurrentColor(color);
+     setAnchorEl(null);
+   };
 
-  const renderHighlightedText = (text: string, elementId: string) => {
-    const relevantHighlights = highlights
-      .filter((h) => h.elementId === elementId)
-      .sort((a, b) => a.startOffset - b.startOffset);
+   const toggleMarkingMode = (mode: MarkingMode) => {
+     setMarkingMode((current) => (current === mode ? "none" : mode));
+     if (anchorEl) {
+       setAnchorEl(null);
+     }
+   };
 
-    if (relevantHighlights.length === 0) {
-      return (
-        <span onMouseUp={() => handleTextSelection(elementId)}>{text}</span>
-      );
-    }
+   const renderMarkedText = (text: string, elementId: string) => {
+     const relevantMarks = marks
+       .filter((m) => m.elementId === elementId)
+       .sort((a, b) => a.startOffset - b.startOffset);
 
-    let lastIndex = 0;
-    const segments = [];
+     if (relevantMarks.length === 0) {
+       return (
+         <span onMouseUp={() => handleTextSelection(elementId)}>{text}</span>
+       );
+     }
 
-    relevantHighlights.forEach((highlight, index) => {
-      if (highlight.startOffset > lastIndex) {
-        segments.push(
-          <span key={`text-${index}`}>
-            {text.slice(lastIndex, highlight.startOffset)}
-          </span>
-        );
-      }
+     let lastIndex = 0;
+     const segments = [];
 
-      const highlightedText = text.slice(
-        highlight.startOffset,
-        highlight.endOffset
-      );
-      segments.push(
-        <span
-          key={highlight.id}
-          style={{
-            backgroundColor: highlight.color, // Light yellow highlight color
-            position: "relative",
-            padding: "0 1px",
-            margin: "0 -1px",
-          }}
-        >
-          {highlightedText}
-          <IconButton
-            size="small"
-            onClick={(e) => removeHighlight(highlight.id, e)}
-            sx={{
-              position: "absolute",
-              top: "-8px",
-              right: "-8px",
-              padding: "2px",
-              backgroundColor: "white",
-              boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
-              opacity: 0,
-              transition: "opacity 0.2s",
-              "&:hover": { opacity: 1 },
-              ".highlighted-text:hover &": { opacity: 1 },
-            }}
-          >
-            <X size={12} />
-          </IconButton>
-        </span>
-      );
+     relevantMarks.forEach((mark, index) => {
+       if (mark.startOffset > lastIndex) {
+         segments.push(
+           <span key={`text-${index}`}>
+             {text.slice(lastIndex, mark.startOffset)}
+           </span>
+         );
+       }
 
-      lastIndex = highlight.endOffset;
-    });
+       const markedText = text.slice(mark.startOffset, mark.endOffset);
+       segments.push(
+         <span
+           key={mark.id}
+           style={{
+             backgroundColor:
+               mark.markType === "highlight" ? mark.color : "transparent",
+             textDecoration:
+               mark.markType === "underline"
+                 ? `underline ${mark.color} 2px`
+                 : "none",
+             position: "relative",
+             padding: "0 1px",
+             margin: "0 -1px",
+           }}
+         >
+           {markedText}
+           <IconButton
+             size="small"
+             onClick={(e) => removeMark(mark.id, e)}
+             sx={{
+               position: "absolute",
+               top: "-8px",
+               right: "-8px",
+               padding: "2px",
+               backgroundColor: "white",
+               boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
+               opacity: 0,
+               transition: "opacity 0.2s",
+               "&:hover": { opacity: 1 },
+               ".marked-text:hover &": { opacity: 1 },
+             }}
+           >
+             <X size={12} />
+           </IconButton>
+         </span>
+       );
 
-    if (lastIndex < text.length) {
-      segments.push(<span key="text-final">{text.slice(lastIndex)}</span>);
-    }
+       lastIndex = mark.endOffset;
+     });
 
-    return (
-      <span
-        className="highlighted-text"
-        onMouseUp={() => handleTextSelection(elementId)}
-      >
-        {segments}
-      </span>
-    );
-  };
+     if (lastIndex < text.length) {
+       segments.push(<span key="text-final">{text.slice(lastIndex)}</span>);
+     }
+
+     return (
+       <span
+         className="marked-text"
+         onMouseUp={() => handleTextSelection(elementId)}
+       >
+         {segments}
+       </span>
+     );
+   };
+
 
   return (
     <Box
@@ -339,7 +351,7 @@ const handleColorChange = (color: string) => {
                 sx={{
                   p: 3,
                   borderRadius: 2,
-                  cursor: isHighlighting ? "text" : "default",
+                  cursor: markingMode !== "none" ? "text" : "default",
                   "&:hover": {
                     boxShadow: 3,
                     transition: "box-shadow 0.3s ease-in-out",
@@ -377,7 +389,7 @@ const handleColorChange = (color: string) => {
                       <ChevronRight className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
                       <Box sx={{ flex: 1, fontFamily: "Inter, sans-serif" }}>
                         {typeof item.content === "string"
-                          ? renderHighlightedText(
+                          ? renderMarkedText(
                               item.content,
                               `section-${sectionIndex}-item-${idx}`
                             )
@@ -409,17 +421,87 @@ const handleColorChange = (color: string) => {
             );
           })}
         </Masonry>
-        <Tooltip title="Choose Highlight Color">
-          <IconButton onClick={(e) => setAnchorEl(e.currentTarget)}>
-            <Highlighter />
-          </IconButton>
-        </Tooltip>
+        <Box
+          sx={{
+            position: "fixed",
+            bottom: 24,
+            right: 24,
+            display: "flex",
+            gap: 1,
+          }}
+        >
+          <Tooltip
+            title={
+              markingMode === "highlight"
+                ? "Stop Highlighting"
+                : "Start Highlighting"
+            }
+          >
+            <IconButton
+              onClick={() => toggleMarkingMode("highlight")}
+              sx={{
+                backgroundColor:
+                  markingMode === "highlight" ? "primary.main" : "white",
+                color: markingMode === "highlight" ? "white" : "primary.main",
+                "&:hover": {
+                  backgroundColor:
+                    markingMode === "highlight" ? "primary.dark" : "grey.100",
+                },
+              }}
+            >
+              <Highlighter />
+            </IconButton>
+          </Tooltip>
+
+          <Tooltip
+            title={
+              markingMode === "underline"
+                ? "Stop Underlining"
+                : "Start Underlining"
+            }
+          >
+            <IconButton
+              onClick={() => toggleMarkingMode("underline")}
+              sx={{
+                backgroundColor:
+                  markingMode === "underline" ? "primary.main" : "white",
+                color: markingMode === "underline" ? "white" : "primary.main",
+                "&:hover": {
+                  backgroundColor:
+                    markingMode === "underline" ? "primary.dark" : "grey.100",
+                },
+              }}
+            >
+              <Underline />
+            </IconButton>
+          </Tooltip>
+
+          <Tooltip title="Choose Color">
+            <IconButton
+              onClick={(e) => setAnchorEl(e.currentTarget)}
+              sx={{
+                backgroundColor: "white",
+                "&:hover": { backgroundColor: "grey.100" },
+              }}
+            >
+              <div
+                style={{
+                  width: 16,
+                  height: 16,
+                  backgroundColor: currentColor,
+                  borderRadius: "50%",
+                }}
+              />
+            </IconButton>
+          </Tooltip>
+        </Box>
+
         <Menu
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
           onClose={() => setAnchorEl(null)}
         >
-          {HIGHLIGHT_COLORS.map((color) => (
+          {MARK_COLORS.map((color) => (
             <MenuItem
               key={color.value}
               onClick={() => handleColorChange(color.value)}
@@ -430,6 +512,7 @@ const handleColorChange = (color: string) => {
                   height: 20,
                   backgroundColor: color.value,
                   mr: 1,
+                  borderRadius: "50%",
                 }}
               />
               {color.name}
