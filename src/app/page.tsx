@@ -142,7 +142,7 @@ const HomePage = () => {
     <div>
       <div className="w-screen h-screen items-center scroll-smooth">
         <div className="mx-auto flex flex-col items-center">
-          <div className="w-screen sticky top-0 z-50 bg-[#f8f6ef] supports-backdrop-blur:bg-background/90 bg-background/40 backdrop-blur-lg justify-between gap-between">
+          <div className="w-screen sticky top-0 z-50 supports-backdrop-blur:bg-background/90 bg-background/40 backdrop-blur-lg justify-between gap-between">
             <ScrollProgress className="top-[60px]" />
             <div className="w-3/4 mx-auto gap-between justify-between">
               <div className="flex justify-between items-center px-4 py-3 gap-between">
@@ -240,7 +240,7 @@ const HomePage = () => {
               <motion.div className="relative mx-auto md:items-center justify-center my-50 pb-50">
                 <div className="flex flex-col md:items-center items-center justify-center md:leading-tight">
                   
-                  <div className="text-black text-4xl md:text-center text-center sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl font-semibold leading-tight tracking-tighter font-Inter mb-6">
+                  <div className="text-black text-4xl md:text-center text-center sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl font-semibold leading-tight tracking-tighter font-Inter">
                     Streamline your exam prep with{" "}
                     <span className="text-[#2343fdfa]"> Brev</span>
                   </div>
@@ -279,7 +279,7 @@ const HomePage = () => {
             <section
               className="w-full justify-center items-center flex flex-col md:pt-10 pt-0"
             >
-              <div className="w-full bg-[#f8f6ef] pt-8 mx-auto my-0 md:my-8 scroll-mt-20" id="features">
+              <div className="w-full pt-8 mx-auto my-0 md:my-8 scroll-mt-20" id="features">
                 <div className="text-black md:flex md:flex-col flex text-center md:text-start gap-2 md:gap-0">
                   <div>
                     <span className="break-words font-bold text-5xl sm:text-5xl md:text-6xl tracking-tighter leading-none bg-gradient-to-r from-blue-800 to-blue-700 bg-clip-text text-transparent hover:scale-105 transition-transform duration-300">
