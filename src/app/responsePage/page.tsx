@@ -660,7 +660,7 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
 
   return (
     <div>
-      <div className="flex flex-col items-center w-screen h-screen relative bg-[#f8f6ef]">
+      <div className="flex flex-col items-center w-screen h-screen relative">
         <div className="w-3/4  flex flex-col items-start">
           {/* Nav Bar */}
           <div className="w-full sticky top-0 z-50 bg-[#f8f6ef] supports-backdrop-blur:bg-background/90 bg-background/40 backdrop-blur-lg justify-between">
