@@ -800,7 +800,7 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
                     >
                       {loadingCheatsheet
                         ? "Generating Cheatsheet..."
-                        : "Generate Cheatsheet"}
+                        : "Generate Study Material"}
                     </button>
                   </div>
                 </div>
@@ -818,18 +818,17 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
                         className="px-4 py-2 rounded-full bg-white text-black hover:bg-[#0023FF] hover:text-white transition-colors"
                         onClick={() => handleSubmit("Detailed")}
                       >
-                        Detailed
+                        Exam Cheatsheet
                       </button>
                       <button
                         className="px-4 py-2 rounded-full bg-white text-black hover:bg-[#0023FF] hover:text-white transition-colors"
                         onClick={() => handleSubmit("Precise")}
                       >
-                        Precise
+                        Notes
                       </button>
                     </div>
                   </DialogContent>
                 </Dialog>
-
                 <button
                   type="button"
                   className={`bg-white text-black px-4 py-2 rounded-full ${
