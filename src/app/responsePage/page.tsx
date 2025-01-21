@@ -16,6 +16,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import CheatsheetList from "./CheatsheetContainer";
+import StudentNotes from "./StudentNotes";
 
 interface Mnemonic {
   text: string;
@@ -54,6 +55,8 @@ const ResponsePage = () => {
   const [showDialog, setShowDialog] = useState(false);
   const [isCustomPrompt, setIsCustomPrompt] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedStudyMaterial, setSelectedStudyMaterial] = useState("");
+
 
   useEffect(() => {
     const loadHtml2Pdf = async () => {
@@ -152,6 +155,7 @@ const ResponsePage = () => {
     setSelectedOption(option);
     setShowDialog(false);
     setLoadingCheatsheet(true);
+    setSelectedStudyMaterial(option);
 
     let customPrompt = textPrompt || "";
 
@@ -161,7 +165,7 @@ const ResponsePage = () => {
         `Imagine you are a student and you need to prepare for an exam based on the provided document. It is essential to understand the key concepts and details to perform well. You need a cheatsheet to help you study effectively. Your task is to generate a concise cheatsheet summarizing the key points of the provided document and explaining the key concepts in minimum words. Structure the content as follows:
         
         
-        Generate a concise study guide summarizing the key points of the provided document. Structure the content as follows:
+        Generate a concise exam cheatsheet summarizing the key points of the provided document. Structure the content as follows:
 
 ## Content Organization Rules:
 1. Begin each major topic with "TITLE: " followed by the main concept.
@@ -201,35 +205,64 @@ Please structure the content following this format exactly as it matches the fro
     } else if (option === "Precise") {
       customPrompt =
         customPrompt ||
-        `Please create a precise cheat sheet from the provided document. Use the following format strictly:
+        `Imagine you are a student and you need to prepare for an exam based on the provided document. It is essential to understand the key concepts and details to perform well. You need a good quality notes to help you study effectively. Your task is to generate a good quality notes that has the key points of the provided document and explaining the key concepts in easy words. Structure the content as follows:
+           
+TITLE: Study Notes Generator Guidelines
+Explanation: A comprehensive framework for creating effective academic study materials
+SUBTOPIC: Basic Structure Requirements
+DETAIL_1: Start each major topic with "TITLE: " followed by the concept name
+DETAIL_2: Include "Explanation: " section under each title providing context and importance (2-3 sentences)
+DETAIL_3: Break topics into "SUBTOPIC: " sections for logical organization
+DETAIL_4: List important points as "DETAIL_N: " where N is a sequential number
+DETAIL_5: Use three dashes (---) to separate major sections
 
-## Main formatting rules:
-1. Start main titles with "TITLE: " (include the space after colon)
-2. Start subtopics with "SUBTOPIC: " (include the space after colon)
-3. Start details with "DETAIL_N: " where N is a number (include the space after colon)
-4. Use three dashes (---) to separate different sections
-5. Do not use any markdown symbols, asterisks, double asterisks or other formatting characters
-6. Maintain consistent indentation
-7. Keep all text in normal font
 
-Example format:
-TITLE: Your Main Title
-SUBTOPIC: Your Subtopic
-DETAIL_1: Your first detail point
-DETAIL_2: Your second detail point
-DETAIL_3: Your third detail point
----
-TITLE: Your Next Section
-[and so on...]
+TITLE: Content Creation Rules
+Explanation: Essential guidelines for crafting clear and comprehensive study materials
+SUBTOPIC: Writing Guidelines
+DETAIL_1: Focus on understanding rather than memorization - explain why concepts matter
+DETAIL_2: Include relevant examples to illustrate complex ideas
+DETAIL_3: Define key terms clearly within their context
+DETAIL_4: Present information in a logical sequence
+DETAIL_5: Connect related concepts to build a coherent understanding
 
-Guidelines for content:
-- Keep explanations brief and concise
-- Include only essential information
-- Use clear, simple language
-- Break down complex topics into digestible points
-- Maintain consistent formatting throughout
 
-Please structure the content following this format exactly as it matches the frontend rendering system.`;
+##Formatting Requirements
+- Specific formatting rules to ensure consistency and readability
+- Technical Specifications
+- Use plain text without any markdown symbols or formatting characters
+- Maintain consistent indentation throughout
+- Keep all text in normal font
+- Leave appropriate spacing between sections
+- Each detail point should be a complete thought (1-3 sentences)
+
+
+Example Format:
+TITLE: [Main Concept]
+Explanation: [Why this concept is important and how it connects to broader topics]
+SUBTOPIC: [Key Component]
+DETAIL_1: [Definition or core concept]
+DETAIL_2: [Key principles or rules]
+DETAIL_3: [Practical application]
+DETAIL_4: [Common misconceptions or pitfalls]
+DETAIL_5: [Connection to other concepts]
+
+
+Additional Guidelines:
+- Focus on clarity and comprehension
+- Include practical applications where relevant
+- Highlight key relationships between concepts
+- Address common points of confusion
+- Provide context for why each concept matters
+- Keep explanations concise but complete
+
+The generated notes should be:
+- Comprehensive yet concise
+- Logically organized
+- Easy to understand
+- Focused on key concepts
+- Suitable for review and retention
+- Free from unnecessary jargon`;
     }
     else if (option === "Exam") {
       customPrompt =
@@ -660,10 +693,10 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
 
   return (
     <div>
-      <div className="flex flex-col items-center w-screen h-screen relative bg-[#f8f6ef]">
+      <div className="flex flex-col items-center w-screen h-screen relative">
         <div className="w-3/4  flex flex-col items-start">
           {/* Nav Bar */}
-          <div className="w-full sticky top-0 z-50 bg-[#f8f6ef] supports-backdrop-blur:bg-background/90 bg-background/40 backdrop-blur-lg justify-between">
+          <div className="w-full sticky top-0 z-50 supports-backdrop-blur:bg-background/90 bg-background/40 backdrop-blur-lg justify-between">
             <div className="gap-between justify-between">
               <div className="flex justify-between items-center py-3 gap-between">
                 <div className="text-[#0023FF] text-3xl sm:text-4xl font-extrabold font-inter capitalize">
@@ -874,17 +907,31 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
                 </p>
               </div>
             ) : cheatsheetContent ? (
-              <CheatsheetList
-                loadingCheatsheet={loadingCheatsheet}
-                loadingMnemonics={loadingMnemonics}
-                loadingQuiz={loadingQuiz}
-                isLoading={isLoading}
-                cheatsheetContent={cheatsheetContent}
-                showingMnemonics={showingMnemonics}
-                parseMnemonics={parseMnemonics}
-                isCustomPrompt={isCustomPrompt}
-                MnemonicCards={MnemonicCards}
-              />
+              selectedStudyMaterial === "Precise" ? (
+                <StudentNotes
+                  loadingCheatsheet={loadingCheatsheet}
+                  loadingMnemonics={loadingMnemonics}
+                  loadingQuiz={loadingQuiz}
+                  isLoading={isLoading}
+                  cheatsheetContent={cheatsheetContent}
+                  showingMnemonics={showingMnemonics}
+                  parseMnemonics={parseMnemonics}
+                  isCustomPrompt={isCustomPrompt}
+                  MnemonicCards={MnemonicCards}
+                />
+              ) : (
+                <CheatsheetList
+                  loadingCheatsheet={loadingCheatsheet}
+                  loadingMnemonics={loadingMnemonics}
+                  loadingQuiz={loadingQuiz}
+                  isLoading={isLoading}
+                  cheatsheetContent={cheatsheetContent}
+                  showingMnemonics={showingMnemonics}
+                  parseMnemonics={parseMnemonics}
+                  isCustomPrompt={isCustomPrompt}
+                  MnemonicCards={MnemonicCards}
+                />
+              )
             ) : (
               <div className="flex flex-col items-center justify-center min-h-[200px] text-center">
                 <p className="text-gray-500 mb-2">
