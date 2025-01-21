@@ -663,7 +663,7 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
       <div className="flex flex-col items-center w-screen h-screen relative">
         <div className="w-3/4  flex flex-col items-start">
           {/* Nav Bar */}
-          <div className="w-full sticky top-0 z-50 bg-[#f8f6ef] supports-backdrop-blur:bg-background/90 bg-background/40 backdrop-blur-lg justify-between">
+          <div className="w-full sticky top-0 z-50 supports-backdrop-blur:bg-background/90 bg-background/40 backdrop-blur-lg justify-between">
             <div className="gap-between justify-between">
               <div className="flex justify-between items-center py-3 gap-between">
                 <div className="text-[#0023FF] text-3xl sm:text-4xl font-extrabold font-inter capitalize">
