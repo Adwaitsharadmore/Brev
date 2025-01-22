@@ -205,7 +205,7 @@ const StudentNotes= ({
                   const detailContent = detailMatch[1].trim();
                   return (
                     <div className="ml-8 mb-4 group">
-                      <div className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200">
+                      <div className="flex items-start space-x-3 rounded-lg hover:bg-gray-50 transition-colors duration-200">
                         <div className="w-2 h-2 rounded-full bg-blue-500 mt-2 flex-shrink-0" />
                         <div className="flex-1">
                           {detailContent.includes("\n") ||
