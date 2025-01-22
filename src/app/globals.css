@@ -112,30 +112,6 @@ html {
   display: none; /* Chrome, Safari, and Opera */
 }
 
-
-.highlight-wrapper {
-  position: relative;
-  display: inline-block;
-}
-
-.remove-highlight-button {
-  position: absolute;
-  top: -15px;
-  right: -15px;
-  background-color: #f0f0f0;
-  border: none;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  font-size: 12px;
-  cursor: pointer;
-  display: none;
-  z-index: 1000;
-}
-
-.highlight-wrapper:hover .remove-highlight-button {
-  display: block;
-  
 .background-gradient {
   position: fixed;
   top: 0;
@@ -180,7 +156,31 @@ html {
 @keyframes float2 {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(20px); }
+}
 
+
+.highlight-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.remove-highlight-button {
+  position: absolute;
+  top: -15px;
+  right: -15px;
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+  cursor: pointer;
+  display: none;
+  z-index: 1000;
+}
+
+.highlight-wrapper:hover .remove-highlight-button {
+  display: block;
 }
 
 }
