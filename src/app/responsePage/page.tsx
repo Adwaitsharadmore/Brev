@@ -1,13 +1,13 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import Image from "next/image";
+
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import fs from "fs";
+
 import Typewriter from "./p";
-import ScrollProgress from "@/components/ui/scroll-progress";
+
 import { Card, CardContent } from "@/components/ui/card";
-import { BookOpen, CheckCircle2, AlertCircle } from "lucide-react";
+
 
 import {
   Dialog,

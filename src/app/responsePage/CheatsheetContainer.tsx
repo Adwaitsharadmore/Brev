@@ -36,14 +36,19 @@ interface Selection {
 
 interface Highlight {
   id: string;
-  text: string;
+  range: Range;
   color: string;
   sectionId: number;
-  elementId: string;
-  startOffset: number;
-  endOffset: number;
   markType: "highlight" | "underline";
 }
+
+interface Range {
+  startContainer: Node;
+  startOffset: number;
+  endContainer: Node;
+  endOffset: number;
+}
+
 interface PendingHighlight {
   selections: Selection[];
   color: string;
@@ -137,10 +142,10 @@ const CheatsheetList = ({
     Record<number, boolean>
   >({});
 
- const [marks, setMarks] = useState<Highlight[]>([]);
- const [markingMode, setMarkingMode] = useState<MarkingMode>("none");
- const [currentColor, setCurrentColor] = useState(MARK_COLORS[0].value);
- const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [marks, setMarks] = useState<Highlight[]>([]);
+  const [markingMode, setMarkingMode] = useState<MarkingMode>("none");
+  const [currentColor, setCurrentColor] = useState(MARK_COLORS[0].value);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   if (!cheatsheetContent) return null;
 
@@ -153,130 +158,216 @@ const CheatsheetList = ({
     .split("---")
     .filter((section) => section.trim());
 
-   const handleTextSelection = (elementId: string) => {
-     if (markingMode === "none") return;
+  const handleTextSelection = (sectionId: number) => {
+    if (markingMode === "none") return;
 
-     const selection = window.getSelection();
-     if (
-       !selection ||
-       selection.rangeCount === 0 ||
-       selection.toString().trim() === ""
-     )
-       return;
+    const selection = window.getSelection();
+    if (
+      !selection ||
+      selection.rangeCount === 0 ||
+      selection.toString().trim() === ""
+    )
+      return;
 
-     const range = selection.getRangeAt(0);
+    const range = selection.getRangeAt(0);
 
-     const newMark: Highlight = {
-       id: Math.random().toString(36).substr(2, 9),
-       text: selection.toString(),
-       elementId,
-       startOffset: range.startOffset,
-       endOffset: range.endOffset,
-       color: currentColor,
-       sectionId: parseInt(elementId.split("-")[1]),
-       markType: markingMode,
-     };
+    const newMark: Highlight = {
+      id: Math.random().toString(36).substr(2, 9),
+      range: {
+        startContainer: range.startContainer,
+        startOffset: range.startOffset,
+        endContainer: range.endContainer,
+        endOffset: range.endOffset,
+      },
+      color: currentColor,
+      sectionId: sectionId,
+      markType: markingMode,
+    };
 
-     setMarks((prev) => [...prev, newMark]);
-     selection.removeAllRanges();
-   };
+    setMarks((prev) => [...prev, newMark]);
+    selection.removeAllRanges();
+  };
 
-   const removeMark = (markId: string, event: React.MouseEvent) => {
-     event.stopPropagation();
-     setMarks((prev) => prev.filter((m) => m.id !== markId));
-   };
+  const removeMark = (markId: string, event: React.MouseEvent) => {
+    event.stopPropagation();
+    const markElement = document.querySelector(`[data-mark-id="${markId}"]`);
+    if (markElement) {
+      const wrapper = markElement.parentNode;
+      if (wrapper && wrapper.parentNode) {
+        wrapper.parentNode.replaceChild(
+          document.createTextNode(markElement.textContent || ""),
+          wrapper
+        );
+      }
+    }
+    setMarks((prev) => prev.filter((m) => m.id !== markId));
+  };
 
-   const handleColorChange = (color: string) => {
-     setCurrentColor(color);
-     setAnchorEl(null);
-   };
+  const handleColorChange = (color: string) => {
+    setCurrentColor(color);
+    setAnchorEl(null);
+  };
 
-   const toggleMarkingMode = (mode: MarkingMode) => {
-     setMarkingMode((current) => (current === mode ? "none" : mode));
-     if (anchorEl) {
-       setAnchorEl(null);
-     }
-   };
+  const toggleMarkingMode = (mode: MarkingMode) => {
+    setMarkingMode((current) => (current === mode ? "none" : mode));
+    if (anchorEl) {
+      setAnchorEl(null);
+    }
+  };
+  const applyHighlights = (sectionId: number, element: HTMLElement) => {
+    const sectionMarks = marks.filter((m) => m.sectionId === sectionId);
 
-   const renderMarkedText = (text: string, elementId: string) => {
-     const relevantMarks = marks
-       .filter((m) => m.elementId === elementId)
-       .sort((a, b) => a.startOffset - b.startOffset);
+    sectionMarks.forEach((mark) => {
+      try {
+        const range = document.createRange();
+        range.setStart(mark.range.startContainer, mark.range.startOffset);
+        range.setEnd(mark.range.endContainer, mark.range.endOffset);
 
-     if (relevantMarks.length === 0) {
-       return (
-         <span onMouseUp={() => handleTextSelection(elementId)}>{text}</span>
-       );
-     }
+        // Get all text nodes within the range
+        const textNodes = [];
+        const iterator = document.createNodeIterator(
+          range.commonAncestorContainer,
+          NodeFilter.SHOW_TEXT
+        );
 
-     let lastIndex = 0;
-     const segments = [];
+        let currentNode;
+        while ((currentNode = iterator.nextNode())) {
+          if (range.intersectsNode(currentNode)) {
+            textNodes.push(currentNode);
+          }
+        }
 
-     relevantMarks.forEach((mark, index) => {
-       if (mark.startOffset > lastIndex) {
-         segments.push(
-           <span key={`text-${index}`}>
-             {text.slice(lastIndex, mark.startOffset)}
-           </span>
-         );
-       }
+        // Highlight each text node
+        textNodes.forEach((textNode) => {
+          let start =
+            textNode === range.startContainer ? mark.range.startOffset : 0;
+          let end =
+            textNode === range.endContainer
+              ? mark.range.endOffset
+              : (textNode as Text).length;
 
-       const markedText = text.slice(mark.startOffset, mark.endOffset);
-       segments.push(
-         <span
-           key={mark.id}
-           style={{
-             backgroundColor:
-               mark.markType === "highlight" ? mark.color : "transparent",
-             textDecoration:
-               mark.markType === "underline"
-                 ? `underline ${mark.color} 2px`
-                 : "none",
-             position: "relative",
-             padding: "0 1px",
-             margin: "0 -1px",
-           }}
-         >
-           {markedText}
-           <IconButton
-             size="small"
-             onClick={(e) => removeMark(mark.id, e)}
-             sx={{
-               position: "absolute",
-               top: "-8px",
-               right: "-8px",
-               padding: "2px",
-               backgroundColor: "white",
-               boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
-               opacity: 0,
-               transition: "opacity 0.2s",
-               "&:hover": { opacity: 1 },
-               ".marked-text:hover &": { opacity: 1 },
-             }}
-           >
-             <X size={12} />
-           </IconButton>
-         </span>
-       );
+          if (start !== end) {
+            const highlightSpan = document.createElement("span");
+            highlightSpan.style.backgroundColor =
+              mark.markType === "highlight" ? mark.color : "transparent";
+            highlightSpan.style.textDecoration =
+              mark.markType === "underline"
+                ? `underline ${mark.color} 2px`
+                : "none";
+            highlightSpan.style.position = "relative";
+            highlightSpan.dataset.markId = mark.id;
 
-       lastIndex = mark.endOffset;
-     });
+            // Split text node if needed
+            if (start > 0) {
+              (textNode as Text).splitText(start);
+              textNode = textNode.nextSibling as Text;
+              end -= start;
+              start = 0;
+            }
 
-     if (lastIndex < text.length) {
-       segments.push(<span key="text-final">{text.slice(lastIndex)}</span>);
-     }
+            if (end < (textNode as Text).length) {
+              (textNode as Text).splitText(end);
+            }
 
-     return (
-       <span
-         className="marked-text"
-         onMouseUp={() => handleTextSelection(elementId)}
-       >
-         {segments}
-       </span>
-     );
-   };
+            // Create the remove button
+            const removeButton = document.createElement("span");
+            removeButton.innerHTML = "×";
+            removeButton.style.cssText = `
+            position: absolute;
+            top: -12px;
+            right: -12px;
+            width: 16px;
+            height: 16px;
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            color: #666;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            z-index: 100;
+          `;
 
+            // Add hover events
+            highlightSpan.addEventListener("mouseenter", () => {
+              const buttons = document.querySelectorAll(
+                `[data-mark-id="${mark.id}"] .remove-button`
+              );
+              buttons.forEach(
+                (button) => ((button as HTMLElement).style.display = "flex")
+              );
+            });
 
+            highlightSpan.addEventListener("mouseleave", (e) => {
+              const buttons = document.querySelectorAll(
+                `[data-mark-id="${mark.id}"] .remove-button`
+              );
+              buttons.forEach((button) => {
+                const rect = button.getBoundingClientRect();
+                if (
+                  !(
+                    e.clientX >= rect.left &&
+                    e.clientX <= rect.right &&
+                    e.clientY >= rect.top &&
+                    e.clientY <= rect.bottom
+                  )
+                ) {
+                  (button as HTMLElement).style.display = "none";
+                }
+              });
+            });
+
+            removeButton.classList.add("remove-button");
+            removeButton.addEventListener("mouseenter", () => {
+              removeButton.style.display = "flex";
+            });
+
+            removeButton.addEventListener("mouseleave", () => {
+              removeButton.style.display = "none";
+            });
+
+            // Add click handler for remove button
+            removeButton.onclick = (e) => {
+              e.stopPropagation();
+              e.preventDefault();
+
+              // Find all highlight spans with this mark id
+              const highlights = document.querySelectorAll(
+                `[data-mark-id="${mark.id}"]`
+              );
+              highlights.forEach((highlight) => {
+                if (highlight.parentNode) {
+                  const textContent = highlight.firstChild?.textContent || "";
+                  highlight.parentNode.replaceChild(
+                    document.createTextNode(textContent),
+                    highlight
+                  );
+                }
+              });
+
+              // Update marks state
+              setMarks((prev) => prev.filter((m) => m.id !== mark.id));
+            };
+
+            // Replace text node with highlight
+            const parent = textNode.parentNode;
+            if (parent) {
+              const wrapper = document.createElement("span");
+              wrapper.appendChild(textNode.cloneNode());
+              highlightSpan.appendChild(wrapper);
+              highlightSpan.appendChild(removeButton);
+              parent.replaceChild(highlightSpan, textNode);
+            }
+          }
+        });
+      } catch (e) {
+        console.error("Error applying highlight:", e);
+      }
+    });
+  };
   return (
     <Box
       sx={{
@@ -358,7 +449,7 @@ const CheatsheetList = ({
                   },
                 }}
               >
-                <Box display="flex" alignItems="center" gap={1} mb={2}>
+                <Box display="flex" alignItems="center">
                   <Typography variant="h6" color="text.primary">
                     {`${sectionIndex + 1}. ${currentTitle}`}
                   </Typography>
@@ -368,31 +459,39 @@ const CheatsheetList = ({
                   <Typography
                     variant="body2"
                     color="text.secondary"
-                    sx={{ mb: 2, fontFamily: "Inter, sans-serif" }}
+                    sx={{ fontFamily: "Inter, sans-serif" }}
                   >
                     {currentExplanation}
                   </Typography>
                 )}
 
                 {currentSubtopic && (
-                  <Typography
-                    variant="h6"
-                    color="text.secondary"
-                    sx={{ mb: 1.5 }}
-                  >
+                  <Typography variant="h6" color="text.secondary">
                     {currentSubtopic}
                   </Typography>
                 )}
-                <Box sx={{ mt: 2 }}>
+                <Box>
                   {customContent.map((item, idx) => (
-                    <Box key={idx} display="flex" alignItems="start" gap={1}>
+                    <Box
+                      key={idx}
+                      display="flex"
+                      alignItems="start"
+                      gap={1}
+                      ref={(el: HTMLElement | null) => {
+                        if (el) applyHighlights(sectionIndex, el);
+                      }}
+                      onMouseUp={() => handleTextSelection(sectionIndex)}
+                    >
                       <ChevronRight className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                      <Box sx={{ flex: 1, fontFamily: "Inter, sans-serif" }}>
+                      <Box
+                        sx={{
+                          flex: 1,
+                          fontFamily: "Inter, sans-serif",
+                          fontSize: "medium",
+                        }}
+                      >
                         {typeof item.content === "string"
-                          ? renderMarkedText(
-                              item.content,
-                              `section-${sectionIndex}-item-${idx}`
-                            )
+                          ? item.content
                           : formatCodeBlock(item.content, item.type)}
                       </Box>
                     </Box>
