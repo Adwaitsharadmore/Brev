@@ -109,3 +109,27 @@ html {
 .scrollbar-hide::-webkit-scrollbar {
   display: none; /* Chrome, Safari, and Opera */
 }
+
+.highlight-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.remove-highlight-button {
+  position: absolute;
+  top: -15px;
+  right: -15px;
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+  cursor: pointer;
+  display: none;
+  z-index: 1000;
+}
+
+.highlight-wrapper:hover .remove-highlight-button {
+  display: block;
+}
