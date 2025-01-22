@@ -142,7 +142,7 @@ const HomePage = () => {
     <div>
       <div className="w-screen h-screen items-center scroll-smooth">
         <div className="mx-auto flex flex-col items-center">
-          <div className="w-screen sticky top-0 z-50 bg-[#f8f6ef] supports-backdrop-blur:bg-background/90 bg-background/40 backdrop-blur-lg justify-between gap-between">
+          <div className="w-screen sticky top-0 z-50 supports-backdrop-blur:bg-background/90 bg-background/40 backdrop-blur-lg justify-between gap-between">
             <ScrollProgress className="top-[60px]" />
             <div className="w-3/4 mx-auto gap-between justify-between">
               <div className="flex justify-between items-center px-4 py-3 gap-between">
@@ -239,11 +239,13 @@ const HomePage = () => {
             <section id="about" className="pt-[200px]">
               <motion.div className="relative mx-auto md:items-center justify-center my-50 pb-50">
                 <div className="flex flex-col md:items-center items-center justify-center md:leading-tight">
+                  
                   <div className="text-black text-4xl md:text-center text-center sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl font-semibold leading-tight tracking-tighter font-Inter">
-                    streamline your exam prep with{" "}
-                    <span className="text-[#0023FF]"> Brev</span>
-                  </div>{" "}
-                  <div className="text-black md:text-center text-center md:items-start items-center md:w-[53%] text-lg md:text-2xl font-light md:leading-none tracking-tighter font-Inter pb-2">
+                    Streamline your exam prep with{" "}
+                    <span className="text-[#2343fdfa]"> Brev</span>
+                  </div>
+
+                  <div className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-900 md:text-center text-center md:items-start items-center md:w-[53%] text-xl md:text-3xl font-medium md:leading-relaxed tracking-tight font-Inter pb-4">
                     achieve more with less stress
                   </div>
                   <div className="z-10 pt-5">
@@ -252,11 +254,11 @@ const HomePage = () => {
                 </div>
               </motion.div>
             </section>
-            <section id="howtobrev">
+            <section id="howtobrev" className="mt-20 md:mt-32">
               <ContainerScroll
                 titleComponent={
                   <>
-                    <h1 className="text-4xl font-semibold text-black dark:text-white">
+                    <h1 className="text-4xl font-semibold text-black dark:text-white mb-8 md:mb-12">
                       How to use <br />
                       <span className="text-4xl md:text-[7rem] font-bold mt-1 leading-none">
                         Brev
@@ -275,22 +277,20 @@ const HomePage = () => {
             </section>
 
             <section
-              id="features"
               className="w-full justify-center items-center flex flex-col md:pt-10 pt-0"
             >
-              <div className="w-full bg-[#f8f6ef] pt-8 mx-auto my-0 md:my-8">
+              <div className="w-full pt-8 mx-auto my-0 md:my-8 scroll-mt-20" id="features">
                 <div className="text-black md:flex md:flex-col flex text-center md:text-start gap-2 md:gap-0">
                   <div>
-                    {" "}
-                    <span className="break-words font-bold text-5xl sm:text-5xl md:text-6xl tracking-tighter leading-none">
-                      key features{" "}
+                    <span className="break-words font-bold text-5xl sm:text-5xl md:text-6xl tracking-tighter leading-none bg-gradient-to-r from-blue-800 to-blue-700 bg-clip-text text-transparent hover:scale-105 transition-transform duration-300">
+                      key features
                     </span>
                   </div>
+                  
                 </div>
               </div>
               <div className="w-full">
                 <StickyScroll content={content} />
-                {/* <BentoDemo></BentoDemo> */}
               </div>
             </section>
           </BlurFade>
@@ -348,6 +348,17 @@ const HomePage = () => {
                       students maximize their study time, reduce stress, and
                       excel in their exams. We’re just getting started, and
                       we’re excited for the journey ahead.
+                    </div>
+                    <div className="transform hover:scale-105 transition-all duration-300 p-8 rounded-2xl bg-gradient-to-r from-blue-50 to-purple-50 shadow-lg">
+                      <div className="max-w-3xl mx-auto">
+                        <div className="text-lg md:text-xl text-gray-700 leading-relaxed space-y-4">
+                          Born from a hackathon project, Brev evolved into a mission-driven startup 
+                          dedicated to transforming exam preparation. We're building the ultimate 
+                          study companion that helps students maximize efficiency, minimize stress, 
+                          and achieve excellence. Our journey is just beginning, and we're excited 
+                          to revolutionize how students prepare for their exams.
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
