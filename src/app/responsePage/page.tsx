@@ -162,10 +162,8 @@ const ResponsePage = () => {
     if (option === "Detailed") {
       customPrompt =
         customPrompt ||
-        `Imagine you are a student and you need to prepare for an exam based on the provided document. It is essential to understand the key concepts and details to perform well. You need a cheatsheet to help you study effectively. Your task is to generate a concise cheatsheet summarizing the key points of the provided document and explaining the key concepts in minimum words. Structure the content as follows:
-        
-        
-        Generate a concise exam cheatsheet summarizing the key points of the provided document. Structure the content as follows:
+        `Imagine you are a student and you need to prepare for an exam based on the provided document. It is essential to understand the concepts and details to perform well. You need good quality notes to help you study effectively. Your task is to generate really good notes based the key points of the provided document and explaining the key concepts in minimum words. Structure the content as follows:
+         Structure the content as follows:
 
 ## Content Organization Rules:
 1. Begin each major topic with "TITLE: " followed by the main concept.
@@ -205,64 +203,44 @@ Please structure the content following this format exactly as it matches the fro
     } else if (option === "Precise") {
       customPrompt =
         customPrompt ||
-        `Imagine you are a student and you need to prepare for an exam based on the provided document. It is essential to understand the key concepts and details to perform well. You need a good quality notes to help you study effectively. Your task is to generate a good quality notes that has the key points of the provided document and explaining the key concepts in easy words. Structure the content as follows:
-           
-TITLE: Study Notes Generator Guidelines
-Explanation: A comprehensive framework for creating effective academic study materials
-SUBTOPIC: Basic Structure Requirements
-DETAIL_1: Start each major topic with "TITLE: " followed by the concept name
-DETAIL_2: Include "Explanation: " section under each title providing context and importance (2-3 sentences)
-DETAIL_3: Break topics into "SUBTOPIC: " sections for logical organization
-DETAIL_4: List important points as "DETAIL_N: " where N is a sequential number
-DETAIL_5: Use three dashes (---) to separate major sections
+        `Imagine you are a student and you need to prepare for an exam based on the provided document. It is essential to understand the key concepts and details to perform well. You need a cheatsheet to help you study effectively. Your task is to generate a concise cheatsheet summarizing the key points of the provided document and explaining the key concepts in minimum words. Structure the content as follows:
+        
+        
+        Generate a concise exam cheatsheet summarizing the key points of the provided document. Structure the content as follows:
+
+## Content Organization Rules:
+1. Begin each major topic with "TITLE: " followed by the main concept.
+2. Each TITLE section must include an "Explanation: " that provides brief context and importance.
+3. Break down topics into "SUBTOPIC: " sections.
+4. List all details with "DETAIL_N: " where N is a sequential number.
+5. Use three dashes (---) to separate major sections.
+
+Required Content Structure:
+TITLE: [Main Topic]
+Explanation: [Brief context and significance]
+SUBTOPIC: [Key Component/Concept]
+DETAIL_1: [Core concept summarized]
+DETAIL_2: [Implementation details or use cases]
+DETAIL_3: [Examples or applications]
+DETAIL_4: [Common pitfalls to avoid]
+DETAIL_5: [Best practices]
+---
 
 
-TITLE: Content Creation Rules
-Explanation: Essential guidelines for crafting clear and comprehensive study materials
-SUBTOPIC: Writing Guidelines
-DETAIL_1: Focus on understanding rather than memorization - explain why concepts matter
-DETAIL_2: Include relevant examples to illustrate complex ideas
-DETAIL_3: Define key terms clearly within their context
-DETAIL_4: Present information in a logical sequence
-DETAIL_5: Connect related concepts to build a coherent understanding
+Note: Each section must be concise, focusing on key points to ensure the study guide fits within one to two pages.
 
+Example Section Format:
+TITLE: Component Rendering Logic
+Explanation: Understanding content processing and display is crucial for application maintenance.
+SUBTOPIC: Content Processing
+DETAIL_1: Mechanism for splitting content using "---" delimiter.
+DETAIL_2: Implementation of line parsing and filtering.
+DETAIL_3: Identification and categorization of sections.
+DETAIL_4: Rules for formatting mathematical notation.
+DETAIL_5: Detection and formatting of code blocks.
+---
 
-##Formatting Requirements
-- Specific formatting rules to ensure consistency and readability
-- Technical Specifications
-- Use plain text without any markdown symbols or formatting characters
-- Maintain consistent indentation throughout
-- Keep all text in normal font
-- Leave appropriate spacing between sections
-- Each detail point should be a complete thought (1-3 sentences)
-
-
-Example Format:
-TITLE: [Main Concept]
-Explanation: [Why this concept is important and how it connects to broader topics]
-SUBTOPIC: [Key Component]
-DETAIL_1: [Definition or core concept]
-DETAIL_2: [Key principles or rules]
-DETAIL_3: [Practical application]
-DETAIL_4: [Common misconceptions or pitfalls]
-DETAIL_5: [Connection to other concepts]
-
-
-Additional Guidelines:
-- Focus on clarity and comprehension
-- Include practical applications where relevant
-- Highlight key relationships between concepts
-- Address common points of confusion
-- Provide context for why each concept matters
-- Keep explanations concise but complete
-
-The generated notes should be:
-- Comprehensive yet concise
-- Logically organized
-- Easy to understand
-- Focused on key concepts
-- Suitable for review and retention
-- Free from unnecessary jargon
+Please ensure the content is concise and fits within one to two pages for quick reference. Keep the font normal for everything
 
 Please structure the content following this format exactly as it matches the frontend rendering system. Dont't use any markdown symbols, asterisks, double asterisks or other formatting characters.`;
     }
