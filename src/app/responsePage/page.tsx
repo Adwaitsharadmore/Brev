@@ -262,7 +262,9 @@ The generated notes should be:
 - Easy to understand
 - Focused on key concepts
 - Suitable for review and retention
-- Free from unnecessary jargon`;
+- Free from unnecessary jargon
+
+Please structure the content following this format exactly as it matches the frontend rendering system. Dont't use any markdown symbols, asterisks, double asterisks or other formatting characters.`;
     }
     else if (option === "Exam") {
       customPrompt =
