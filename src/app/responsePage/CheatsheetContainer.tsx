@@ -358,7 +358,7 @@ const CheatsheetList = ({
                   },
                 }}
               >
-                <Box display="flex" alignItems="center" gap={1} mb={2}>
+                <Box display="flex" alignItems="center">
                   <Typography variant="h6" color="text.primary">
                     {`${sectionIndex + 1}. ${currentTitle}`}
                   </Typography>
@@ -368,7 +368,7 @@ const CheatsheetList = ({
                   <Typography
                     variant="body2"
                     color="text.secondary"
-                    sx={{ mb: 2, fontFamily: "Inter, sans-serif" }}
+                    sx={{fontFamily: "Inter, sans-serif" }}
                   >
                     {currentExplanation}
                   </Typography>
@@ -378,16 +378,15 @@ const CheatsheetList = ({
                   <Typography
                     variant="h6"
                     color="text.secondary"
-                    sx={{ mb: 1.5 }}
                   >
                     {currentSubtopic}
                   </Typography>
                 )}
-                <Box sx={{ mt: 2 }}>
+                <Box>
                   {customContent.map((item, idx) => (
                     <Box key={idx} display="flex" alignItems="start" gap={1}>
                       <ChevronRight className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                      <Box sx={{ flex: 1, fontFamily: "Inter, sans-serif" }}>
+                      <Box sx={{ flex: 1, fontFamily: "Inter, sans-serif", fontSize: "medium"}}>
                         {typeof item.content === "string"
                           ? renderMarkedText(
                               item.content,
