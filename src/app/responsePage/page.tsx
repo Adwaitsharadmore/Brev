@@ -205,7 +205,6 @@ Please structure the content following this format exactly as it matches the fro
         customPrompt ||
         `Imagine you are a student and you need to prepare for an exam based on the provided document. It is essential to understand the key concepts and details to perform well. You need a cheatsheet to help you study effectively. Your task is to generate a concise cheatsheet summarizing the key points of the provided document and explaining the key concepts in minimum words. Structure the content as follows:
         
-        
         Generate a concise exam cheatsheet summarizing the key points of the provided document. Structure the content as follows:
 
 ## Content Organization Rules:
@@ -674,9 +673,9 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
   return (
     <div>
       <div className="flex flex-col items-center w-screen h-screen relative">
-        <div className="w-3/4  flex flex-col items-start">
-          {/* Nav Bar */}
-          <div className="w-full sticky top-0 z-50 supports-backdrop-blur:bg-background/90 bg-background/40 backdrop-blur-lg justify-between">
+        {/* Nav Bar */}
+        <div className="w-screen sticky top-0 z-50 supports-backdrop-blur:bg-background/90 bg-background/40 backdrop-blur-lg justify-between">
+          <div className="w-3/4 mx-auto gap-between justify-between">
             <div className="gap-between justify-between">
               <div className="flex justify-between items-center py-3 gap-between">
                 <div className="text-[#0023FF] text-3xl sm:text-4xl font-extrabold font-inter capitalize">
@@ -684,45 +683,12 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
                 </div>
               </div>
             </div>
-
-            {isOpen && (
-              <div className="sm:hidden mt-4 items-center text-center">
-                <div>
-                  <div
-                    className="hover:text-[#0023FF] text-black"
-                    onClick={() => handleScroll("features")}
-                  >
-                    key features
-                  </div>
-                </div>
-                <div>
-                  <div
-                    className="hover:text-[#0023FF] text-black"
-                    onClick={() => handleScroll("story")}
-                  >
-                    Our story
-                  </div>
-                </div>
-                <div>
-                  <div
-                    className="hover:text-[#0023FF] text-black"
-                    onClick={() => handleScroll("about")}
-                  >
-                    how to brev
-                  </div>
-                </div>
-                <div
-                  className="hover:text-[#0023FF] text-black"
-                  onClick={() => handleScroll("contact")}
-                >
-                  contact us
-                </div>
-              </div>
-            )}
           </div>
+        </div>
 
-          {/* Phrases Section */}
-          <div className="w-full md:pt-[20px] pt-[10px] mx-auto">
+        {/* Phrases Section */}
+        <div className="w-full md:pt-[20px] pt-[10px] mx-auto">
+          <div className="w-3/4 mx-auto gap-between justify-between">
             <div className="w-full pt-[30px]">
               <span className="text-black tracking-tighter md:text-5xl text-2xl font-semibold leading-tight font-Inter">
                 Don’t worry,{" "}
