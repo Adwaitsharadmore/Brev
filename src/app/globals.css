@@ -184,3 +184,20 @@ html {
 }
 
 
+.sticky-note-text {
+  position: relative;
+  cursor: pointer;
+}
+
+.sticky-note-text:hover::after {
+  content: attr(data-content);
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: attr(data-color);
+  padding: 5px;
+  border-radius: 3px;
+  z-index: 1000;
+  white-space: pre-wrap;
+  max-width: 200px;
+}
