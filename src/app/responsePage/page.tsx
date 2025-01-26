@@ -216,7 +216,7 @@ Please structure the content following this format exactly as it matches the fro
 2. Each TITLE section must include an "Explanation: " that provides brief context and importance.
 3. Break down topics into "SUBTOPIC: " sections.
 4. List all details with "DETAIL_N: " where N is a sequential number.
-5. Use three dashes (---) to separate major sections.
+5. Use three dashes (---) to separate major sections after TITLE.
 
 Required Content Structure:
 TITLE: [Main Topic]
