@@ -204,9 +204,9 @@ Please structure the content following this format exactly as it matches the fro
     } else if (option === "Precise") {
       customPrompt =
         customPrompt ||
-        `Imagine you are a student and you need to prepare for an exam based on the provided document. It is essential to understand the key concepts and details to perform well. You need good quality notes to help you study effectively. Your task is to generate good quality notes where the key points of the provided document and explaining the key concepts in minimum words. Structure the content as follows:
+        `Imagine you are a student and you need to prepare for an exam based on the provided document. It is essential to understand the key concepts and details to perform well. You need good quality notes to help you study effectively. Your task is to generate good quality notes where the key points of the provided document and explaining the key concepts. Structure the content as follows:
         
-        Generate good quality notes that has the key points of the provided document. Structure the content as follows:
+        Generate good quality notes that has the key points of the provided document. Explain every topic in simple word such that a student can grasp it easily. Structure the content as follows:
 
 ## Content Organization Rules:
 1. Begin each major topic with "TITLE: " followed by the main concept.
