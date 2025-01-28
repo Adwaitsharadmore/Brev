@@ -27,6 +27,12 @@ import {
 } from "lucide-react";
 import { MessageCircle } from "lucide-react";
 import { Plus } from "lucide-react";
+import { styled } from "@mui/material/styles";
+import Grid from "@mui/material/Grid";
+
+
+
+
 
 interface Mnemonic {
   text: string;
@@ -506,176 +512,185 @@ const handleannotateSelection = (sectionId: number) => {
     <Box sx={{ position: "relative", minHeight: "100vh" }}>
       {/* ... previous rendering logic */}
       <Box sx={{ maxWidth: "1200px", mx: "auto" }}>
-        <Masonry columns={{ xs: 1, sm: 2, md: 3 }} spacing={3}>
-          {sections.map((section: string, sectionIndex: number) => {
-            const lines = section
-              .trim()
-              .split("\n")
-              .filter((line) => line.trim());
+        <Masonry columns={{ xs: 1, sm: 2, md: 3 }} spacing={3} sequential>
+          {sections
+            .sort((a, b) => {
+              const aIndex = parseInt(a.match(/^TITLE:\s(\d+)/)?.[1] || "0");
+              const bIndex = parseInt(b.match(/^TITLE:\s(\d+)/)?.[1] || "0");
+              return aIndex - bIndex;
+            })
+            .map((section: string, sectionIndex: number) => {
+              const lines = section
+                .trim()
+                .split("\n")
+                .filter((line) => line.trim());
 
-            let currentTitle = "";
-            let currentSubtopic = "";
-            let currentExplanation = "";
-            let mnemonics: Mnemonic[] = [];
-            let currentMnemonic: Mnemonic | null = null;
-            let customContent: CustomContentItem[] = [];
+              let currentTitle = "";
+              let currentSubtopic = "";
+              let currentExplanation = "";
+              let mnemonics: Mnemonic[] = [];
+              let currentMnemonic: Mnemonic | null = null;
+              let customContent: CustomContentItem[] = [];
 
-            lines.forEach((line) => {
-              const titleMatch = line.match(/^TITLE:\s(.+)/);
-              const subtopicMatch = line.match(/^SUBTOPIC:\s(.+)/);
-              const explanationMatch = line.match(/^Explanation:\s(.+)/);
-              const mnemonicMatch = line.match(/^MNEMONIC_\d+:\s(.+)/);
-              const typeMatch = line.match(/^TYPE:\s(.+)/);
-              const detailMatch = line.match(/^DETAIL_\d+:\s(.+)/);
-              const commandMatch = line.match(/^\$\s(.+)/);
+              lines.forEach((line) => {
+                const titleMatch = line.match(/^TITLE:\s(.+)/);
+                const subtopicMatch = line.match(/^SUBTOPIC:\s(.+)/);
+                const explanationMatch = line.match(/^Explanation:\s(.+)/);
+                const mnemonicMatch = line.match(/^MNEMONIC_\d+:\s(.+)/);
+                const typeMatch = line.match(/^TYPE:\s(.+)/);
+                const detailMatch = line.match(/^DETAIL_\d+:\s(.+)/);
+                const commandMatch = line.match(/^\$\s(.+)/);
 
-              if (titleMatch) {
-                currentTitle = titleMatch[1];
-              } else if (subtopicMatch) {
-                currentSubtopic = subtopicMatch[1];
-              } else if (explanationMatch) {
-                currentExplanation = explanationMatch[1];
-              } else if (mnemonicMatch) {
-                currentMnemonic = {
-                  text: mnemonicMatch[1],
-                  type: "",
-                  title: currentTitle,
-                  subtopic: currentSubtopic,
-                  explanation: currentExplanation,
-                };
-              } else if (typeMatch && currentMnemonic) {
-                currentMnemonic.type = typeMatch[1];
-                mnemonics.push(currentMnemonic);
-                currentMnemonic = null;
-              } else if (detailMatch) {
-                customContent.push({ type: "detail", content: detailMatch[1] });
-              } else if (commandMatch) {
-                customContent.push({
-                  type: "command",
-                  content: commandMatch[1],
-                });
-              } else if (line.trim()) {
-                customContent.push({ type: "text", content: line });
-              }
-            });
+                if (titleMatch) {
+                  currentTitle = titleMatch[1];
+                } else if (subtopicMatch) {
+                  currentSubtopic = subtopicMatch[1];
+                } else if (explanationMatch) {
+                  currentExplanation = explanationMatch[1];
+                } else if (mnemonicMatch) {
+                  currentMnemonic = {
+                    text: mnemonicMatch[1],
+                    type: "",
+                    title: currentTitle,
+                    subtopic: currentSubtopic,
+                    explanation: currentExplanation,
+                  };
+                } else if (typeMatch && currentMnemonic) {
+                  currentMnemonic.type = typeMatch[1];
+                  mnemonics.push(currentMnemonic);
+                  currentMnemonic = null;
+                } else if (detailMatch) {
+                  customContent.push({
+                    type: "detail",
+                    content: detailMatch[1],
+                  });
+                } else if (commandMatch) {
+                  customContent.push({
+                    type: "command",
+                    content: commandMatch[1],
+                  });
+                } else if (line.trim()) {
+                  customContent.push({ type: "text", content: line });
+                }
+              });
 
-            return (
-              <Paper
-                key={sectionIndex}
-                elevation={1}
-                sx={{
-                  p: 3,
-                  borderRadius: 2,
-                  cursor: markingMode !== "none" ? "text" : "default",
-                  "&:hover": {
-                    boxShadow: 3,
-                    transition: "box-shadow 0.3s ease-in-out",
-                  },
-                }}
-              >
-                {/* Title */}
-                <Typography
-                  variant="h6"
+              return (
+                <Paper
+                  key={sectionIndex}
+                  elevation={1}
                   sx={{
-                    color: "text.primary",
-                    mb: currentExplanation || currentSubtopic ? 2 : 3,
-                    fontSize: "1.1rem",
-                    fontWeight: 600,
+                    p: 3,
+                    borderRadius: 2,
+                    cursor: markingMode !== "none" ? "text" : "default",
+                    "&:hover": {
+                      boxShadow: 3,
+                      transition: "box-shadow 0.3s ease-in-out",
+                    },
                   }}
                 >
-                  {`${sectionIndex + 1}. ${currentTitle}`}
-                </Typography>
-
-                {/* Explanation if exists */}
-                {currentExplanation && (
+                  {/* Title */}
                   <Typography
-                    variant="body2"
+                    variant="h6"
                     sx={{
-                      color: "text.secondary",
-                      mb: 2,
-                      fontFamily: "Inter, sans-serif",
-                      fontSize: "0.875rem",
-                      lineHeight: 1.5,
+                      color: "text.primary",
+                      mb: currentExplanation || currentSubtopic ? 2 : 3,
+                      fontSize: "1.1rem",
+                      fontWeight: 600,
                     }}
                   >
-                    {currentExplanation}
+                    {`${sectionIndex + 1}. ${currentTitle}`}
                   </Typography>
-                )}
 
-                {/* Subtopic if exists */}
-                {currentSubtopic && (
-                  <Typography
-                    variant="subtitle1"
-                    sx={{
-                      color: "text.secondary",
-                      mb: 2,
-                      fontSize: "0.95rem",
-                      fontWeight: 500,
-                    }}
-                  >
-                    {currentSubtopic}
-                  </Typography>
-                )}
-
-                {/* Main Content */}
-                <Box>
-                  {customContent.map((item, idx) => (
-                    <Box
-                      key={idx}
-                      display="flex"
-                      alignItems="start"
-                      gap={1}
-                      sx={{ mb: 1.5 }}
-                      ref={(el: HTMLElement | null) => {
-                        if (el) applyHighlights(sectionIndex, el);
+                  {/* Explanation if exists */}
+                  {currentExplanation && (
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: "text.secondary",
+                        mb: 2,
+                        fontFamily: "Inter, sans-serif",
+                        fontSize: "0.875rem",
+                        lineHeight: 1.5,
                       }}
-                      onMouseUp={() => handleTextSelection(sectionIndex)}
                     >
-                      <ChevronRight className="w-4 h-4 text-blue-600 mt-1 flex-shrink-0" />
-                      <Box
-                        sx={{
-                          flex: 1,
-                          fontFamily: "Inter, sans-serif",
-                          fontSize: "0.875rem",
-                          lineHeight: 1.6,
-                          "& code": {
-                            fontFamily: "monospace",
-                            bgcolor: "grey.100",
-                            px: 0.5,
-                            borderRadius: 0.5,
-                          },
-                        }}
-                      >
-                        {typeof item.content === "string"
-                          ? item.content
-                          : formatCodeBlock(item.content, item.type)}
-                      </Box>
-                    </Box>
-                  ))}
-                </Box>
+                      {currentExplanation}
+                    </Typography>
+                  )}
 
-                {/* Memory Aids section if exists */}
-                {mnemonics.length > 0 && (
-                  <Card
-                    sx={{ mt: 3, bgcolor: "primary.light", borderRadius: 2 }}
-                  >
-                    <CardContent>
-                      <Typography
-                        variant="subtitle1"
-                        color="primary.dark"
-                        sx={{ mb: 1.5, fontWeight: 500 }}
+                  {/* Subtopic if exists */}
+                  {currentSubtopic && (
+                    <Typography
+                      variant="subtitle1"
+                      sx={{
+                        color: "text.secondary",
+                        mb: 2,
+                        fontSize: "0.95rem",
+                        fontWeight: 500,
+                      }}
+                    >
+                      {currentSubtopic}
+                    </Typography>
+                  )}
+
+                  {/* Main Content */}
+                  <Box>
+                    {customContent.map((item, idx) => (
+                      <Box
+                        key={idx}
+                        display="flex"
+                        alignItems="start"
+                        gap={1}
+                        sx={{ mb: 1.5 }}
+                        ref={(el: HTMLElement | null) => {
+                          if (el) applyHighlights(sectionIndex, el);
+                        }}
+                        onMouseUp={() => handleTextSelection(sectionIndex)}
                       >
-                        Memory Aids
-                      </Typography>
-                      <Box sx={{ ml: 2 }}>
-                        <MnemonicCards mnemonics={mnemonics} />
+                        <ChevronRight className="w-4 h-4 text-blue-600 mt-1 flex-shrink-0" />
+                        <Box
+                          sx={{
+                            flex: 1,
+                            fontFamily: "Inter, sans-serif",
+                            fontSize: "0.875rem",
+                            lineHeight: 1.6,
+                            "& code": {
+                              fontFamily: "monospace",
+                              bgcolor: "grey.100",
+                              px: 0.5,
+                              borderRadius: 0.5,
+                            },
+                          }}
+                        >
+                          {typeof item.content === "string"
+                            ? item.content
+                            : formatCodeBlock(item.content, item.type)}
+                        </Box>
                       </Box>
-                    </CardContent>
-                  </Card>
-                )}
-              </Paper>
-            );
-          })}
+                    ))}
+                  </Box>
+
+                  {/* Memory Aids section if exists */}
+                  {mnemonics.length > 0 && (
+                    <Card
+                      sx={{ mt: 3, bgcolor: "primary.light", borderRadius: 2 }}
+                    >
+                      <CardContent>
+                        <Typography
+                          variant="subtitle1"
+                          color="primary.dark"
+                          sx={{ mb: 1.5, fontWeight: 500 }}
+                        >
+                          Memory Aids
+                        </Typography>
+                        <Box sx={{ ml: 2 }}>
+                          <MnemonicCards mnemonics={mnemonics} />
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  )}
+                </Paper>
+              );
+            })}
         </Masonry>
       </Box>
       {/* Annotation Dialog */}
@@ -812,8 +827,6 @@ const handleannotateSelection = (sectionId: number) => {
             <StickyNote />
           </IconButton>
         </Tooltip>
-
-      
 
         <Menu
           anchorEl={anchorEl}
