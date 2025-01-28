@@ -579,7 +579,7 @@ const handleannotateSelection = (sectionId: number) => {
                   key={sectionIndex}
                   elevation={1}
                   sx={{
-                    p: 3,
+                    p: 1.5,
                     borderRadius: 2,
                     cursor: markingMode !== "none" ? "text" : "default",
                     "&:hover": {
@@ -593,7 +593,7 @@ const handleannotateSelection = (sectionId: number) => {
                     variant="h6"
                     sx={{
                       color: "text.primary",
-                      mb: currentExplanation || currentSubtopic ? 2 : 3,
+                     
                       fontSize: "1.1rem",
                       fontWeight: 600,
                     }}
@@ -610,7 +610,7 @@ const handleannotateSelection = (sectionId: number) => {
                         mb: 2,
                         fontFamily: "Inter, sans-serif",
                         fontSize: "0.875rem",
-                        lineHeight: 1.5,
+                    
                       }}
                     >
                       {currentExplanation}
@@ -623,7 +623,7 @@ const handleannotateSelection = (sectionId: number) => {
                       variant="subtitle1"
                       sx={{
                         color: "text.secondary",
-                        mb: 2,
+                        mb: 0.5,
                         fontSize: "0.95rem",
                         fontWeight: 500,
                       }}
@@ -640,7 +640,7 @@ const handleannotateSelection = (sectionId: number) => {
                         display="flex"
                         alignItems="start"
                         gap={1}
-                        sx={{ mb: 1.5 }}
+                        sx={{ mb: 0.5 }}
                         ref={(el: HTMLElement | null) => {
                           if (el) applyHighlights(sectionIndex, el);
                         }}
