@@ -30,10 +30,6 @@ import { Plus } from "lucide-react";
 import { styled } from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
 
-
-
-
-
 interface Mnemonic {
   text: string;
   type: string;
@@ -180,7 +176,9 @@ const CheatsheetList = ({
   const [showAnnotationsSidebar, setShowAnnotationsSidebar] = useState(false);
   const [selectedMarkForAnnotation, setSelectedMarkForAnnotation] = useState<
     string | null
-  >(null);
+    >(null);
+  const [eraserMode, setEraserMode] = useState(false);
+
   if (!cheatsheetContent) return null;
 
   if (showingMnemonics) {
@@ -203,166 +201,59 @@ const CheatsheetList = ({
     setCurrentColor(color);
     setAnchorEl(null);
   };
+const applyHighlights = (sectionId: number, element: HTMLElement) => {
+  const sectionMarks = marks.filter((m) => m.sectionId === sectionId);
 
-  const applyHighlights = (sectionId: number, element: HTMLElement) => {
-    const sectionMarks = marks.filter((m) => m.sectionId === sectionId);
+  sectionMarks.forEach((mark) => {
+    try {
+      const range = document.createRange();
+      range.setStart(mark.range.startContainer, mark.range.startOffset);
+      range.setEnd(mark.range.endContainer, mark.range.endOffset);
 
-    sectionMarks.forEach((mark) => {
-      try {
-        const range = document.createRange();
-        range.setStart(mark.range.startContainer, mark.range.startOffset);
-        range.setEnd(mark.range.endContainer, mark.range.endOffset);
+      // Check if the range is already highlighted
+      const commonAncestor = range.commonAncestorContainer;
 
-        // Get all text nodes within the range
-        const textNodes = [];
-        const iterator = document.createNodeIterator(
-          range.commonAncestorContainer,
-          NodeFilter.SHOW_TEXT
+      if (commonAncestor instanceof Element) {
+        const existingHighlight = commonAncestor.querySelector(
+          `[data-mark-id="${mark.id}"]`
         );
+        if (existingHighlight) return;
+      }
 
-        let currentNode;
-        while ((currentNode = iterator.nextNode())) {
-          if (range.intersectsNode(currentNode)) {
-            textNodes.push(currentNode);
-          }
+      const highlightSpan = document.createElement("span");
+      highlightSpan.style.backgroundColor =
+        mark.markType === "highlight" ? mark.color : "transparent";
+      highlightSpan.style.textDecoration =
+        mark.markType === "underline" ? `underline ${mark.color} 2px` : "none";
+      highlightSpan.style.position = "relative";
+      highlightSpan.dataset.markId = mark.id;
+
+      range.surroundContents(highlightSpan);
+    } catch (e) {
+      console.error("Error applying highlight:", e);
+    }
+  });
+};
+
+  const removeHighlight = (markId: string) => {
+    const highlights = document.querySelectorAll(`[data-mark-id="${markId}"]`);
+    highlights.forEach((highlight) => {
+      const parent = highlight.parentNode;
+      if (parent) {
+        const fragment = document.createDocumentFragment();
+        while (highlight.firstChild) {
+          fragment.appendChild(highlight.firstChild);
         }
-
-        // Highlight each text node
-        textNodes.forEach((textNode) => {
-          let start =
-            textNode === range.startContainer ? mark.range.startOffset : 0;
-          let end =
-            textNode === range.endContainer
-              ? mark.range.endOffset
-              : (textNode as Text).length;
-
-          if (start !== end) {
-            const highlightSpan = document.createElement("span");
-            highlightSpan.style.backgroundColor =
-              mark.markType === "highlight" ? mark.color : "transparent";
-            highlightSpan.style.textDecoration =
-              mark.markType === "underline"
-                ? `underline ${mark.color} 2px`
-                : "none";
-            highlightSpan.style.position = "relative";
-            highlightSpan.dataset.markId = mark.id;
-
-            // Split text node if needed
-            if (start > 0) {
-              (textNode as Text).splitText(start);
-              textNode = textNode.nextSibling as Text;
-              end -= start;
-              start = 0;
-            }
-
-            if (end < (textNode as Text).length) {
-              (textNode as Text).splitText(end);
-            }
-
-            // Create the remove button
-            const removeButton = document.createElement("span");
-            removeButton.innerHTML = "×";
-            removeButton.style.cssText = `
-            position: absolute;
-            top: -12px;
-            right: -12px;
-            width: 16px;
-            height: 16px;
-            background-color: #ffffff;
-            border: 1px solid #e0e0e0;
-            border-radius: 50%;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 12px;
-            color: #666;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            z-index: 100;
-          `;
-
-            // Add hover events
-            highlightSpan.addEventListener("mouseenter", () => {
-              const buttons = document.querySelectorAll(
-                `[data-mark-id="${mark.id}"] .remove-button`
-              );
-              buttons.forEach(
-                (button) => ((button as HTMLElement).style.display = "flex")
-              );
-            });
-
-            highlightSpan.addEventListener("mouseleave", (e) => {
-              const buttons = document.querySelectorAll(
-                `[data-mark-id="${mark.id}"] .remove-button`
-              );
-              buttons.forEach((button) => {
-                const rect = button.getBoundingClientRect();
-                if (
-                  !(
-                    e.clientX >= rect.left &&
-                    e.clientX <= rect.right &&
-                    e.clientY >= rect.top &&
-                    e.clientY <= rect.bottom
-                  )
-                ) {
-                  (button as HTMLElement).style.display = "none";
-                }
-              });
-            });
-
-            removeButton.classList.add("remove-button");
-            removeButton.addEventListener("mouseenter", () => {
-              removeButton.style.display = "flex";
-            });
-
-            removeButton.addEventListener("mouseleave", () => {
-              removeButton.style.display = "none";
-            });
-
-            // Add click handler for remove button
-            removeButton.onclick = (e) => {
-              e.stopPropagation();
-              e.preventDefault();
-
-              // Find all highlight spans with this mark id
-              const highlights = document.querySelectorAll(
-                `[data-mark-id="${mark.id}"]`
-              );
-              highlights.forEach((highlight) => {
-                if (highlight.parentNode) {
-                  const textContent = highlight.firstChild?.textContent || "";
-                  highlight.parentNode.replaceChild(
-                    document.createTextNode(textContent),
-                    highlight
-                  );
-                }
-              });
-
-              // Update marks state
-              setMarks((prev) => prev.filter((m) => m.id !== mark.id));
-            };
-
-            // Replace text node with highlight
-            const parent = textNode.parentNode;
-            if (parent) {
-              const wrapper = document.createElement("span");
-              wrapper.appendChild(textNode.cloneNode());
-              highlightSpan.appendChild(wrapper);
-              highlightSpan.appendChild(removeButton);
-              parent.replaceChild(highlightSpan, textNode);
-            }
-          }
-        });
-      } catch (e) {
-        console.error("Error applying highlight:", e);
+        parent.replaceChild(fragment, highlight);
+        parent.normalize(); // Merge adjacent text nodes
       }
     });
+
+    setMarks((prev) => prev.filter((m) => m.id !== markId));
   };
+
   // Advanced text selection and marking logic
   const handleTextSelection = (sectionId: number) => {
-    if (markingMode === "none") return;
-    if (markingMode === "annotate") {   handleannotateSelection(sectionId); }
-
     const selection = window.getSelection();
     if (
       !selection ||
@@ -370,8 +261,33 @@ const CheatsheetList = ({
       selection.toString().trim() === ""
     )
       return;
-
     const range = selection.getRangeAt(0);
+
+    const handleErase = (sectionId: number) => {
+      const selection = window.getSelection();
+      if (!selection || selection.rangeCount === 0) return;
+
+      const range = selection.getRangeAt(0);
+      const highlightedElements = document.querySelectorAll('[data-mark-id]');
+
+      highlightedElements.forEach((element) => {
+        if (range.intersectsNode(element)) {
+          const markId = element.getAttribute('data-mark-id');
+          if (markId) removeHighlight(markId);
+        }
+      })
+    };
+     if (eraserMode) {
+       handleErase(sectionId);
+       return;
+    }
+    
+    if (markingMode === "none") return;
+    if (markingMode === "annotate") {
+      handleannotateSelection(sectionId);
+    }
+
+
 
     const newMark: Highlight = {
       id: Math.random().toString(36).substr(2, 9),
@@ -387,72 +303,72 @@ const CheatsheetList = ({
     };
 
     setMarks((prev) => [...prev, newMark]);
+    
 
     selection.removeAllRanges();
+    
   };
-const addAnnotation = () => {
-  if (currentAnnotation) {
-    const newAnnotation: Annotation = {
+  const addAnnotation = () => {
+    if (currentAnnotation) {
+      const newAnnotation: Annotation = {
+        id: Math.random().toString(36).substr(2, 9),
+        markId: currentAnnotation.markId,
+        text: currentAnnotation.text,
+        color: currentColor,
+      };
+      setAnnotations((prev) => [...prev, newAnnotation]);
+      setAnnotationDialogOpen(false);
+      setCurrentAnnotation(null);
+      setSelectedMarkForAnnotation(null);
+      setShowAnnotationsSidebar(true);
+      setMarkingMode("none"); // Reset marking mode after adding annotation
+    }
+  };
+
+  const handleannotateSelection = (sectionId: number) => {
+    if (markingMode === "none") return;
+
+    const selection = window.getSelection();
+    if (
+      !selection ||
+      selection.rangeCount === 0 ||
+      selection.toString().trim() === ""
+    )
+      return;
+
+    const range = selection.getRangeAt(0);
+
+    // Create a new mark for the annotation
+    const newMark: Highlight = {
       id: Math.random().toString(36).substr(2, 9),
-      markId: currentAnnotation.markId,
-      text: currentAnnotation.text,
+      range: {
+        startContainer: range.startContainer,
+        startOffset: range.startOffset,
+        endContainer: range.endContainer,
+        endOffset: range.endOffset,
+      },
       color: currentColor,
+      sectionId: sectionId,
+      markType: "highlight", // Set to "highlight" to ensure visual feedback
     };
-    setAnnotations((prev) => [...prev, newAnnotation]);
-    setAnnotationDialogOpen(false);
-    setCurrentAnnotation(null);
-    setSelectedMarkForAnnotation(null);
-    setShowAnnotationsSidebar(true);
-    setMarkingMode("none"); // Reset marking mode after adding annotation
-  }
-};
 
-const handleannotateSelection = (sectionId: number) => {
-  if (markingMode === "none") return;
+    // Apply the highlight
+    const span = document.createElement("span");
+    span.style.backgroundColor = currentColor;
+    span.style.opacity = "1";
+    span.dataset.markId = newMark.id;
+    range.surroundContents(span);
 
-  const selection = window.getSelection();
-  if (
-    !selection ||
-    selection.rangeCount === 0 ||
-    selection.toString().trim() === ""
-  )
-    return;
+    // Add the new mark to the marks state
+    setMarks((prev) => [...prev, newMark]);
 
-  const range = selection.getRangeAt(0);
+    // Open the annotation dialog
+    setAnnotationDialogOpen(true);
+    setCurrentAnnotation({ markId: newMark.id, text: "" });
 
-  // Create a new mark for the annotation
-  const newMark: Highlight = {
-    id: Math.random().toString(36).substr(2, 9),
-    range: {
-      startContainer: range.startContainer,
-      startOffset: range.startOffset,
-      endContainer: range.endContainer,
-      endOffset: range.endOffset,
-    },
-    color: currentColor,
-    sectionId: sectionId,
-    markType: "highlight", // Set to "highlight" to ensure visual feedback
+    // Clear the selection
+    selection.removeAllRanges();
   };
-
-  // Apply the highlight
-  const span = document.createElement("span");
-  span.style.backgroundColor = currentColor;
-  span.style.opacity = "1";
-  span.dataset.markId = newMark.id;
-  range.surroundContents(span);
-
-  // Add the new mark to the marks state
-  setMarks((prev) => [...prev, newMark]);
-
-  // Open the annotation dialog
-  setAnnotationDialogOpen(true);
-  setCurrentAnnotation({ markId: newMark.id, text: "" });
-
-  // Clear the selection
-  selection.removeAllRanges();
-};
-
-
 
   const removeAnnotation = (annotationId: string) => {
     setAnnotations((prev) =>
@@ -593,7 +509,7 @@ const handleannotateSelection = (sectionId: number) => {
                     variant="h6"
                     sx={{
                       color: "text.primary",
-                     
+
                       fontSize: "1.1rem",
                       fontWeight: 600,
                     }}
@@ -610,7 +526,6 @@ const handleannotateSelection = (sectionId: number) => {
                         mb: 2,
                         fontFamily: "Inter, sans-serif",
                         fontSize: "0.875rem",
-                    
                       }}
                     >
                       {currentExplanation}
@@ -797,12 +712,15 @@ const handleannotateSelection = (sectionId: number) => {
           </IconButton>
         </Tooltip>
 
-        <Tooltip title="Clear All Marks">
+        <Tooltip title={eraserMode ? "Exit Eraser Mode" : "Enter Eraser Mode"}>
           <IconButton
-            onClick={clearAllMarks}
+            onClick={() => setEraserMode(!eraserMode)}
             sx={{
-              backgroundColor: "white",
-              "&:hover": { backgroundColor: "grey.100" },
+              backgroundColor: eraserMode ? "primary.main" : "white",
+              color: eraserMode ? "white" : "primary.main",
+              "&:hover": {
+                backgroundColor: eraserMode ? "primary.dark" : "grey.100",
+              },
             }}
           >
             <Eraser />
