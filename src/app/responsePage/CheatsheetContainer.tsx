@@ -201,6 +201,8 @@ const CheatsheetList = ({
     setCurrentColor(color);
     setAnchorEl(null);
   };
+
+  
 const applyHighlights = (sectionId: number, element: HTMLElement) => {
   const sectionMarks = marks.filter((m) => m.sectionId === sectionId);
 
@@ -210,30 +212,68 @@ const applyHighlights = (sectionId: number, element: HTMLElement) => {
       range.setStart(mark.range.startContainer, mark.range.startOffset);
       range.setEnd(mark.range.endContainer, mark.range.endOffset);
 
-      // Check if the range is already highlighted
-      const commonAncestor = range.commonAncestorContainer;
+      // Get all text nodes within the range
+      const textNodes = [];
+      const iterator = document.createNodeIterator(
+        range.commonAncestorContainer,
+        NodeFilter.SHOW_TEXT
+      );
 
-      if (commonAncestor instanceof Element) {
-        const existingHighlight = commonAncestor.querySelector(
-          `[data-mark-id="${mark.id}"]`
-        );
-        if (existingHighlight) return;
+      let currentNode;
+      while ((currentNode = iterator.nextNode())) {
+        if (range.intersectsNode(currentNode)) {
+          textNodes.push(currentNode);
+        }
       }
 
-      const highlightSpan = document.createElement("span");
-      highlightSpan.style.backgroundColor =
-        mark.markType === "highlight" ? mark.color : "transparent";
-      highlightSpan.style.textDecoration =
-        mark.markType === "underline" ? `underline ${mark.color} 2px` : "none";
-      highlightSpan.style.position = "relative";
-      highlightSpan.dataset.markId = mark.id;
+      // Highlight each text node
+      textNodes.forEach((textNode) => {
+        let start =
+          textNode === range.startContainer ? mark.range.startOffset : 0;
+        let end =
+          textNode === range.endContainer
+            ? mark.range.endOffset
+            : (textNode as Text).length;
 
-      range.surroundContents(highlightSpan);
+        if (start !== end) {
+          const highlightSpan = document.createElement("span");
+          highlightSpan.style.backgroundColor =
+            mark.markType === "highlight" ? mark.color : "transparent";
+          highlightSpan.style.textDecoration =
+            mark.markType === "underline"
+              ? `underline ${mark.color} 2px`
+              : "none";
+          highlightSpan.style.position = "relative";
+          highlightSpan.dataset.markId = mark.id;
+
+          // Split text node if needed
+          if (start > 0) {
+            (textNode as Text).splitText(start);
+            textNode = textNode.nextSibling as Text;
+            end -= start;
+            start = 0;
+          }
+
+          if (end < (textNode as Text).length) {
+            (textNode as Text).splitText(end);
+          }
+
+          // Replace text node with highlight
+          const parent = textNode.parentNode;
+          if (parent) {
+            const wrapper = document.createElement("span");
+            wrapper.appendChild(textNode.cloneNode());
+            highlightSpan.appendChild(wrapper);
+            parent.replaceChild(highlightSpan, textNode);
+          }
+        }
+      });
     } catch (e) {
       console.error("Error applying highlight:", e);
     }
   });
 };
+
 
   const removeHighlight = (markId: string) => {
     const highlights = document.querySelectorAll(`[data-mark-id="${markId}"]`);
