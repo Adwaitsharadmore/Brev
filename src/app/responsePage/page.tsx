@@ -8,7 +8,6 @@ import Typewriter from "./p";
 
 import { Card, CardContent } from "@/components/ui/card";
 
-
 import {
   Dialog,
   DialogContent,
@@ -29,6 +28,12 @@ interface Mnemonic {
 interface CustomContentItem {
   type: "detail" | "text";
   content: string;
+}
+
+interface ImageResult {
+  data: string;
+  mimeType: string;
+  source: string;
 }
 
 const ResponsePage = () => {
@@ -56,7 +61,8 @@ const ResponsePage = () => {
   const [isCustomPrompt, setIsCustomPrompt] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedStudyMaterial, setSelectedStudyMaterial] = useState("");
-
+  const [searchQuery, setSearchQuery] = useState("");
+  const [imageResult, setImageResult] = useState<ImageResult | null>(null);
 
   useEffect(() => {
     const loadHtml2Pdf = async () => {
@@ -91,6 +97,41 @@ const ResponsePage = () => {
     }
   };
 
+  const searchImages = async (query: string) => {
+    try {
+      const response = await fetch("/api/image-generation", {
+        method: "POST",
+        body: JSON.stringify({
+          searchImage: true,
+          query: query,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (data.imageData && data.mimeType) {
+        setImageResult({
+          data: data.imageData,
+          mimeType: data.mimeType,
+          source: "probability formulas",
+        });
+      } else {
+        setImageResult(null);
+        alert("No relevant images found for this concept");
+      }
+    } catch (error) {
+      console.error("Image search failed:", error);
+      setErrorMessage("Failed to find visual explanation");
+    }
+  };
+
+  // Example usage in yo
   const handleGenerateContent = async () => {
     if (!file) {
       alert("Please upload a file first");
@@ -246,11 +287,8 @@ DETAIL_5: Detection and formatting of code blocks.
 Please ensure the content is concise and fits within one to two pages for quick reference. Keep the font normal for everything
 
 Please structure the content following this format exactly as it matches the frontend rendering system. Dont't use any markdown symbols, asterisks, double asterisks or other formatting characters.`;
-    }
-    else if (option === "Exam") {
-      customPrompt =
-        customPrompt ||
-        ""
+    } else if (option === "Exam") {
+      customPrompt = customPrompt || "";
     }
 
     const formData = new FormData();
@@ -695,11 +733,11 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
           <div className="w-3/4 mx-auto gap-between justify-between">
             <div className="w-full pt-[30px]">
               <span className="text-black tracking-tighter md:text-5xl text-2xl font-semibold leading-tight font-Inter">
-                Don’t worry,{" "}
+                Don't worry,{" "}
               </span>
               <span className="text-[#0023FF] tracking-tighter md:text-5xl text-2xl font-semibold leading-tight font-Inter">
                 {" "}
-                Brev’s
+                Brev's
               </span>
               <span className="text-black tracking-tighter md:text-5xl text-2xl font-semibold leading-tight font-Inter">
                 {" "}
@@ -841,11 +879,33 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
                 </button>
               </div>
             </div>
+            {/* <div className="search-input">
+              {" "}
+              <button
+                type="button"
+                className="bg-white text-black px-4 py-2 rounded-full hover:bg-[#0023FF] hover:text-white transition-colors"
+                onClick={() => searchImages("Probability")}
+                disabled={false}
+              >
+                {" "}
+                Search Images{" "}
+              </button>{" "}
+            </div> */}
           </form>
         </div>
 
         <div className="w-full md:w-3/4 bg-white shadow-md rounded-lg p-5 mt-6">
-          <div id="cheatsheet-content" className="text-lg text-black">
+           <div id="cheatsheet-content" className="text-lg text-black">
+            {/* {imageResult && (
+              <div>
+                <img
+                  src={imageResult.data}
+                  alt="AI-generated educational image"
+                />
+                <p>Source: {imageResult.source}</p>
+              </div>
+            )}  */}
+
             {loadingCheatsheet ||
             loadingMnemonics ||
             loadingQuiz ||
