@@ -15,18 +15,11 @@ import {
 import Masonry from "@mui/lab/Masonry";
 import { ChevronRight, Highlighter, X, Palette, Underline } from "lucide-react";
 
-interface Mnemonic {
-  text: string;
-  type: string;
-  title: string;
-  subtopic: string;
-  explanation: string;
-}
-
 interface CustomContentItem {
   type: "detail" | "text" | "command";
   content: string;
 }
+
 interface Selection {
   text: string;
   elementId: string;
@@ -53,7 +46,9 @@ interface PendingHighlight {
   selections: Selection[];
   color: string;
 }
+
 type MarkingMode = "highlight" | "underline" | "none";
+
 const MARK_COLORS = [
   { name: "Yellow", value: "#fef08a" },
   { name: "Green", value: "#bbf7d0" },
@@ -117,26 +112,18 @@ const formatCodeBlock = (text: string, type: "detail" | "text" | "command") => {
 
 interface CheatsheetListProps {
   loadingCheatsheet: boolean;
-  loadingMnemonics: boolean;
   loadingQuiz: boolean;
   isLoading: boolean;
   cheatsheetContent: string;
-  showingMnemonics: boolean;
-  parseMnemonics: (content: string) => Mnemonic[];
   isCustomPrompt: boolean;
-  MnemonicCards: React.ComponentType<{ mnemonics: Mnemonic[] }>;
 }
 
 const CheatsheetList = ({
   loadingCheatsheet,
-  loadingMnemonics,
   loadingQuiz,
   isLoading,
   cheatsheetContent,
-  showingMnemonics,
-  parseMnemonics,
   isCustomPrompt,
-  MnemonicCards,
 }: CheatsheetListProps) => {
   const [expandedSections, setExpandedSections] = useState<
     Record<number, boolean>
@@ -148,11 +135,6 @@ const CheatsheetList = ({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   if (!cheatsheetContent) return null;
-
-  if (showingMnemonics) {
-    const mnemonics = parseMnemonics(cheatsheetContent);
-    return <MnemonicCards mnemonics={mnemonics} />;
-  }
 
   const sections = cheatsheetContent
     .split("---")
@@ -214,6 +196,7 @@ const CheatsheetList = ({
       setAnchorEl(null);
     }
   };
+
   const applyHighlights = (sectionId: number, element: HTMLElement) => {
     const sectionMarks = marks.filter((m) => m.sectionId === sectionId);
 
@@ -368,6 +351,7 @@ const CheatsheetList = ({
       }
     });
   };
+
   return (
     <Box
       sx={{
@@ -392,16 +376,12 @@ const CheatsheetList = ({
             let currentTitle = "";
             let currentSubtopic = "";
             let currentExplanation = "";
-            let mnemonics: Mnemonic[] = [];
-            let currentMnemonic: Mnemonic | null = null;
             let customContent: CustomContentItem[] = [];
 
             lines.forEach((line) => {
               const titleMatch = line.match(/^TITLE:\s(.+)/);
               const subtopicMatch = line.match(/^SUBTOPIC:\s(.+)/);
               const explanationMatch = line.match(/^Explanation:\s(.+)/);
-              const mnemonicMatch = line.match(/^MNEMONIC_\d+:\s(.+)/);
-              const typeMatch = line.match(/^TYPE:\s(.+)/);
               const detailMatch = line.match(/^DETAIL_\d+:\s(.+)/);
               const commandMatch = line.match(/^\$\s(.+)/);
 
@@ -411,18 +391,6 @@ const CheatsheetList = ({
                 currentSubtopic = subtopicMatch[1];
               } else if (explanationMatch) {
                 currentExplanation = explanationMatch[1];
-              } else if (mnemonicMatch) {
-                currentMnemonic = {
-                  text: mnemonicMatch[1],
-                  type: "",
-                  title: currentTitle,
-                  subtopic: currentSubtopic,
-                  explanation: currentExplanation,
-                };
-              } else if (typeMatch && currentMnemonic) {
-                currentMnemonic.type = typeMatch[1];
-                mnemonics.push(currentMnemonic);
-                currentMnemonic = null;
               } else if (detailMatch) {
                 customContent.push({ type: "detail", content: detailMatch[1] });
               } else if (commandMatch) {
@@ -497,25 +465,6 @@ const CheatsheetList = ({
                     </Box>
                   ))}
                 </Box>
-
-                {mnemonics.length > 0 && (
-                  <Card
-                    sx={{ mt: 3, bgcolor: "primary.light", borderRadius: 2 }}
-                  >
-                    <CardContent>
-                      <Typography
-                        variant="h2"
-                        color="primary.dark"
-                        sx={{ mb: 1.5 }}
-                      >
-                        Memory Aids
-                      </Typography>
-                      <Box sx={{ ml: 2 }}>
-                        <MnemonicCards mnemonics={mnemonics} />
-                      </Box>
-                    </CardContent>
-                  </Card>
-                )}
               </Paper>
             );
           })}
