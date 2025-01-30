@@ -12,7 +12,7 @@ const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 // Configure multer for file upload
-const upload = multer({
+export const upload = multer({
   storage:multer.diskStorage({
   destination: async (req, file, cb) => {
     const tempDir = os.tmpdir();

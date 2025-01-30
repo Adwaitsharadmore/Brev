@@ -8,7 +8,6 @@ import Typewriter from "./p";
 
 import { Card, CardContent } from "@/components/ui/card";
 
-
 import {
   Dialog,
   DialogContent,
@@ -48,7 +47,6 @@ const ResponsePage = () => {
   const [isCustomPrompt, setIsCustomPrompt] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedStudyMaterial, setSelectedStudyMaterial] = useState("");
-
 
   useEffect(() => {
     const loadHtml2Pdf = async () => {
@@ -234,11 +232,8 @@ DETAIL_5: Detection and formatting of code blocks.
 Please ensure the content is concise and fits within one to two pages for quick reference. Keep the font normal for everything
 
 Please structure the content following this format exactly as it matches the frontend rendering system. Dont't use any markdown symbols, asterisks, double asterisks or other formatting characters.`;
-    }
-    else if (option === "Exam") {
-      customPrompt =
-        customPrompt ||
-        ""
+    } else if (option === "Exam") {
+      customPrompt = customPrompt || "";
     }
 
     const formData = new FormData();
@@ -538,9 +533,7 @@ Separate each question with three dashes (---).`;
 
         <div className="w-full md:w-3/4 bg-white shadow-md rounded-lg p-5 mt-6">
           <div id="cheatsheet-content" className="text-lg text-black">
-            {loadingCheatsheet ||
-            loadingQuiz ||
-            isLoading ? (
+            {loadingCheatsheet || loadingQuiz || isLoading ? (
               <div className="flex flex-col items-center justify-center min-h-[200px]">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
                 <p className="mt-4 text-gray-600 font-medium">

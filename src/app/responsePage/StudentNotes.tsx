@@ -50,7 +50,7 @@ interface MnemonicsContent {
     rhymes: string;
     loci: string;
     keywords: string;
-  }
+  };
 }
 
 // Main component
@@ -61,12 +61,16 @@ const StudentNotes = ({
   cheatsheetContent,
   isCustomPrompt,
 }: CheatsheetListProps) => {
-  const [expandedSections, setExpandedSections] = useState<Record<number, boolean>>({});
+  const [expandedSections, setExpandedSections] = useState<
+    Record<number, boolean>
+  >({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTitle, setSelectedTitle] = useState("");
-  const [activeTab, setActiveTab] = useState('acronyms');
+  const [activeTab, setActiveTab] = useState("acronyms");
   const [isGenerating, setIsGenerating] = useState(false);
-  const [generatedContent, setGeneratedContent] = useState<MnemonicsContent>({});
+  const [generatedContent, setGeneratedContent] = useState<MnemonicsContent>(
+    {}
+  );
   const [isGeneratingAll, setIsGeneratingAll] = useState(false);
   const [progress, setProgress] = useState(0);
 
@@ -112,13 +116,13 @@ const StudentNotes = ({
       });
 
       const data = await response.json();
-      
-      setGeneratedContent(prev => ({
+
+      setGeneratedContent((prev) => ({
         ...prev,
         [selectedTitle]: {
           ...prev[selectedTitle],
-          [type]: data.generatedText
-        }
+          [type]: data.generatedText,
+        },
       }));
     } catch (error) {
       console.error("Error generating mnemonic:", error);
@@ -132,7 +136,7 @@ const StudentNotes = ({
     e.stopPropagation();
     setSelectedTitle(title);
     setIsModalOpen(true);
-    
+
     // Only generate if we don't already have content for this topic
     if (!hasMnemonicsForTopic(title)) {
       setIsGeneratingAll(true);
@@ -145,15 +149,15 @@ const StudentNotes = ({
   const generateAllMnemonics = async (title: string) => {
     setIsGeneratingAll(true);
     setProgress(0);
-    
+
     const types = ["acronyms", "rhymes", "loci", "keywords"];
     const newContent = {
       acronyms: "",
       rhymes: "",
       loci: "",
-      keywords: ""
+      keywords: "",
     };
-    
+
     for (let i = 0; i < types.length; i++) {
       try {
         const response = await fetch("/api/generate-mnemonics", {
@@ -164,7 +168,7 @@ const StudentNotes = ({
           body: JSON.stringify({
             title: title,
             content: getContainerContent(title), // Send full container content
-            type: types[i]
+            type: types[i],
           }),
         });
 
@@ -173,13 +177,15 @@ const StudentNotes = ({
         setProgress((i + 1) * 25);
       } catch (error) {
         console.error(`Error generating ${types[i]}:`, error);
-        newContent[types[i] as keyof typeof newContent] = `Error generating ${types[i]}`;
+        newContent[
+          types[i] as keyof typeof newContent
+        ] = `Error generating ${types[i]}`;
       }
     }
-    
-    setGeneratedContent(prev => ({
+
+    setGeneratedContent((prev) => ({
       ...prev,
-      [title]: newContent
+      [title]: newContent,
     }));
     setIsGeneratingAll(false);
   };
@@ -247,7 +253,9 @@ const StudentNotes = ({
                         <div className="flex items-center space-x-4">
                           <button
                             className="px-4 py-2 text-sm font-medium text-purple-600 border border-purple-600 rounded-full hover:bg-purple-50 transition-colors"
-                            onClick={(e) => handleMnemonicsClick(titleMatch[1], e)}
+                            onClick={(e) =>
+                              handleMnemonicsClick(titleMatch[1], e)
+                            }
                           >
                             Generate Mnemonics
                           </button>
@@ -366,23 +374,23 @@ const StudentNotes = ({
                 <X className="w-6 h-6 text-gray-500" />
               </button>
             </div>
-            
+
             {/* Tabs */}
             <div className="border-b">
               <div className="flex space-x-8 px-6">
                 {[
-                  { id: 'acronyms', label: 'Acronyms' },
-                  { id: 'rhymes', label: 'Rhymes' },
-                  { id: 'loci', label: 'Method of Loci' },
-                  { id: 'keywords', label: 'Keywords' },
+                  { id: "acronyms", label: "Acronyms" },
+                  { id: "rhymes", label: "Rhymes" },
+                  { id: "loci", label: "Method of Loci" },
+                  { id: "keywords", label: "Keywords" },
                 ].map((tab) => (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
                     className={`py-4 px-2 relative ${
                       activeTab === tab.id
-                        ? 'text-purple-600'
-                        : 'text-gray-500 hover:text-gray-700'
+                        ? "text-purple-600"
+                        : "text-gray-500 hover:text-gray-700"
                     }`}
                   >
                     {tab.label}
@@ -393,13 +401,13 @@ const StudentNotes = ({
                 ))}
               </div>
             </div>
-            
+
             {/* Modal Content */}
             <div className="p-6 overflow-y-auto h-[calc(100%-8rem)]">
               {isGeneratingAll ? (
                 <div className="space-y-4">
                   <div className="w-full bg-gray-200 rounded-full h-2.5">
-                    <div 
+                    <div
                       className="bg-purple-600 h-2.5 rounded-full transition-all duration-500"
                       style={{ width: `${progress}%` }}
                     ></div>
@@ -410,7 +418,7 @@ const StudentNotes = ({
                 </div>
               ) : (
                 <div className="space-y-8">
-                  {activeTab === 'acronyms' && (
+                  {activeTab === "acronyms" && (
                     <div className="space-y-4">
                       <div className="mt-4 p-4 bg-purple-50 rounded-lg border-l-4 border-purple-400">
                         <div className="flex items-center space-x-2 mb-2">
@@ -426,7 +434,7 @@ const StudentNotes = ({
                     </div>
                   )}
 
-                  {activeTab === 'rhymes' && (
+                  {activeTab === "rhymes" && (
                     <div className="space-y-4">
                       <div className="mt-4 p-4 bg-purple-50 rounded-lg border-l-4 border-purple-400">
                         <div className="flex items-center space-x-2 mb-2">
@@ -442,7 +450,7 @@ const StudentNotes = ({
                     </div>
                   )}
 
-                  {activeTab === 'loci' && (
+                  {activeTab === "loci" && (
                     <div className="space-y-4">
                       <div className="mt-4 p-4 bg-purple-50 rounded-lg border-l-4 border-purple-400">
                         <div className="flex items-center space-x-2 mb-2">
@@ -458,7 +466,7 @@ const StudentNotes = ({
                     </div>
                   )}
 
-                  {activeTab === 'keywords' && (
+                  {activeTab === "keywords" && (
                     <div className="space-y-4">
                       <div className="mt-4 p-4 bg-purple-50 rounded-lg border-l-4 border-purple-400">
                         <div className="flex items-center space-x-2 mb-2">
