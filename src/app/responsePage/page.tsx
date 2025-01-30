@@ -17,23 +17,9 @@ import {
 import CheatsheetList from "./CheatsheetContainer";
 import StudentNotes from "./StudentNotes";
 
-interface Mnemonic {
-  text: string;
-  type: string;
-  title: string;
-  subtopic: string;
-  explanation: string;
-}
-
 interface CustomContentItem {
   type: "detail" | "text";
   content: string;
-}
-
-interface ImageResult {
-  data: string;
-  mimeType: string;
-  source: string;
 }
 
 const ResponsePage = () => {
@@ -61,8 +47,6 @@ const ResponsePage = () => {
   const [isCustomPrompt, setIsCustomPrompt] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedStudyMaterial, setSelectedStudyMaterial] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [imageResult, setImageResult] = useState<ImageResult | null>(null);
 
   useEffect(() => {
     const loadHtml2Pdf = async () => {
@@ -97,41 +81,6 @@ const ResponsePage = () => {
     }
   };
 
-  const searchImages = async (query: string) => {
-    try {
-      const response = await fetch("/api/image-generation", {
-        method: "POST",
-        body: JSON.stringify({
-          searchImage: true,
-          query: query,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      if (data.imageData && data.mimeType) {
-        setImageResult({
-          data: data.imageData,
-          mimeType: data.mimeType,
-          source: "probability formulas",
-        });
-      } else {
-        setImageResult(null);
-        alert("No relevant images found for this concept");
-      }
-    } catch (error) {
-      console.error("Image search failed:", error);
-      setErrorMessage("Failed to find visual explanation");
-    }
-  };
-
-  // Example usage in yo
   const handleGenerateContent = async () => {
     if (!file) {
       alert("Please upload a file first");
@@ -203,9 +152,8 @@ const ResponsePage = () => {
     if (option === "Detailed") {
       customPrompt =
         customPrompt ||
-        `Imagine you are a student and you need to prepare for an exam based on the provided document. It is essential to understand the key concepts and details to perform well. You need a cheatsheet to help you study effectively. Your task is to generate a concise cheatsheet summarizing the key points of the provided document and explaining the key concepts in minimum words. Structure the content as follows:
-        
-        Generate a concise exam cheatsheet summarizing the key points of the provided document. Structure the content as follows:
+        `Imagine you are a student and you need to prepare for an exam based on the provided document. It is essential to understand the concepts and details to perform well. You need good quality notes to help you study effectively. Your task is to generate really good notes based the key points of the provided document and explaining the key concepts in minimum words. Structure the content as follows:
+         Structure the content as follows:
 
 ## Content Organization Rules:
 1. Begin each major topic with "TITLE: " followed by the main concept.
@@ -245,19 +193,16 @@ Please structure the content following this format exactly as it matches the fro
     } else if (option === "Precise") {
       customPrompt =
         customPrompt ||
-        `Imagine you are a student and you need to prepare for an exam based on the provided document. It is essential to understand the key concepts and details to perform well. You need good quality notes to help you study effectively. Your task is to generate good quality notes of all the sections of the provided document. Structure the content as follows:
+        `Imagine you are a student and you need to prepare for an exam based on the provided document. It is essential to understand the key concepts and details to perform well. You need a cheatsheet to help you study effectively. Your task is to generate a concise cheatsheet summarizing the key points of the provided document and explaining the key concepts in minimum words. Structure the content as follows:
         
-        Generate good quality notes that has the key points of the provided document. Explain every topic in simple word such that a student can grasp it easily. Is there are mathematical terms make sure to mention the important formulas and explain the formulas in detail. Try to explain concepts in Layman's Language
-        
-        
-        Structure the content as follows:
+        Generate a concise exam cheatsheet summarizing the key points of the provided document. Structure the content as follows:
 
 ## Content Organization Rules:
 1. Begin each major topic with "TITLE: " followed by the main concept.
 2. Each TITLE section must include an "Explanation: " that provides brief context and importance.
 3. Break down topics into "SUBTOPIC: " sections.
 4. List all details with "DETAIL_N: " where N is a sequential number.
-5. Use three dashes (---) to separate major sections after TITLE.
+5. Use three dashes (---) to separate major sections.
 
 Required Content Structure:
 TITLE: [Main Topic]
@@ -271,7 +216,7 @@ DETAIL_5: [Best practices]
 ---
 
 
-Note: Each section must be explained very well, focusing on key points to ensure the notes to be understandable.
+Note: Each section must be concise, focusing on key points to ensure the study guide fits within one to two pages.
 
 Example Section Format:
 TITLE: Component Rendering Logic
@@ -373,288 +318,6 @@ Separate each question with three dashes (---).`;
       console.error("Error fetching quiz content:", error);
     } finally {
       setLoadingQuiz(false);
-    }
-  };
-
-  const handleGenerateMnemonics = async () => {
-    if (!file) {
-      alert("Please upload a file");
-      return;
-    }
-
-    setLoadingMnemonics(true);
-
-    const customPrompt = `Analyze the document and create mnemonics for all the key concepts of the provided document to aid in memorizing key concepts. Use the most effective and suitable mnemonic technique for the respective key concepts. Use the following format strictly:
-
-Each concept in this framework should follow this pattern:
-1. Start with a brief explanation of the concept
-2. Follow with relevant mnemonics using specified formatting
-3. Include memory technique type and explanation
-4. Separate sections with triple dashes
-
-## Basic Format
-
-TITLE: [Main Topic/Concept]
-Explanation: [Brief, clear explanation of the concept]
-SUBTOPIC: [Specific Area of Focus]
-MNEMONIC_N: [The actual mnemonic]
-TYPE: [Memory technique used + brief explanation]
----
-
-## Memory Techniques Arsenal
-
-TITLE: Memory Techniques Overview
-Explanation: Memory techniques are systematic methods to enhance recall. Each technique serves a specific purpose and works best for particular types of information.
-SUBTOPIC: Core Memory Methods
-MNEMONIC_1: "A Clever Visitor Makes Real Music"
-TYPE: Acrostic (Acronyms, Chunking, Visual, Method of loci, Rhyming)
-
-1. Acronyms
-Explanation: Create meaningful words using first letters of key terms
-Example Format:
-TITLE: Chemical Elements
-Explanation: First 5 noble gases in order
-MNEMONIC_1: "KHAN" (Krypton, Helium, Argon, Neon)
-TYPE: Acronym
-
-2. Acrostics
-Explanation: Create memorable sentences where each word begins with the target letter
-Example Format:
-TITLE: Planet Order
-Explanation: Order of planets from the sun
-MNEMONIC_1: "My Very Educated Mother Just Served Us Noodles"
-TYPE: Acrostic (Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune)
-
-3. Chunking
-Explanation: Group related items into manageable clusters
-Example Format:
-TITLE: Phone Numbers
-Explanation: Breaking down 10-digit numbers
-MNEMONIC_1: "555-867-5309"
-TYPE: Chunking (Three groups of 3-3-4 digits)
-
-4. Visual Association
-Explanation: Link concepts to vivid mental images
-Example Format:
-TITLE: Cell Parts
-Explanation: Visualizing cell membrane function
-MNEMONIC_1: "Cell membrane is like a bouncer at a club"
-TYPE: Visual Association (Controls what enters and exits)
-
-5. Method of Loci
-Explanation: Associate items with locations along a familiar route
-Example Format:
-TITLE: Grocery List
-Explanation: Items needed using house walkthrough
-MNEMONIC_1: "Front door (milk), Kitchen (bread), Bedroom (eggs)"
-TYPE: Method of Loci
-
-6. Musical/Rhyming
-Explanation: Use rhythm and rhyme for memorization
-Example Format:
-TITLE: History Dates
-Explanation: Remember Columbus's voyage
-MNEMONIC_1: "In fourteen-hundred and ninety-two, Columbus sailed the ocean blue"
-TYPE: Musical/Rhyming
-
-## Quality Guidelines
-
-TITLE: Mnemonic Quality Standards
-Explanation: Each mnemonic must meet specific criteria to ensure effectiveness
-SUBTOPIC: Quality Criteria
-MNEMONIC_1: "SUPER" 
-TYPE: Acronym (Simple, Unique, Practical, Engaging, Relevant)
-
-## Implementation Process
-
-TITLE: Creating Effective Mnemonics
-Explanation: Follow a structured approach to develop and test mnemonics
-SUBTOPIC: Development Steps
-MNEMONIC_1: "PIPE"
-TYPE: Acronym (Plan, Implement, Practice, Evaluate)
-
-Steps for each mnemonic:
-1. Plan: Identify concept and choose the best mnemonic technique
-2. Implement: Create mnemonic that suits the concept and memory type
-
-## Usage Guidelines
-
-TITLE: Practical Application
-Explanation: Guidelines for effectively using mnemonics in learning
-SUBTOPIC: Application Principles
-MNEMONIC_1: "TEACH"
-TYPE: Acronym (Test, Explain, Apply, Check, Help)
-
-Remember: Choose the most effective method based on the content.
-
-Remember: Each new mnemonic created should follow this enhanced format with explanation first, then the mnemonic itself, maintaining consistent formatting throughout.
-    `;
-
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("textPrompt", customPrompt);
-
-    try {
-      const response = await fetch("/api/upload-and-generate-mnemonics", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setCheatsheetContent(data.generatedMnemonics);
-      setShowingMnemonics(true);
-    } catch (error) {
-      console.error("Error fetching mnemonics:", error);
-      setErrorMessage("Failed to generate mnemonics. Please try again.");
-    } finally {
-      setLoadingMnemonics(false);
-    }
-  };
-
-  const parseMnemonics = (content: string) => {
-    const sections = content.split("---").filter((section) => section.trim());
-    const mnemonics: Mnemonic[] = [];
-
-    sections.forEach((section) => {
-      const lines = section
-        .trim()
-        .split("\n")
-        .filter((line) => line.trim());
-      let currentMnemonic: Partial<Mnemonic> = {};
-
-      lines.forEach((line) => {
-        const titleMatch = line.match(/^TITLE:\s(.+)/);
-        const subtopicMatch = line.match(/^SUBTOPIC:\s(.+)/);
-        const explanationMatch = line.match(/^Explanation:\s(.+)/);
-        const mnemonicMatch = line.match(/^MNEMONIC_\d+:\s(.+)/);
-        const typeMatch = line.match(/^TYPE:\s(.+)/);
-
-        if (titleMatch) currentMnemonic.title = titleMatch[1];
-        else if (subtopicMatch) currentMnemonic.subtopic = subtopicMatch[1];
-        else if (explanationMatch)
-          currentMnemonic.explanation = explanationMatch[1];
-        else if (mnemonicMatch) currentMnemonic.text = mnemonicMatch[1];
-        else if (typeMatch) {
-          currentMnemonic.type = typeMatch[1];
-          mnemonics.push(currentMnemonic as Mnemonic);
-          currentMnemonic = {};
-        }
-      });
-    });
-
-    return mnemonics;
-  };
-
-  const MnemonicCards = ({ mnemonics }: { mnemonics: Mnemonic[] }) => {
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const touchStartX = useRef<number | null>(null);
-    const touchEndX = useRef<number | null>(null);
-
-    const handleTouchStart = (e: React.TouchEvent) => {
-      touchStartX.current = e.touches[0].clientX;
-    };
-
-    const handleTouchMove = (e: React.TouchEvent) => {
-      touchEndX.current = e.touches[0].clientX;
-    };
-
-    const handleTouchEnd = () => {
-      if (!touchStartX.current || !touchEndX.current) return;
-
-      const diff = touchStartX.current - touchEndX.current;
-      const threshold = 50;
-
-      if (Math.abs(diff) > threshold) {
-        if (diff > 0 && currentIndex < mnemonics.length - 1) {
-          setCurrentIndex(currentIndex + 1);
-        } else if (diff < 0 && currentIndex > 0) {
-          setCurrentIndex(currentIndex - 1);
-        }
-      }
-
-      touchStartX.current = null;
-      touchEndX.current = null;
-    };
-
-    const navigateCard = (direction: "next" | "prev") => {
-      if (direction === "next" && currentIndex < mnemonics.length - 1) {
-        setCurrentIndex(currentIndex + 1);
-      } else if (direction === "prev" && currentIndex > 0) {
-        setCurrentIndex(currentIndex - 1);
-      }
-    };
-
-    return (
-      <div className="relative w-full mx-auto">
-        <Card
-          className="bg-blue-50 shadow-lg transform transition-transform duration-300 border border-slate-700"
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-        >
-          <CardContent className="p-6">
-            <div className="text-lg font-semibold text-blue-600 mb-2">
-              {mnemonics[currentIndex]?.subtopic}
-            </div>
-            <div className="text-lg font-medium text-gray-800 mb-4">
-              {mnemonics[currentIndex]?.text}
-            </div>
-            <div className="text-sm text-gray-600 mb-2">
-              <span className="font-medium">Type:</span>{" "}
-              {mnemonics[currentIndex]?.type}
-            </div>
-            {mnemonics[currentIndex]?.explanation && (
-              <div className="text-sm text-gray-600 mt-2 bg-white p-3 rounded-lg">
-                {mnemonics[currentIndex]?.explanation}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        <div className="flex justify-between items-center mt-4">
-          <button
-            onClick={() => navigateCard("prev")}
-            disabled={currentIndex === 0}
-            className={`p-2 rounded-full ${
-              currentIndex === 0
-                ? "text-gray-400"
-                : "text-blue-600 hover:bg-blue-100"
-            }`}
-          >
-            <ChevronLeft size={24} />
-          </button>
-
-          <span className="text-sm text-gray-600">
-            {currentIndex + 1} / {mnemonics.length}
-          </span>
-
-          <button
-            onClick={() => navigateCard("next")}
-            disabled={currentIndex === mnemonics.length - 1}
-            className={`p-2 rounded-full ${
-              currentIndex === mnemonics.length - 1
-                ? "text-gray-400"
-                : "text-blue-600 hover:bg-blue-100"
-            }`}
-          >
-            <ChevronRight size={24} />
-          </button>
-        </div>
-      </div>
-    );
-  };
-
-  // Define the toggleSelection function to handle option changes
-  const toggleSelection = (option: string) => {
-    // If the clicked option is already selected, deselect it; otherwise, select the new option.
-    if (selectedOption === option) {
-      setSelectedOption(""); // Deselect if it's the current option
-    } else {
-      setSelectedOption(option); // Select the clicked option
     }
   };
 
@@ -850,20 +513,6 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
                     </div>
                   </DialogContent>
                 </Dialog>
-                <button
-                  type="button"
-                  className={`bg-white text-black px-4 py-2 rounded-full ${
-                    loadingMnemonics
-                      ? "opacity-50 cursor-not-allowed"
-                      : "hover:bg-[#0023FF] hover:text-white"
-                  }`}
-                  onClick={handleGenerateMnemonics}
-                  disabled={loadingMnemonics}
-                >
-                  {loadingMnemonics
-                    ? "Generating Mnemonics..."
-                    : "Generate Mnemonics"}
-                </button>
 
                 <button
                   type="button"
@@ -879,37 +528,12 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
                 </button>
               </div>
             </div>
-            {/* <div className="search-input">
-              {" "}
-              <button
-                type="button"
-                className="bg-white text-black px-4 py-2 rounded-full hover:bg-[#0023FF] hover:text-white transition-colors"
-                onClick={() => searchImages("Probability")}
-                disabled={false}
-              >
-                {" "}
-                Search Images{" "}
-              </button>{" "}
-            </div> */}
           </form>
         </div>
 
         <div className="w-full md:w-3/4 bg-white shadow-md rounded-lg p-5 mt-6">
-           <div id="cheatsheet-content" className="text-lg text-black">
-            {/* {imageResult && (
-              <div>
-                <img
-                  src={imageResult.data}
-                  alt="AI-generated educational image"
-                />
-                <p>Source: {imageResult.source}</p>
-              </div>
-            )}  */}
-
-            {loadingCheatsheet ||
-            loadingMnemonics ||
-            loadingQuiz ||
-            isLoading ? (
+          <div id="cheatsheet-content" className="text-lg text-black">
+            {loadingCheatsheet || loadingQuiz || isLoading ? (
               <div className="flex flex-col items-center justify-center min-h-[200px]">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
                 <p className="mt-4 text-gray-600 font-medium">
@@ -920,26 +544,18 @@ Remember: Each new mnemonic created should follow this enhanced format with expl
               selectedStudyMaterial === "Precise" ? (
                 <StudentNotes
                   loadingCheatsheet={loadingCheatsheet}
-                  loadingMnemonics={loadingMnemonics}
                   loadingQuiz={loadingQuiz}
                   isLoading={isLoading}
                   cheatsheetContent={cheatsheetContent}
-                  showingMnemonics={showingMnemonics}
-                  parseMnemonics={parseMnemonics}
                   isCustomPrompt={isCustomPrompt}
-                  MnemonicCards={MnemonicCards}
                 />
               ) : (
                 <CheatsheetList
                   loadingCheatsheet={loadingCheatsheet}
-                  loadingMnemonics={loadingMnemonics}
                   loadingQuiz={loadingQuiz}
                   isLoading={isLoading}
                   cheatsheetContent={cheatsheetContent}
-                  showingMnemonics={showingMnemonics}
-                  parseMnemonics={parseMnemonics}
                   isCustomPrompt={isCustomPrompt}
-                  MnemonicCards={MnemonicCards}
                 />
               )
             ) : (
