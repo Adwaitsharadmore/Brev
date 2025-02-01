@@ -69,6 +69,37 @@ const ResponsePage = () => {
     }
   };
 
+  useEffect(() => {
+    resetForm();
+
+    const handleBeforeUnload = () => {
+      resetForm();
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
+
+  function resetForm() {
+    // Reset file input
+    setFile(null);
+
+    // Reset text input
+    setTextPrompt("");
+
+    // Reset loading states
+    setLoadingCheatsheet(false);
+    setLoadingQuiz(false);
+
+    // Close dialog if open
+    setShowDialog(false);
+  }
+
+
   const handleGenerateClick = () => {
     setIsCustomPrompt(false);
     setShowDialog(true);
