@@ -29,6 +29,11 @@ import { StickyScroll } from "@/components/ui/sticky-scroll-reveal";
 import { ContainerScroll } from "@/components/ui/container-scroll-animation";
 import { Linkedin } from "lucide-react";
 import { Video } from "lucide-react";
+import { PulsatingButton } from "@/components/ui/pulsating-button";
+import { useRef } from "react";
+
+
+
 
 const Section = ({
   children,
@@ -239,7 +244,6 @@ const HomePage = () => {
             <section id="about" className="pt-[200px]">
               <motion.div className="relative mx-auto md:items-center justify-center my-50 pb-50">
                 <div className="flex flex-col md:items-center items-center justify-center md:leading-tight">
-                  
                   <div className="text-black text-4xl md:text-center text-center sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl font-semibold leading-tight tracking-tighter font-Inter">
                     Streamline your exam prep with{" "}
                     <span className="text-[#2343fdfa]"> Brev</span>
@@ -249,7 +253,7 @@ const HomePage = () => {
                     achieve more with less stress
                   </div>
                   <div className="z-10 pt-5">
-                    <ShimmerButtonDemo></ShimmerButtonDemo>
+                    <PulsatingButton>Start Breving</PulsatingButton>
                   </div>
                 </div>
               </motion.div>
@@ -276,17 +280,17 @@ const HomePage = () => {
               </ContainerScroll>
             </section>
 
-            <section
-              className="w-full justify-center items-center flex flex-col md:pt-10 pt-0"
-            >
-              <div className="w-full pt-8 mx-auto my-0 md:my-8 scroll-mt-20" id="features">
+            <section className="w-full justify-center items-center flex flex-col md:pt-10 pt-0">
+              <div
+                className="w-full pt-8 mx-auto my-0 md:my-8 scroll-mt-20"
+                id="features"
+              >
                 <div className="text-black md:flex md:flex-col flex text-center md:text-start gap-2 md:gap-0">
                   <div>
                     <span className="break-words font-bold text-5xl sm:text-5xl md:text-6xl tracking-tighter leading-none bg-gradient-to-r from-blue-800 to-blue-700 bg-clip-text text-transparent hover:scale-105 transition-transform duration-300">
                       key features
                     </span>
                   </div>
-                  
                 </div>
               </div>
               <div className="w-full">
@@ -352,11 +356,13 @@ const HomePage = () => {
                     <div className="transform hover:scale-105 transition-all duration-300 p-8 rounded-2xl bg-gradient-to-r from-blue-50 to-purple-50 shadow-lg">
                       <div className="max-w-3xl mx-auto">
                         <div className="text-lg md:text-xl text-gray-700 leading-relaxed space-y-4">
-                          Born from a hackathon project, Brev evolved into a mission-driven startup 
-                          dedicated to transforming exam preparation. We're building the ultimate 
-                          study companion that helps students maximize efficiency, minimize stress, 
-                          and achieve excellence. Our journey is just beginning, and we're excited 
-                          to revolutionize how students prepare for their exams.
+                          Born from a hackathon project, Brev evolved into a
+                          mission-driven startup dedicated to transforming exam
+                          preparation. We're building the ultimate study
+                          companion that helps students maximize efficiency,
+                          minimize stress, and achieve excellence. Our journey
+                          is just beginning, and we're excited to revolutionize
+                          how students prepare for their exams.
                         </div>
                       </div>
                     </div>
