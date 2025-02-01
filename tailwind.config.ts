@@ -15,27 +15,45 @@ const config: Config = {
     './src/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
-	  extend: {
-			backdropFilter: {
-        // Add custom blur sizes if needed
-        none: 'none',
-        sm: 'blur(4px)',
-        md: 'blur(8px)',
-        lg: 'blur(16px)',
-      },
+  	extend: {
+  		backdropFilter: {
+  			none: 'none',
+  			sm: 'blur(4px)',
+  			md: 'blur(8px)',
+  			lg: 'blur(16px)'
+  		},
   		animation: {
   			'fade-in': 'fadeIn 0.5s ease-in-out',
   			marquee: 'marquee var(--duration) infinite linear',
   			'marquee-vertical': 'marquee-vertical var(--duration) linear infinite',
   			'shimmer-slide': 'shimmer-slide var(--speed) ease-in-out infinite alternate',
-  			'spin-around': 'spin-around calc(var(--speed) * 2) infinite linear'
+  			'spin-around': 'spin-around calc(var(--speed) * 2) infinite linear',
+  			pulse: 'pulse var(--duration) ease-out infinite'
   		},
   		fontFamily: {
-  			sans: ['Inter', 'sans-serif'],
-  			inter: ['Inter', 'sans-serif']
+  			sans: [
+  				'Inter',
+  				'sans-serif'
+  			],
+  			inter: [
+  				'Inter',
+  				'sans-serif'
+  			]
   		},
-		  colors: {
-			primary: {"50":"#eff6ff","100":"#dbeafe","200":"#bfdbfe","300":"#93c5fd","400":"#60a5fa","500":"#3b82f6","600":"#2563eb","700":"#1d4ed8","800":"#1e40af","900":"#1e3a8a","950":"#172554"},
+  		colors: {
+  			primary: {
+  				'50': '#eff6ff',
+  				'100': '#dbeafe',
+  				'200': '#bfdbfe',
+  				'300': '#93c5fd',
+  				'400': '#60a5fa',
+  				'500': '#3b82f6',
+  				'600': '#2563eb',
+  				'700': '#1d4ed8',
+  				'800': '#1e40af',
+  				'900': '#1e3a8a',
+  				'950': '#172554'
+  			},
   			cyan: {
   				'400': '#22d3ee',
   				'500': '#06b6d4'
@@ -75,6 +93,14 @@ const config: Config = {
   				},
   				'100%': {
   					transform: 'translateZ(0) rotate(360deg)'
+  				}
+  			},
+  			pulse: {
+  				'0%, 100%': {
+  					boxShadow: '0 0 0 0 var(--pulse-color)'
+  				},
+  				'50%': {
+  					boxShadow: '0 0 0 8px var(--pulse-color)'
   				}
   			}
   		}
