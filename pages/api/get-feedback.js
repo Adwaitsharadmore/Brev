@@ -96,10 +96,10 @@ Performance Analysis Framework
 - Areas requiring reinforcement: [topics]
 - Concepts needing review: [specific concepts]
 
-[Question-by-Question Analysis]
+[Incorrect Question Analysis]
 For each question requiring multiple attempts:
 
-Question ID: [number]
+Question: [number]
 Prompt: "[exact question text]"
 
 Improvement Strategy:
