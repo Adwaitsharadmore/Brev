@@ -13,7 +13,7 @@ import Marquee from "@/components/ui/marquee";
 import { MarqueeDemo } from "./marque";
 import { BentoDemo } from "./bentogrid";
 import {ShimmerButton} from "@/components/magicui/shimmer-button";
-import { ShimmerButtonDemo } from "./shimmer";
+
 import Image from "next/image";
 import { motion, useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
