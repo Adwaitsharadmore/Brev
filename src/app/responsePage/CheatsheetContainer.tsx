@@ -68,7 +68,7 @@ interface PendingHighlight {
   selections: Selection[];
   color: string;
 }
-type MarkingMode = "highlight" | "underline" | "none" | "annotate";
+type MarkingMode = "none" | "highlight" | "underline" | "annotate" | "eraser";
 
 interface Annotation {
   id: string;
@@ -177,13 +177,15 @@ const CheatsheetList = ({
   const sections = cheatsheetContent
     .split("---")
     .filter((section) => section.trim());
+  
+  
+const toggleMarkingMode = (mode: MarkingMode) => {
+  setMarkingMode((currentMode) => (currentMode === mode ? "none" : mode));
+  if (anchorEl) {
+    setAnchorEl(null);
+  }
+};
 
-  const toggleMarkingMode = (mode: MarkingMode) => {
-    setMarkingMode((current) => (current === mode ? "none" : mode));
-    if (anchorEl) {
-      setAnchorEl(null);
-    }
-  };
 
   const handleColorChange = (color: string) => {
     setCurrentColor(color);
@@ -303,7 +305,7 @@ const CheatsheetList = ({
         }
       });
     };
-    if (eraserMode) {
+    if (markingMode === "eraser") {
       handleErase(sectionId);
       return;
     }
@@ -730,15 +732,20 @@ const CheatsheetList = ({
             />
           </IconButton>
         </Tooltip>
-
-        <Tooltip title={eraserMode ? "Exit Eraser Mode" : "Enter Eraser Mode"}>
+        <Tooltip
+          title={
+            markingMode === "eraser" ? "Exit Eraser Mode" : "Enter Eraser Mode"
+          }
+        >
           <IconButton
-            onClick={() => setEraserMode(!eraserMode)}
+            onClick={() => toggleMarkingMode("eraser")}
             sx={{
-              backgroundColor: eraserMode ? "primary.main" : "white",
-              color: eraserMode ? "white" : "primary.main",
+              backgroundColor:
+                markingMode === "eraser" ? "primary.main" : "white",
+              color: markingMode === "eraser" ? "white" : "primary.main",
               "&:hover": {
-                backgroundColor: eraserMode ? "primary.dark" : "grey.100",
+                backgroundColor:
+                  markingMode === "eraser" ? "primary.dark" : "grey.100",
               },
             }}
           >
@@ -746,11 +753,11 @@ const CheatsheetList = ({
           </IconButton>
         </Tooltip>
 
-        <Tooltip title="Add Note">
+        <Tooltip
+          title={markingMode === "annotate" ? "Stop Annotations" : "Add Note"}
+        >
           <IconButton
-            onClick={() => {
-              setMarkingMode("annotate");
-            }}
+            onClick={() => toggleMarkingMode("annotate")}
             sx={{
               backgroundColor:
                 markingMode === "annotate" ? "primary.main" : "white",
