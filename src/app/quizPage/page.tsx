@@ -9,7 +9,6 @@ import { Loader2 } from "lucide-react";
 
 export const runtime = "edge";
 
-
 interface QuizQuestion {
   question: string;
   options: string[];
@@ -44,31 +43,52 @@ const QuizCompletion = ({
   const [isPracticeLoading, setIsPracticeLoading] = useState(false);
   const [isHomeLoading, setIsHomeLoading] = useState(false);
 
- const handlePracticeClick = async () => {
-   setIsPracticeLoading(true);
-   try {
-     await generatePracticeQuestions();
-   } finally {
-     setIsPracticeLoading(false);
-   }
- };
+  const handlePracticeClick = async () => {
+    setIsPracticeLoading(true);
+    try {
+      await generatePracticeQuestions();
+    } finally {
+      setIsPracticeLoading(false);
+    }
+  };
 
- const handleHomeClick = async () => {
-   setIsHomeLoading(true);
-   try {
-     await handleBackToHome();
-   } finally {
-     setIsHomeLoading(false);
-   }
- };
+  const handleHomeClick = async () => {
+    setIsHomeLoading(true);
+    try {
+      await handleBackToHome();
+    } finally {
+      setIsHomeLoading(false);
+    }
+  };
+  const formatContent = (apiFeedback: string | null) => {
+    if (!apiFeedback) return "";
 
+    const keywords = [
+      "Question:",
+      "Prompt:",
+      "Improvement Strategy:",
+    ];
+
+   for (const keyword of keywords) {
+     if (apiFeedback.trim().startsWith(keyword)) {
+       const remainingText = apiFeedback.slice(keyword.length);
+       return (
+         <span>
+           <span className="font-bold">{keyword}</span>
+           {remainingText}
+         </span>
+       );
+     }
+   }
+   return <span>{apiFeedback}</span>;
+  };
 
   return (
     <div className="flex-1 flex flex-col items-center">
-      <Card className="bg-[#f8f6ef] border border-gray-700 shadow-xl w-3/4">
+      <Card className="bg-[#f8f6ef] border border-gray-700 shadow-xl w-full">
         <div className="p-6 border-b border-gray-800">
           <div className="flex items-center space-x-3">
-            <div className="h-8 w-8 text-yellow-400">🏆</div>
+            <div className="h-10 w-10 text-yellow-400 text-2xl">🏆</div>
             <h2 className="text-2xl font-bold text-black">Quiz Completed!</h2>
           </div>
         </div>
@@ -100,13 +120,15 @@ const QuizCompletion = ({
                 return (
                   <div key={index} className="flex items-start space-x-2 ml-4">
                     <span className="text-blue-400">•</span>
-                    <p className="text-gray-800">{part.slice(1).trim()}</p>
+                    <p className="text-gray-800">
+                      {formatContent(part.slice(1).trim())}
+                    </p>
                   </div>
                 );
               }
               return (
                 <p key={index} className="text-gray-900">
-                  {part}
+                  {formatContent(part)}
                 </p>
               );
             })
