@@ -22,6 +22,9 @@ interface CustomContentItem {
   content: string;
 }
 
+export const runtime = "edge";
+
+
 const ResponsePage = () => {
   const [showingMnemonics, setShowingMnemonics] = useState(false);
 

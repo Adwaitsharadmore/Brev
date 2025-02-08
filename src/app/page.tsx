@@ -12,28 +12,165 @@ import Typewriter from "./typewriter";
 import Marquee from "@/components/ui/marquee";
 import { MarqueeDemo } from "./marque";
 import { BentoDemo } from "./bentogrid";
-import ShimmerButton from "@/components/ui/shimmer-button";
+import {ShimmerButton} from "@/components/magicui/shimmer-button";
 import { ShimmerButtonDemo } from "./shimmer";
 import Image from "next/image";
 import { motion, useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import BlurFade from "@/components/ui/blur-fade";
-import HeroVideoDialog from "@/components/ui/hero-video-dialog";
-import { cn } from "@/lib/utils";
-import { DotPattern } from "@/components/ui/dot-pattern";
+
 import ScrollProgress from "@/components/ui/scroll-progress";
-import BoxReveal from "@/components/ui/box-reveal";
-import { DockDemo } from "./dock";
-import { Dock } from "@/components/magicui/dock";
+import { Timeline } from "@/components/ui/timeline";
+
 import { StickyScroll } from "@/components/ui/sticky-scroll-reveal";
 import { ContainerScroll } from "@/components/ui/container-scroll-animation";
-import { Linkedin } from "lucide-react";
-import { Video } from "lucide-react";
-import { PulsatingButton } from "@/components/ui/pulsating-button";
-import { useRef } from "react";
 
 
-
+export const runtime = 'edge';
+ const data = [
+   {
+     title: "SunHacks",
+     content: (
+       <div>
+         <p className="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
+           Built the first ever basic model of Brev. It was when Brev was PrepPal
+         </p>
+         <div className="grid grid-cols-2 gap-4">
+           <Image
+             src=""
+             alt="startup template"
+             width={500}
+             height={500}
+             className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+           />
+           <Image
+             src=""
+             alt="startup template"
+             width={500}
+             height={500}
+             className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+           />
+           <Image
+             src=""
+             alt="startup template"
+             width={500}
+             height={500}
+             className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+           />
+           <Image
+             src=""
+             alt="startup template"
+             width={500}
+             height={500}
+             className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+           />
+         </div>
+       </div>
+     ),
+   },
+   {
+     title: "Early 2023",
+     content: (
+       <div>
+         <p className="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
+           I usually run out of copy, but when I see content this big, I try to
+           integrate lorem ipsum.
+         </p>
+         <p className="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
+           Lorem ipsum is for people who are too lazy to write copy. But we are
+           not. Here are some more example of beautiful designs I built.
+         </p>
+         <div className="grid grid-cols-2 gap-4">
+           <Image
+             src=""
+             alt="hero template"
+             width={500}
+             height={500}
+             className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+           />
+           <Image
+             src=""
+             alt="feature template"
+             width={500}
+             height={500}
+             className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+           />
+           <Image
+             src=""
+             alt="bento template"
+             width={500}
+             height={500}
+             className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+           />
+           <Image
+             src=""
+             alt="cards template"
+             width={500}
+             height={500}
+             className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+           />
+         </div>
+       </div>
+     ),
+   },
+   {
+     title: "Changelog",
+     content: (
+       <div>
+         <p className="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-4">
+           Deployed 5 new components on Aceternity today
+         </p>
+         <div className="mb-8">
+           <div className="flex gap-2 items-center text-neutral-700 dark:text-neutral-300 text-xs md:text-sm">
+             ✅ Card grid component
+           </div>
+           <div className="flex gap-2 items-center text-neutral-700 dark:text-neutral-300 text-xs md:text-sm">
+             ✅ Startup template Aceternity
+           </div>
+           <div className="flex gap-2 items-center text-neutral-700 dark:text-neutral-300 text-xs md:text-sm">
+             ✅ Random file upload lol
+           </div>
+           <div className="flex gap-2 items-center text-neutral-700 dark:text-neutral-300 text-xs md:text-sm">
+             ✅ Himesh Reshammiya Music CD
+           </div>
+           <div className="flex gap-2 items-center text-neutral-700 dark:text-neutral-300 text-xs md:text-sm">
+             ✅ Salman Bhai Fan Club registrations open
+           </div>
+         </div>
+         <div className="grid grid-cols-2 gap-4">
+           <Image
+             src=""
+             alt="hero template"
+             width={500}
+             height={500}
+             className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+           />
+           <Image
+             src=""
+             alt="feature template"
+             width={500}
+             height={500}
+             className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+           />
+           <Image
+             src=""
+             alt="bento template"
+             width={500}
+             height={500}
+             className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+           />
+           <Image
+             src=""
+             alt="cards template"
+             width={500}
+             height={500}
+             className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+           />
+         </div>
+       </div>
+     ),
+   },
+ ];
 
 const Section = ({
   children,
@@ -249,11 +386,11 @@ const HomePage = () => {
                     <span className="text-[#2343fdfa]"> Brev</span>
                   </div>
 
-                  <div className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-900 md:text-center text-center md:items-start items-center md:w-[53%] text-xl md:text-3xl font-medium md:leading-relaxed tracking-tight font-Inter pb-4">
+                  <div className="text-transparent mt-2 bg-clip-text bg-gradient-to-r from-[#2343fdfa] to-blue-900 md:text-center text-center md:items-start items-center md:w-[53%] text-xl md:text-3xl font-medium md:leading-relaxed tracking-tight font-Inter pb-4">
                     achieve more with less stress
                   </div>
                   <div className="z-10 pt-5">
-                    <PulsatingButton>Start Breving</PulsatingButton>
+                    <ShimmerButton>Start Breving</ShimmerButton>
                   </div>
                 </div>
               </motion.div>
@@ -300,77 +437,9 @@ const HomePage = () => {
           </BlurFade>
         </div>
 
-        <section id="story">
-          {" "}
-          <div className="h-auto relative scroll-smooth">
-            <div className="w-3/4 mx-auto flex flex-col items-start">
-              <div>
-                <div
-                  className="pt-[100px] flex"
-                  style={{
-                    color: "black",
-                    fontSize: "69px",
-                    font: "Inter",
-                    fontWeight: 600,
-                    lineHeight: "61px",
-                    wordWrap: "break-word",
-                  }}
-                >
-                  Our Story.
-                  <div
-                    className="pt-5 text-black"
-                    style={{
-                      fontSize: "20px",
-                      font: "Inter",
-                      fontWeight: 200,
-                      lineHeight: "27.50px",
-                      wordWrap: "break-word",
-                    }}
-                  >
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <div className="bg-[#0023FF] text-white p-5 rounded-2xl text-2xl w-[90%]">
-                      Brev began as an ambitious idea during a hackathon at
-                      Arizona State University. What started as a project for a
-                      24-hour challenge turned into something much bigger. We
-                      were a team of four passionate students who worked
-                      tirelessly day and night to build a full-stack web app.
-                      Though we were confident in our creation and excited about
-                      its potential, the hackathon didn’t result in any awards
-                      or recognition. But we didn’t let that stop us. Instead of
-                      giving up, we saw this as an opportunity to turn Brev into
-                      something greater—a full-fledged startup with a mission to
-                      help students conquer their exams. Our vision became
-                      clear: to relieve the stress and anxiety that come with
-                      exam preparation and create the best study tool out there.
-                      Since then, we’ve poured countless hours into Brev,
-                      refining it to be the ultimate study companion. What began
-                      as a simple hackathon idea is now a tool designed to help
-                      students maximize their study time, reduce stress, and
-                      excel in their exams. We’re just getting started, and
-                      we’re excited for the journey ahead.
-                    </div>
-                    <div className="transform hover:scale-105 transition-all duration-300 p-8 rounded-2xl bg-gradient-to-r from-blue-50 to-purple-50 shadow-lg">
-                      <div className="max-w-3xl mx-auto">
-                        <div className="text-lg md:text-xl text-gray-700 leading-relaxed space-y-4">
-                          Born from a hackathon project, Brev evolved into a
-                          mission-driven startup dedicated to transforming exam
-                          preparation. We're building the ultimate study
-                          companion that helps students maximize efficiency,
-                          minimize stress, and achieve excellence. Our journey
-                          is just beginning, and we're excited to revolutionize
-                          how students prepare for their exams.
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <MarqueeDemo></MarqueeDemo>
+        <section id="story" className="pt-40">
+          <div className="w-full py-10">
+            <Timeline data={data} />
           </div>
         </section>
         <section id="contact">
