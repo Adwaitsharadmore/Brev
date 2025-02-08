@@ -12,7 +12,7 @@ import Typewriter from "./typewriter";
 import Marquee from "@/components/ui/marquee";
 import { MarqueeDemo } from "./marque";
 import { BentoDemo } from "./bentogrid";
-import ShimmerButton from "@/components/ui/shimmer-button";
+import {ShimmerButton} from "@/components/magicui/shimmer-button";
 import { ShimmerButtonDemo } from "./shimmer";
 import Image from "next/image";
 import { motion, useAnimation } from "framer-motion";
@@ -253,7 +253,7 @@ const HomePage = () => {
                     achieve more with less stress
                   </div>
                   <div className="z-10 pt-5">
-                    <PulsatingButton>Start Breving</PulsatingButton>
+                    <ShimmerButton>Start Breving</ShimmerButton>
                   </div>
                 </div>
               </motion.div>
