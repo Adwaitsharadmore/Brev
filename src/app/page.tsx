@@ -32,7 +32,7 @@ import { Video } from "lucide-react";
 import { PulsatingButton } from "@/components/ui/pulsating-button";
 import { useRef } from "react";
 
-
+export const runtime = 'edge';
 
 
 const Section = ({
@@ -249,7 +249,7 @@ const HomePage = () => {
                     <span className="text-[#2343fdfa]"> Brev</span>
                   </div>
 
-                  <div className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-900 md:text-center text-center md:items-start items-center md:w-[53%] text-xl md:text-3xl font-medium md:leading-relaxed tracking-tight font-Inter pb-4">
+                  <div className="text-transparent mt-2 bg-clip-text bg-gradient-to-r from-blue-400 to-blue-900 md:text-center text-center md:items-start items-center md:w-[53%] text-xl md:text-3xl font-medium md:leading-relaxed tracking-tight font-Inter pb-4">
                     achieve more with less stress
                   </div>
                   <div className="z-10 pt-5">
