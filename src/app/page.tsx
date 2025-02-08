@@ -24,6 +24,7 @@ import { Timeline } from "@/components/ui/timeline";
 
 import { StickyScroll } from "@/components/ui/sticky-scroll-reveal";
 import { ContainerScroll } from "@/components/ui/container-scroll-animation";
+import { useRef } from "react";
 
 
 export const runtime = 'edge';
@@ -274,11 +275,11 @@ const HomePage = () => {
     setWidth(calculateWidth());
   }, [duplicatedImages]);
 
-  const router = useRouter();
+   const router = useRouter();
 
-  const handleStartBreving = () => {
-    router.push("/responsePage");
-  };
+   const handleStartBreving = () => {
+     router.push("/responsePage");
+   };
 
   return (
     <div>
@@ -390,7 +391,7 @@ const HomePage = () => {
                     achieve more with less stress
                   </div>
                   <div className="z-10 pt-5">
-                    <ShimmerButton>Start Breving</ShimmerButton>
+                    <ShimmerButton onClick={handleStartBreving}>Start Breving</ShimmerButton>
                   </div>
                 </div>
               </motion.div>
