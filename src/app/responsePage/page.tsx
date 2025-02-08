@@ -24,7 +24,6 @@ interface CustomContentItem {
 
 export const runtime = "edge";
 
-
 const ResponsePage = () => {
   const [showingMnemonics, setShowingMnemonics] = useState(false);
 
@@ -86,7 +85,6 @@ const ResponsePage = () => {
     };
   }, []);
 
-
   function resetForm() {
     // Reset file input
     setFile(null);
@@ -101,7 +99,6 @@ const ResponsePage = () => {
     // Close dialog if open
     setShowDialog(false);
   }
-
 
   const handleGenerateClick = () => {
     setIsCustomPrompt(false);
@@ -298,6 +295,11 @@ Please structure the content following this format exactly as it matches the fro
   };
 
   const handleGenerateQuiz = async () => {
+    setLoadingCheatsheet(false);
+    setLoadingQuiz(true);
+    setLoadingMnemonics(false);
+    
+
     if (!file) {
       alert("Please upload a file");
       return;
@@ -578,7 +580,6 @@ Separate each question with three dashes (---).`;
               selectedStudyMaterial === "Precise" ? (
                 <StudentNotes
                   loadingCheatsheet={loadingCheatsheet}
-                  loadingQuiz={loadingQuiz}
                   isLoading={isLoading}
                   cheatsheetContent={cheatsheetContent}
                   isCustomPrompt={isCustomPrompt}
@@ -586,7 +587,6 @@ Separate each question with three dashes (---).`;
               ) : (
                 <CheatsheetList
                   loadingCheatsheet={loadingCheatsheet}
-                  loadingQuiz={loadingQuiz}
                   isLoading={isLoading}
                   cheatsheetContent={cheatsheetContent}
                   isCustomPrompt={isCustomPrompt}

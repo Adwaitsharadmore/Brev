@@ -140,14 +140,12 @@ const formatCodeBlock = (text: string, type: "detail" | "text" | "command") => {
 
 interface CheatsheetListProps {
   loadingCheatsheet: boolean;
-  loadingQuiz: boolean;
   isLoading: boolean;
   cheatsheetContent: string;
   isCustomPrompt: boolean; 
 }
 const CheatsheetList = ({
   loadingCheatsheet,
-  loadingQuiz,
   isLoading,
   cheatsheetContent,
   isCustomPrompt,

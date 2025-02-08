@@ -37,7 +37,7 @@ const formatCodeBlock = (text: string) => {
 
 interface CheatsheetListProps {
   loadingCheatsheet: boolean;
-  loadingQuiz: boolean;
+ 
   isLoading: boolean;
   cheatsheetContent: string;
   isCustomPrompt: boolean;
@@ -56,7 +56,6 @@ interface MnemonicsContent {
 // Main component
 const StudentNotes = ({
   loadingCheatsheet,
-  loadingQuiz,
   isLoading,
   cheatsheetContent,
   isCustomPrompt,
