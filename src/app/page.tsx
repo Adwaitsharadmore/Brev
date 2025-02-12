@@ -214,19 +214,46 @@ const content = [
     title: "Personalized Cheat Sheets",
     description:
       "Transform your study materials into perfectly organized cheat sheets in seconds. Whether you need a quick-glance summary or an in-depth review, our AI crafts custom study guides that highlight exactly what you need to know.",
-    videoSrc: "/videos/cheatsheet.mp4",
+    content: (
+      <div className="flex items-center justify-center">
+        <Image
+          src="/images/feature1.png"
+          alt="image"
+          width="200"
+          height="100"
+        ></Image>
+      </div>
+    ),
   },
   {
     title: "Memory-Boosting Mnemonics",
     description:
       "Turn complex concepts into unforgettable memory hooks. Upload your study material and watch as clever acronyms, rhymes, and memorable phrases make learning effortless. No more struggling to remember key facts—our mnemonics stick with you.",
-    videoSrc: "/videos/mnemonics.mp4",
+    content: (
+      <div className="flex items-center justify-center">
+        <Image
+          src="/images/feature2.png"
+          alt="image"
+          width="200"
+          height="100"
+        ></Image>
+      </div>
+    ),
   },
   {
     title: "Adaptive testing and feedback",
     description:
       "Take the guesswork out of exam prep with adaptive quizzes that evolve with your learning. Our system identifies your knowledge gaps and automatically adjusts to strengthen your weak spots, ensuring you're fully prepared for exam day.",
-    videoSrc: "/videos/testing.mp4", // Assuming you have this video
+    content: (
+      <div className="flex items-center justify-center">
+        <Image
+          src="/images/feature3.png"
+          alt="image"
+          width="200"
+          height="100"
+        ></Image>
+      </div>
+    ), // Assuming you have this video
   },
 ];
 

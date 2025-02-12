@@ -12,13 +12,11 @@ export const StickyScroll = ({
     title: string;
     description: string;
     content?: React.ReactNode | any;
-    videoSrc: string;
   }[];
   contentClassName?: string;
 }) => {
   const [activeCard, setActiveCard] = React.useState(0);
   const ref = useRef<any>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
   const { scrollYProgress } = useScroll({
     // uncomment line 22 and comment line 23 if you DONT want the overflow container and want to have it change on the entire page scroll
     // target: ref
@@ -42,6 +40,11 @@ export const StickyScroll = ({
     setActiveCard(closestBreakpointIndex);
   });
 
+  const backgroundColors = [
+    "var(--slate-900)",
+    "var(--black)",
+    "var(--neutral-900)",
+  ];
   const linearGradients = [
     "linear-gradient(to bottom right, var(--cyan-500), var(--emerald-500))",
     "linear-gradient(to bottom right, var(--pink-500), var(--indigo-500))",
@@ -53,16 +56,12 @@ export const StickyScroll = ({
   );
 
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.src = content[activeCard].videoSrc;
-      videoRef.current.load();
-      videoRef.current.play();
-    }
+    setBackgroundGradient(linearGradients[activeCard % linearGradients.length]);
   }, [activeCard]);
 
   return (
     <motion.div
-      className="w-full h-[30rem] overflow-y-auto flex justify-between relative rounded-md scrollbar-hide "
+      className="h-[30rem] overflow-y-auto flex justify-center relative space-x-20 rounded-md p-5 scrollbar-hide"
       ref={ref}
     >
       <div className="div relative flex items-start ">
@@ -98,19 +97,11 @@ export const StickyScroll = ({
       </div>
       <div
         className={cn(
-          "hidden lg:block w-[45%] h-[70%] rounded-md sticky top-10 overflow-hidden",
+          "hidden lg:block h-60 w-80 rounded-md sticky top-10 overflow-hidden",
           contentClassName
         )}
       >
-        <video
-          ref={videoRef}
-          autoPlay
-          muted
-          loop
-          className="rounded-lg w-[100%] h-[100%] object-cover"
-        >
-          <source src={content[activeCard].videoSrc} type="video/mp4" />
-        </video>
+        {content[activeCard].content ?? null}
       </div>
     </motion.div>
   );
