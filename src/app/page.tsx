@@ -8,20 +8,13 @@ import { FaInstagram } from "react-icons/fa";
 import { FaYoutube } from "react-icons/fa";
 import { FaLinkedin } from "react-icons/fa";
 import { useEffect } from "react";
-import Typewriter from "./typewriter";
-import Marquee from "@/components/ui/marquee";
-import { MarqueeDemo } from "./marque";
-import { BentoDemo } from "./bentogrid";
 import {ShimmerButton} from "@/components/magicui/shimmer-button";
-
 import Image from "next/image";
 import { motion, useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import BlurFade from "@/components/ui/blur-fade";
-
 import ScrollProgress from "@/components/ui/scroll-progress";
 import { Timeline } from "@/components/ui/timeline";
-
 import { StickyScroll } from "@/components/ui/sticky-scroll-reveal";
 import { ContainerScroll } from "@/components/ui/container-scroll-animation";
 import { useRef } from "react";
@@ -182,25 +175,6 @@ const HomePage = () => {
     setIsOpen(!isOpen);
   };
 
-  const images = [
-    "/images/work1.jpg",
-    "/images/work2.PNG",
-    "/images/work3.PNG",
-    "/images/work4.png",
-    "/images/work5.png",
-    "/images/work6.png",
-    "/images/work7.png",
-    "/images/work8.png",
-    "/images/work9.png",
-    "/images/work10.png",
-    "/images/work11.png",
-    "/images/work12.png",
-    "/images/work13.png",
-  ];
-  useEffect(() => {
-    // Create an array with enough duplicates to ensure smooth scrolling
-    setDuplicatedImages([...images, ...images, ...images, ...images]);
-  }, []);
 
   useEffect(() => {
     // Calculate the total width of the images container
