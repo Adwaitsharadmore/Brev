@@ -75,42 +75,6 @@ export const runtime = 'edge';
    },
  ];
 
-const Section = ({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) => {
-  const controls = useAnimation();
-  const [ref, inView] = useInView({ threshold: 0.2 });
-
-  React.useEffect(() => {
-    if (inView) {
-      controls.start("visible");
-    } else {
-      controls.start("hidden");
-    }
-  }, [controls, inView]);
-
-  const variants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-  };
-
-  return (
-    <motion.div
-      ref={ref}
-      className={`py-20 ${className}`}
-      initial="hidden"
-      animate={controls}
-      variants={variants}
-    >
-      {children}
-    </motion.div>
-  );
-};
-
 const content = [
   {
     title: "Personalized Cheat Sheets",
