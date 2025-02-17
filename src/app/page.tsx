@@ -11,7 +11,6 @@ import { useEffect } from "react";
 import {ShimmerButton} from "@/components/magicui/shimmer-button";
 import Image from "next/image";
 import { motion, useAnimation } from "framer-motion";
-import { useInView } from "react-intersection-observer";
 import BlurFade from "@/components/ui/blur-fade";
 import ScrollProgress from "@/components/ui/scroll-progress";
 import { Timeline } from "@/components/ui/timeline";
