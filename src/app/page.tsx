@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -8,7 +8,7 @@ import { FaInstagram } from "react-icons/fa";
 import { FaYoutube } from "react-icons/fa";
 import { FaLinkedin } from "react-icons/fa";
 import { useEffect } from "react";
-import {ShimmerButton} from "@/components/magicui/shimmer-button";
+import { ShimmerButton } from "@/components/magicui/shimmer-button";
 import Image from "next/image";
 import { motion, useAnimation } from "framer-motion";
 import BlurFade from "@/components/ui/blur-fade";
@@ -17,62 +17,67 @@ import { Timeline } from "@/components/ui/timeline";
 import { StickyScroll } from "@/components/ui/sticky-scroll-reveal";
 import { ContainerScroll } from "@/components/ui/container-scroll-animation";
 import { useRef } from "react";
+import {
+  getSignInUrl,
+  getSignUpUrl,
+ 
+} from "@workos-inc/authkit-nextjs";
+import { useAuth } from "@workos-inc/authkit-nextjs/components";
+import { Button, Flex, Heading, Text } from "@radix-ui/themes";
+import { SignInButton } from "../components/ui/sign-in-button";
+import NextLink from "next/link";
+import crypto from "crypto";
 
-
-export const runtime = 'edge';
- const data = [
-   {
-     title: "SunHacks",
-     content: (
-       <div>
-         <div className="grid grid-cols-2 gap-4">
-           <Image
-             src="/images/1.png"
-             alt="startup template"
-             width={500}
-             height={500}
-             className="rounded-lg object-cover w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
-           />
-         </div>
-       </div>
-     ),
-   },
-   {
-     title: "Early 2023",
-     content: (
-       <div>
-         <div className="grid grid-cols-2 gap-4">
-           <Image
-             src="/images/2.png"
-             alt="hero template"
-             width={500}
-             height={500}
-             className="rounded-lg object-cover w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
-           />
-      
-         </div>
-       </div>
-     ),
-   },
-   {
-     title: "Changelog",
-     content: (
-       <div>
-      
-         <div className="grid grid-cols-2 gap-4">
-           <Image
-             src="/images/3.png"
-             alt="hero template"
-             width={1000}
-             height={1000}
-             className="rounded-lg object-cover w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
-           />
-      
-         </div>
-       </div>
-     ),
-   },
- ];
+const data = [
+  {
+    title: "SunHacks",
+    content: (
+      <div>
+        <div className="grid grid-cols-2 gap-4">
+          <Image
+            src="/images/1.png"
+            alt="startup template"
+            width={500}
+            height={500}
+            className="rounded-lg object-cover w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+          />
+        </div>
+      </div>
+    ),
+  },
+  {
+    title: "Early 2023",
+    content: (
+      <div>
+        <div className="grid grid-cols-2 gap-4">
+          <Image
+            src="/images/2.png"
+            alt="hero template"
+            width={500}
+            height={500}
+            className="rounded-lg object-cover w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+          />
+        </div>
+      </div>
+    ),
+  },
+  {
+    title: "Changelog",
+    content: (
+      <div>
+        <div className="grid grid-cols-2 gap-4">
+          <Image
+            src="/images/3.png"
+            alt="hero template"
+            width={1000}
+            height={1000}
+            className="rounded-lg object-cover w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+          />
+        </div>
+      </div>
+    ),
+  },
+];
 
 const content = [
   {
@@ -122,7 +127,7 @@ const content = [
   },
 ];
 
-const HomePage = () => {
+const HomePage =   () => {
   const handleScroll = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -138,22 +143,24 @@ const HomePage = () => {
     setIsOpen(!isOpen);
   };
 
-
   useEffect(() => {
     // Calculate the total width of the images container
     const calculateWidth = () => {
-      const imageWidth = 320; // 300px width + 20px margin
+      const imageWidth = 320; 
       return duplicatedImages.length * imageWidth;
     };
     setWidth(calculateWidth());
   }, [duplicatedImages]);
 
-   const router = useRouter();
+  const router = useRouter();
 
-   const handleStartBreving = () => {
-     router.push("/responsePage");
-   };
+  const { user, loading } = useAuth();
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+ 
   return (
     <div>
       <div className="w-screen h-screen items-center scroll-smooth">
@@ -255,7 +262,12 @@ const HomePage = () => {
             <section id="about" className="pt-[150px]">
               <motion.div className="relative mx-auto md:items-center justify-center my-50 pb-50">
                 <div className="flex flex-col md:items-center items-center justify-center md:leading-tight">
-                  <Image src="/images/mainlogo1.png" height={100} width={100} alt="logo" />
+                  <Image
+                    src="/images/mainlogo1.png"
+                    height={100}
+                    width={100}
+                    alt="logo"
+                  />
                   <div className="text-black text-4xl md:text-center text-center sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl font-semibold leading-tight tracking-tighter font-Inter">
                     Streamline your exam prep with{" "}
                     <span className="text-[#2343fdfa]"> Brev</span>
@@ -265,7 +277,9 @@ const HomePage = () => {
                     achieve more with less stress
                   </div>
                   <div className="z-10 pt-5">
-                    <ShimmerButton onClick={handleStartBreving}>
+                    <ShimmerButton onClick={()=>{
+                        router.push("/responsePage")
+                    }}>
                       Start Breving
                     </ShimmerButton>
                   </div>
