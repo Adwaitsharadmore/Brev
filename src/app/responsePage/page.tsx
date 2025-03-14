@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 
 // Import only what's needed for server rendering
 import { withAuth } from "@workos-inc/authkit-nextjs";
+import ClientUploadComponent from "./ClientUploadComponent";
 
 // Use dynamic import with ssr: false for the client component
 const ClientResponseContent = dynamic(
@@ -23,6 +24,7 @@ const ResponsePage = async () => {
       <Button asChild size="sm" variant="secondary">
         <Link href="/account">View account</Link>
       </Button>
+      <ClientUploadComponent userId={authProps.user.id} />
       <ClientResponseContent {...authProps} />
     </Suspense>
   );

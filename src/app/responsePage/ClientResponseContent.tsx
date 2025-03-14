@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 import Typewriter from "./p";
 import { Card, CardContent } from "@/components/ui/card";
@@ -50,8 +51,8 @@ const ClientResponseContent = ({
   const [showDialog, setShowDialog] = useState(false);
   const [isCustomPrompt, setIsCustomPrompt] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-    const [selectedStudyMaterial, setSelectedStudyMaterial] = useState("");
-    const [uploading, setUploading] = useState(false);
+  const [selectedStudyMaterial, setSelectedStudyMaterial] = useState("");
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     const loadHtml2Pdf = async () => {
@@ -110,40 +111,99 @@ const ClientResponseContent = ({
 
   const handleGenerateContent = async () => {
     if (!file) {
-      alert("Please upload a file first");
-      return;
-    }
+      // Fetch the file from the database instead of using an uploaded file
+      const { data: documentsData, error: fetchError } = await supabase
+        .from("users_documents")
+        .select("*")
+        .eq("user_id", user.id);
 
-    setIsLoading(true);
-    setIsCustomPrompt(true);
-
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("textPrompt", textPrompt);
-
-    try {
-      const response = await fetch("/api/doubts", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (fetchError) {
+        throw new Error(fetchError.message);
       }
 
-      const data = await response.json();
-      console.log("Generated content:", data.generatedText);
-      setCheatsheetContent(data.generatedText);
-      setTempFilePath(data.tempFilePath);
-    } catch (error) {
-      console.error("Error fetching generated content:", error);
-      setErrorMessage("Failed to generate content. Please try again.");
-    } finally {
-      setLoadingCheatsheet(false);
-      setIsLoading(false);
+      const document = documentsData[0]; // Assuming you want the first document
+      if (!document) {
+        alert("No document found.");
+        return;
+      }
+
+      const fileUrl = document.document_url;
+
+      // Fetch the file content using the URL
+      const fileResponse = await fetch(fileUrl);
+      const fileBlob = await fileResponse.blob();
+
+      // Create a new File object
+      const newFile = new File(
+        [fileBlob],
+        document.document_url.split("/").pop() || "document",
+        {
+          type:
+            fileResponse.headers.get("Content-Type") ||
+            "application/octet-stream",
+        }
+      );
+
+      setIsLoading(true);
+      setIsCustomPrompt(true);
+
+      const formData = new FormData();
+      formData.append("file", newFile);
+      formData.append("textPrompt", textPrompt);
+
+      try {
+        const response = await fetch("/api/doubts", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Generated content:", data.generatedText);
+        setCheatsheetContent(data.generatedText);
+        setTempFilePath(data.tempFilePath);
+      } catch (error) {
+        console.error("Error fetching generated content:", error);
+        setErrorMessage("Failed to generate content. Please try again.");
+      } finally {
+        setLoadingCheatsheet(false);
+        setIsLoading(false);
+      }
+    } else {
+      // If a file is already uploaded, use it
+      setIsLoading(true);
+      setIsCustomPrompt(true);
+
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("textPrompt", textPrompt);
+
+      try {
+        const response = await fetch("/api/doubts", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Generated content:", data.generatedText);
+        setCheatsheetContent(data.generatedText);
+        setTempFilePath(data.tempFilePath);
+      } catch (error) {
+        console.error("Error fetching generated content:", error);
+        setErrorMessage("Failed to generate content. Please try again.");
+      } finally {
+        setLoadingCheatsheet(false);
+        setIsLoading(false);
+      }
     }
   };
-
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
     if (selectedFile) {
@@ -155,8 +215,8 @@ const ClientResponseContent = ({
         );
         event.target.value = ""; // Reset the file input
       } else {
-          setFile(selectedFile);
-            handleUpload();
+        setFile(selectedFile);
+        handleUpload();
       }
     } else {
       alert("No file selected. Please try again.");
@@ -196,22 +256,52 @@ const ClientResponseContent = ({
 
   const handleSubmit = async (option: "Detailed" | "Precise") => {
     if (!file) {
-      alert("Please upload a file first");
-      return;
-    }
-    setIsCustomPrompt(false);
+      // Fetch the file from the database instead of using an uploaded file
+      const { data: documentsData, error: fetchError } = await supabase
+        .from("users_documents")
+        .select("*")
+        .eq("user_id", user.id);
 
-    setSelectedOption(option);
-    setShowDialog(false);
-    setLoadingCheatsheet(true);
-    setSelectedStudyMaterial(option);
+      if (fetchError) {
+        throw new Error(fetchError.message);
+      }
 
-    let customPrompt = textPrompt || "";
+      const document = documentsData[0]; // Assuming you want the first document
+      if (!document) {
+        alert("No document found.");
+        return;
+      }
 
-    if (option === "Detailed") {
-      customPrompt =
-        customPrompt ||
-        `Imagine you are a student and you need to prepare for an exam based on the provided document. It is essential to understand the concepts and details to perform well. You need good quality notes to help you study effectively. Your task is to generate really good notes based the key points of the provided document and explaining the key concepts in minimum words. Structure the content as follows:
+      const fileUrl = document.document_url;
+
+      // Fetch the file content using the URL
+      const fileResponse = await fetch(fileUrl);
+      const fileBlob = await fileResponse.blob();
+
+      // Create a new File object
+      const newFile = new File(
+        [fileBlob],
+        document.document_url.split("/").pop() || "document",
+        {
+          type:
+            fileResponse.headers.get("Content-Type") ||
+            "application/octet-stream",
+        }
+      );
+
+      setIsCustomPrompt(false);
+
+      setSelectedOption(option);
+      setShowDialog(false);
+      setLoadingCheatsheet(true);
+      setSelectedStudyMaterial(option);
+
+      let customPrompt = textPrompt || "";
+
+      if (option === "Detailed") {
+        customPrompt =
+          customPrompt ||
+          `Imagine you are a student and you need to prepare for an exam based on the provided document. It is essential to understand the concepts and details to perform well. You need good quality notes to help you study effectively. Your task is to generate really good notes based the key points of the provided document and explaining the key concepts in minimum words. Structure the content as follows:
          Structure the content as follows:
 
 ## Content Organization Rules:
@@ -230,13 +320,13 @@ DETAIL_2: [Implementation details or use cases]
 DETAIL_3: [Examples or applications]
 DETAIL_4: [Common pitfalls to avoid]
 DETAIL_5: [Best practices]
----
+--- 
 
 Note: Each section must be concise, focusing on key points to ensure the study guide fits within one to two pages.`;
-    } else if (option === "Precise") {
-      customPrompt =
-        customPrompt ||
-        `Imagine you are a student and you need to prepare for an exam based on the provided document. It is essential to understand the key concepts and details to perform well. You need a cheatsheet to help you study effectively. Your task is to generate a concise cheatsheet summarizing the key points of the provided document and explaining the key concepts in minimum words. Structure the content as follows:
+      } else if (option === "Precise") {
+        customPrompt =
+          customPrompt ||
+          `Imagine you are a student and you need to prepare for an exam based on the provided document. It is essential to understand the key concepts and details to perform well. You need a cheatsheet to help you study effectively. Your task is to generate a concise cheatsheet summarizing the key points of the provided document and explaining the key concepts in minimum words. Structure the content as follows:
         
         Generate a concise exam cheatsheet summarizing the key points of the provided document. Structure the content as follows:
 
@@ -256,35 +346,125 @@ DETAIL_2: [Implementation details or use cases]
 DETAIL_3: [Examples or applications]
 DETAIL_4: [Common pitfalls to avoid]
 DETAIL_5: [Best practices]
----
+--- 
 
 Note: Each section must be concise, focusing on key points to ensure the study guide fits within one to two pages.`;
-    }
-
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("textPrompt", customPrompt);
-
-    try {
-      const response = await fetch("/api/upload-and-generate", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data = await response.json();
-      console.log("Cheatsheet content set:", data.generatedText);
-      setCheatsheetContent(data.generatedText);
-      setTempFilePath(data.tempFilePath);
-      setShowingMnemonics(false);
-    } catch (error) {
-      console.error("Error fetching cheatsheet content:", error);
-      setErrorMessage("Failed to generate cheatsheet. Please try again.");
-    } finally {
-      setLoadingCheatsheet(false);
+      const formData = new FormData();
+      formData.append("file", newFile);
+      formData.append("textPrompt", customPrompt);
+
+      try {
+        const response = await fetch("/api/upload-and-generate", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Cheatsheet content set:", data.generatedText);
+        setCheatsheetContent(data.generatedText);
+        setTempFilePath(data.tempFilePath);
+        setShowingMnemonics(false);
+      } catch (error) {
+        console.error("Error fetching cheatsheet content:", error);
+        setErrorMessage("Failed to generate cheatsheet. Please try again.");
+      } finally {
+        setLoadingCheatsheet(false);
+      }
+    } else {
+      // If a file is already uploaded, use it
+      setIsCustomPrompt(false);
+
+      setSelectedOption(option);
+      setShowDialog(false);
+      setLoadingCheatsheet(true);
+      setSelectedStudyMaterial(option);
+
+      let customPrompt = textPrompt || "";
+
+      if (option === "Detailed") {
+        customPrompt =
+          customPrompt ||
+          `Imagine you are a student and you need to prepare for an exam based on the provided document. It is essential to understand the concepts and details to perform well. You need good quality notes to help you study effectively. Your task is to generate really good notes based the key points of the provided document and explaining the key concepts in minimum words. Structure the content as follows:
+         Structure the content as follows:
+
+## Content Organization Rules:
+1. Begin each major topic with "TITLE: " followed by the main concept.
+2. Each TITLE section must include an "Explanation: " that provides brief context and importance.
+3. Break down topics into "SUBTOPIC: " sections.
+4. List all details with "DETAIL_N: " where N is a sequential number.
+5. Use three dashes (---) to separate major sections.
+
+Required Content Structure:
+TITLE: [Main Topic]
+Explanation: [Brief context and significance]
+SUBTOPIC: [Key Component/Concept]
+DETAIL_1: [Core concept summarized]
+DETAIL_2: [Implementation details or use cases]
+DETAIL_3: [Examples or applications]
+DETAIL_4: [Common pitfalls to avoid]
+DETAIL_5: [Best practices]
+--- 
+
+Note: Each section must be concise, focusing on key points to ensure the study guide fits within one to two pages.`;
+      } else if (option === "Precise") {
+        customPrompt =
+          customPrompt ||
+          `Imagine you are a student and you need to prepare for an exam based on the provided document. It is essential to understand the key concepts and details to perform well. You need a cheatsheet to help you study effectively. Your task is to generate a concise cheatsheet summarizing the key points of the provided document and explaining the key concepts in minimum words. Structure the content as follows:
+        
+        Generate a concise exam cheatsheet summarizing the key points of the provided document. Structure the content as follows:
+
+## Content Organization Rules:
+1. Begin each major topic with "TITLE: " followed by the main concept.
+2. Each TITLE section must include an "Explanation: " that provides brief context and importance.
+3. Break down topics into "SUBTOPIC: " sections.
+4. List all details with "DETAIL_N: " where N is a sequential number.
+5. Use three dashes (---) to separate major sections.
+
+Required Content Structure:
+TITLE: [Main Topic]
+Explanation: [Brief context and significance]
+SUBTOPIC: [Key Component/Concept]
+DETAIL_1: [Core concept summarized]
+DETAIL_2: [Implementation details or use cases]
+DETAIL_3: [Examples or applications]
+DETAIL_4: [Common pitfalls to avoid]
+DETAIL_5: [Best practices]
+--- 
+
+Note: Each section must be concise, focusing on key points to ensure the study guide fits within one to two pages.`;
+      }
+
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("textPrompt", customPrompt);
+
+      try {
+        const response = await fetch("/api/upload-and-generate", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Cheatsheet content set:", data.generatedText);
+        setCheatsheetContent(data.generatedText);
+        setTempFilePath(data.tempFilePath);
+        setShowingMnemonics(false);
+      } catch (error) {
+        console.error("Error fetching cheatsheet content:", error);
+        setErrorMessage("Failed to generate cheatsheet. Please try again.");
+      } finally {
+        setLoadingCheatsheet(false);
+      }
     }
   };
 
@@ -448,7 +628,7 @@ Separate each question with three dashes (---).`;
 
         <div className="w-full flex justify-center px-4 md:px-0">
           <form className="w-full md:w-3/4 bg-black border border-gray-700 shadow-md rounded-lg p-4 md:p-6 mt-6">
-            <div className="mb-4">
+            {/* <div className="mb-4">
               <label className="block text-lg font-medium text-white">
                 Upload File
               </label>
@@ -470,7 +650,7 @@ Separate each question with three dashes (---).`;
                   <span className="font-semibold">{file.name}</span>
                 </p>
               )}
-            </div>
+            </div> */}
 
             <div className="mb-4 bg-black rounded-lg">
               <label className="block text-lg font-medium text-white">
