@@ -50,7 +50,8 @@ const ClientResponseContent = ({
   const [showDialog, setShowDialog] = useState(false);
   const [isCustomPrompt, setIsCustomPrompt] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedStudyMaterial, setSelectedStudyMaterial] = useState("");
+    const [selectedStudyMaterial, setSelectedStudyMaterial] = useState("");
+    const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     const loadHtml2Pdf = async () => {
@@ -154,10 +155,42 @@ const ClientResponseContent = ({
         );
         event.target.value = ""; // Reset the file input
       } else {
-        setFile(selectedFile);
+          setFile(selectedFile);
+            handleUpload();
       }
     } else {
       alert("No file selected. Please try again.");
+    }
+  };
+
+  // Function to upload the selected file
+  const handleUpload = async () => {
+    if (!file) {
+      alert("Please select a file before uploading.");
+      return;
+    }
+
+    setUploading(true);
+    const formData = new FormData();
+    formData.append("document", file);
+
+    try {
+      const response = await fetch("/api/files/upload-doc", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        alert("File uploaded successfully!");
+      } else {
+        alert("Upload failed: " + result.error);
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert("An error occurred during upload.");
+    } finally {
+      setUploading(false);
     }
   };
 
