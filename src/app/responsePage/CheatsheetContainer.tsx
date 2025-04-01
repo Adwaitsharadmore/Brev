@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState } from "react";
 import {
   Paper,
   Typography,
@@ -20,827 +20,131 @@ import {
   ChevronRight,
   Highlighter,
   X,
-  Palette,
   Underline,
   StickyNote,
   Eraser,
 } from "lucide-react";
-import { MessageCircle } from "lucide-react";
-import { Plus } from "lucide-react";
-import { styled } from "@mui/material/styles";
-import Grid from "@mui/material/Grid";
 
-interface Mnemonic {
-  text: string;
-  type: string;
+interface CheatsheetSection {
   title: string;
-  subtopic: string;
   explanation: string;
+  subtopic: string;
+  details: string[];
 }
-
-interface CustomContentItem {
-  type: "detail" | "text" | "command";
-  content: string;
-}
-interface Selection {
-  text: string;
-  elementId: string;
-  startOffset: number;
-  endOffset: number;
-}
-
-interface Highlight {
-  id: string;
-  range: Range;
-  color: string;
-  sectionId: number;
-  markType: "highlight" | "underline" | "annotate";
-}
-
-interface Range {
-  startContainer: Node;
-  startOffset: number;
-  endContainer: Node;
-  endOffset: number;
-}
-
-interface PendingHighlight {
-  selections: Selection[];
-  color: string;
-}
-type MarkingMode = "none" | "highlight" | "underline" | "annotate" | "eraser";
-
-interface Annotation {
-  id: string;
-  markId: string;
-  text: string;
-  color: string;
-}
-
-const MARK_COLORS = [
-  { name: "Yellow", value: "#fef08a" },
-  { name: "Green", value: "#bbf7d0" },
-  { name: "Blue", value: "#bfdbfe" },
-  { name: "Pink", value: "#fbcfe8" },
-  { name: "Purple", value: "#e9d5ff" },
-  { name: "Black", value: "#000" },
-];
-
-const formatMathText = (text: string) => {
-  let formattedText = text.replace(/([a-z])(\d)/gi, "$1$2");
-  formattedText = formattedText.replace(/\^(\d+)/g, "$1");
-  const symbolMap = {
-    ">=": "≥",
-    "<=": "≤",
-    "!=": "≠",
-    "->": "→",
-    N: "N",
-    Z: "Z",
-  };
-  Object.entries(symbolMap).forEach(([key, value]) => {
-    formattedText = formattedText.replace(new RegExp(key, "g"), value);
-  });
-  return formattedText;
-};
-
-const formatCodeBlock = (text: string, type: "detail" | "text" | "command") => {
-  if (type === "command") {
-    return (
-      <Box
-        display="flex"
-        alignItems="start"
-        gap={1}
-        sx={{
-          p: 1,
-          fontFamily: "Inter, sans-serif",
-          fontSize: "0.875rem",
-          color: "text.primary",
-        }}
-      >
-        <Typography sx={{ whiteSpace: "pre-wrap" }}>{text}</Typography>
-      </Box>
-    );
-  }
-
-  if (text.includes("{") || text.includes("if") || text.includes("→")) {
-    return (
-      <Typography
-        sx={{
-          my: 1,
-          whiteSpace: "pre-wrap",
-          color: "text.primary",
-        }}
-      >
-        {text}
-      </Typography>
-    );
-  }
-  return formatMathText(text);
-};
 
 interface CheatsheetListProps {
   loadingCheatsheet: boolean;
   isLoading: boolean;
-  cheatsheetContent: string;
-  isCustomPrompt: boolean; 
+  cheatsheetContent: CheatsheetSection[];
+  isCustomPrompt: boolean;
 }
+
 const CheatsheetList = ({
   loadingCheatsheet,
   isLoading,
   cheatsheetContent,
   isCustomPrompt,
 }: CheatsheetListProps) => {
-  const [expandedSections, setExpandedSections] = useState<
-    Record<number, boolean>
-  >({});
-  const [marks, setMarks] = useState<Highlight[]>([]);
-  const [annotations, setAnnotations] = useState<Annotation[]>([]);
-  const [markingMode, setMarkingMode] = useState<MarkingMode>("none");
-  const [currentColor, setCurrentColor] = useState(MARK_COLORS[0].value);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [annotationDialogOpen, setAnnotationDialogOpen] = useState(false);
-  const [currentAnnotation, setCurrentAnnotation] = useState<{
-    markId: string;
-    text: string;
-  } | null>(null);
-  const [showAnnotationsSidebar, setShowAnnotationsSidebar] = useState(false);
-  const [selectedMarkForAnnotation, setSelectedMarkForAnnotation] = useState<
-    string | null
-  >(null);
-  const [eraserMode, setEraserMode] = useState(false);
+  const [markingMode, setMarkingMode] = useState<
+    "none" | "highlight" | "underline" | "annotate" | "eraser"
+  >("none");
+  const [currentColor, setCurrentColor] = useState("#fef08a");
 
-  if (!cheatsheetContent) return null;
+  if (!cheatsheetContent || cheatsheetContent.length === 0) return null;
 
-
-  const sections = cheatsheetContent
-    .split("---")
-    .filter((section) => section.trim());
-  
-  
-const toggleMarkingMode = (mode: MarkingMode) => {
-  setMarkingMode((currentMode) => (currentMode === mode ? "none" : mode));
-  if (anchorEl) {
-    setAnchorEl(null);
-  }
-};
-
-
-  const handleColorChange = (color: string) => {
-    setCurrentColor(color);
-    setAnchorEl(null);
-  };
-
-  const applyHighlights = (sectionId: number, element: HTMLElement) => {
-    const sectionMarks = marks.filter((m) => m.sectionId === sectionId);
-
-    sectionMarks.forEach((mark) => {
-      try {
-        const range = document.createRange();
-        range.setStart(mark.range.startContainer, mark.range.startOffset);
-        range.setEnd(mark.range.endContainer, mark.range.endOffset);
-
-        // Get all text nodes within the range
-        const textNodes = [];
-        const iterator = document.createNodeIterator(
-          range.commonAncestorContainer,
-          NodeFilter.SHOW_TEXT
-        );
-
-        let currentNode;
-        while ((currentNode = iterator.nextNode())) {
-          if (range.intersectsNode(currentNode)) {
-            textNodes.push(currentNode);
-          }
-        }
-
-        // Highlight each text node
-        textNodes.forEach((textNode) => {
-          let start =
-            textNode === range.startContainer ? mark.range.startOffset : 0;
-          let end =
-            textNode === range.endContainer
-              ? mark.range.endOffset
-              : (textNode as Text).length;
-
-          if (start !== end) {
-            const highlightSpan = document.createElement("span");
-            highlightSpan.style.backgroundColor =
-              mark.markType === "highlight" ? mark.color : "transparent";
-            highlightSpan.style.textDecoration =
-              mark.markType === "underline"
-                ? `underline ${mark.color} 2px`
-                : "none";
-            highlightSpan.style.position = "relative";
-            highlightSpan.dataset.markId = mark.id;
-
-            // Split text node if needed
-            if (start > 0) {
-              (textNode as Text).splitText(start);
-              textNode = textNode.nextSibling as Text;
-              end -= start;
-              start = 0;
-            }
-
-            if (end < (textNode as Text).length) {
-              (textNode as Text).splitText(end);
-            }
-
-            // Replace text node with highlight
-            const parent = textNode.parentNode;
-            if (parent) {
-              const wrapper = document.createElement("span");
-              wrapper.appendChild(textNode.cloneNode());
-              highlightSpan.appendChild(wrapper);
-              parent.replaceChild(highlightSpan, textNode);
-            }
-          }
-        });
-      } catch (e) {
-        console.error("Error applying highlight:", e);
-      }
-    });
-  };
-
-  const removeHighlight = (markId: string) => {
-    const highlights = document.querySelectorAll(`[data-mark-id="${markId}"]`);
-    highlights.forEach((highlight) => {
-      const parent = highlight.parentNode;
-      if (parent) {
-        const fragment = document.createDocumentFragment();
-        while (highlight.firstChild) {
-          fragment.appendChild(highlight.firstChild);
-        }
-        parent.replaceChild(fragment, highlight);
-        parent.normalize(); // Merge adjacent text nodes
-      }
-    });
-
-    setMarks((prev) => prev.filter((m) => m.id !== markId));
-  };
-
-  // Advanced text selection and marking logic
-  const handleTextSelection = (sectionId: number) => {
-    const selection = window.getSelection();
-    if (
-      !selection ||
-      selection.rangeCount === 0 ||
-      selection.toString().trim() === ""
-    )
-      return;
-    const range = selection.getRangeAt(0);
-
-    const handleErase = (sectionId: number) => {
-      const selection = window.getSelection();
-      if (!selection || selection.rangeCount === 0) return;
-
-      const range = selection.getRangeAt(0);
-      const highlightedElements = document.querySelectorAll("[data-mark-id]");
-
-      highlightedElements.forEach((element) => {
-        if (range.intersectsNode(element)) {
-          const markId = element.getAttribute("data-mark-id");
-          if (markId) removeHighlight(markId);
-        }
-      });
-    };
-    if (markingMode === "eraser") {
-      handleErase(sectionId);
-      return;
-    }
-
-    if (markingMode === "none") return;
-    if (markingMode === "annotate") {
-      handleannotateSelection(sectionId);
-    }
-
-    const newMark: Highlight = {
-      id: Math.random().toString(36).substr(2, 9),
-      range: {
-        startContainer: range.startContainer,
-        startOffset: range.startOffset,
-        endContainer: range.endContainer,
-        endOffset: range.endOffset,
-      },
-      color: currentColor,
-      sectionId: sectionId,
-      markType: markingMode,
-    };
-
-    setMarks((prev) => [...prev, newMark]);
-
-    selection.removeAllRanges();
-  };
-  const addAnnotation = () => {
-    if (currentAnnotation) {
-      const newAnnotation: Annotation = {
-        id: Math.random().toString(36).substr(2, 9),
-        markId: currentAnnotation.markId,
-        text: currentAnnotation.text,
-        color: currentColor,
-      };
-      setAnnotations((prev) => [...prev, newAnnotation]);
-      setAnnotationDialogOpen(false);
-      setCurrentAnnotation(null);
-      setSelectedMarkForAnnotation(null);
-      setShowAnnotationsSidebar(true);
-      setMarkingMode("none"); // Reset marking mode after adding annotation
-    }
-  };
-
-  const handleannotateSelection = (sectionId: number) => {
-    if (markingMode === "none") return;
-
-    const selection = window.getSelection();
-    if (
-      !selection ||
-      selection.rangeCount === 0 ||
-      selection.toString().trim() === ""
-    )
-      return;
-
-    const range = selection.getRangeAt(0);
-
-    // Create a new mark for the annotation
-    const newMark: Highlight = {
-      id: Math.random().toString(36).substr(2, 9),
-      range: {
-        startContainer: range.startContainer,
-        startOffset: range.startOffset,
-        endContainer: range.endContainer,
-        endOffset: range.endOffset,
-      },
-      color: currentColor,
-      sectionId: sectionId,
-      markType: "highlight", // Set to "highlight" to ensure visual feedback
-    };
-
-    // Apply the highlight
-    const span = document.createElement("span");
-    span.style.backgroundColor = currentColor;
-    span.style.opacity = "1";
-    span.dataset.markId = newMark.id;
-    range.surroundContents(span);
-
-    // Add the new mark to the marks state
-    setMarks((prev) => [...prev, newMark]);
-
-    // Open the annotation dialog
-    setAnnotationDialogOpen(true);
-    setCurrentAnnotation({ markId: newMark.id, text: "" });
-
-    // Clear the selection
-    selection.removeAllRanges();
-  };
-
-  const removeAnnotation = (annotationId: string) => {
-    setAnnotations((prev) =>
-      prev.filter((annotation) => annotation.id !== annotationId)
-    );
-  };
-
-  const clearAllMarks = () => {
-    // Remove all highlight spans from the DOM
-    const highlightSpans = document.querySelectorAll("[data-mark-id]");
-    highlightSpans.forEach((highlight) => {
-      if (highlight.parentNode) {
-        const textContent = highlight.firstChild?.textContent || "";
-        highlight.parentNode.replaceChild(
-          document.createTextNode(textContent),
-          highlight
-        );
-      }
-    });
-
-    // Clear marks and annotations state
-    setMarks([]);
-    setAnnotations([]);
-  };
-
-  const renderAnnotations = (markId: string) => {
-    const relatedAnnotations = annotations.filter((a) => a.markId === markId);
-    return relatedAnnotations.map((annotation) => (
-      <Box
-        key={annotation.id}
-        sx={{
-          backgroundColor: annotation.color,
-          p: 1,
-          m: 1,
-          borderRadius: 1,
-          position: "relative",
-        }}
-      >
-        <Typography variant="body2">{annotation.text}</Typography>
-        <IconButton
-          size="small"
-          onClick={() => removeAnnotation(annotation.id)}
-          sx={{
-            position: "absolute",
-            top: 0,
-            right: 0,
-            p: 0.5,
-          }}
-        >
-          <X size={16} />
-        </IconButton>
-      </Box>
-    ));
+  const toggleMarkingMode = (mode: typeof markingMode) => {
+    setMarkingMode((currentMode) => (currentMode === mode ? "none" : mode));
   };
 
   return (
     <Box sx={{ position: "relative", minHeight: "100vh" }}>
-      {/* ... previous rendering logic */}
       <Box sx={{ maxWidth: "1200px", mx: "auto" }}>
         <Masonry columns={{ xs: 1, sm: 2, md: 3 }} spacing={3} sequential>
-          {sections
-            .sort((a, b) => {
-              const aIndex = parseInt(a.match(/^TITLE:\s(\d+)/)?.[1] || "0");
-              const bIndex = parseInt(b.match(/^TITLE:\s(\d+)/)?.[1] || "0");
-              return aIndex - bIndex;
-            })
-            .map((section: string, sectionIndex: number) => {
-              const lines = section
-                .trim()
-                .split("\n")
-                .filter((line) => line.trim());
-
-              let currentTitle = "";
-              let currentSubtopic = "";
-              let currentExplanation = "";
-              let mnemonics: Mnemonic[] = [];
-              let currentMnemonic: Mnemonic | null = null;
-              let customContent: CustomContentItem[] = [];
-
-              lines.forEach((line) => {
-                const titleMatch = line.match(/^TITLE:\s(.+)/);
-                const subtopicMatch = line.match(/^SUBTOPIC:\s(.+)/);
-                const explanationMatch = line.match(/^Explanation:\s(.+)/);
-                const mnemonicMatch = line.match(/^MNEMONIC_\d+:\s(.+)/);
-                const typeMatch = line.match(/^TYPE:\s(.+)/);
-                const detailMatch = line.match(/^DETAIL_\d+:\s(.+)/);
-                const commandMatch = line.match(/^\$\s(.+)/);
-
-                if (titleMatch) {
-                  currentTitle = titleMatch[1];
-                } else if (subtopicMatch) {
-                  currentSubtopic = subtopicMatch[1];
-                } else if (explanationMatch) {
-                  currentExplanation = explanationMatch[1];
-                } else if (mnemonicMatch) {
-                  currentMnemonic = {
-                    text: mnemonicMatch[1],
-                    type: "",
-                    title: currentTitle,
-                    subtopic: currentSubtopic,
-                    explanation: currentExplanation,
-                  };
-                } else if (typeMatch && currentMnemonic) {
-                  currentMnemonic.type = typeMatch[1];
-                  mnemonics.push(currentMnemonic);
-                  currentMnemonic = null;
-                } else if (detailMatch) {
-                  customContent.push({
-                    type: "detail",
-                    content: detailMatch[1],
-                  });
-                } else if (commandMatch) {
-                  customContent.push({
-                    type: "command",
-                    content: commandMatch[1],
-                  });
-                } else if (line.trim()) {
-                  customContent.push({ type: "text", content: line });
-                }
-              });
-
-              return (
-                <Paper
-                  key={sectionIndex}
-                  elevation={1}
-                  sx={{
-                    p: 1.5,
-                    borderRadius: 2,
-                    cursor: markingMode !== "none" ? "text" : "default",
-                    "&:hover": {
-                      boxShadow: 3,
-                      transition: "box-shadow 0.3s ease-in-out",
-                    },
-                  }}
-                >
-                  {/* Title */}
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      color: "text.primary",
-
-                      fontSize: "1.1rem",
-                      fontWeight: 600,
-                    }}
-                  >
-                    {`${sectionIndex + 1}. ${currentTitle}`}
-                  </Typography>
-
-                  {/* Explanation if exists */}
-                  {currentExplanation && (
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        color: "text.secondary",
-                        mb: 2,
-                        fontFamily: "Inter, sans-serif",
-                        fontSize: "0.875rem",
-                      }}
-                    >
-                      {currentExplanation}
-                    </Typography>
-                  )}
-
-                  {/* Subtopic if exists */}
-                  {currentSubtopic && (
-                    <Typography
-                      variant="subtitle1"
-                      sx={{
-                        color: "text.secondary",
-                        mb: 0.5,
-                        fontSize: "0.95rem",
-                        fontWeight: 500,
-                      }}
-                    >
-                      {currentSubtopic}
-                    </Typography>
-                  )}
-
-                  {/* Main Content */}
-                  <Box>
-                    {customContent.map((item, idx) => (
-                      <Box
-                        key={idx}
-                        display="flex"
-                        alignItems="start"
-                        gap={1}
-                        sx={{ mb: 0.5 }}
-                        ref={(el: HTMLElement | null) => {
-                          if (el) applyHighlights(sectionIndex, el);
-                        }}
-                        onMouseUp={() => handleTextSelection(sectionIndex)}
-                      >
-                        <ChevronRight className="w-4 h-4 text-blue-600 mt-1 flex-shrink-0" />
-                        <Box
-                          sx={{
-                            flex: 1,
-                            fontFamily: "Inter, sans-serif",
-                            fontSize: "0.875rem",
-                            lineHeight: 1.6,
-                            "& code": {
-                              fontFamily: "monospace",
-                              bgcolor: "grey.100",
-                              px: 0.5,
-                              borderRadius: 0.5,
-                            },
-                          }}
-                        >
-                          {typeof item.content === "string"
-                            ? item.content
-                            : formatCodeBlock(item.content, item.type)}
-                        </Box>
-                      </Box>
-                    ))}
-                  </Box>
-
-                  {/* Memory Aids section if exists */}
-                  {mnemonics.length > 0 && (
-                    <Card
-                      sx={{ mt: 3, bgcolor: "primary.light", borderRadius: 2 }}
-                    >
-                      <CardContent>
-                        <Typography
-                          variant="subtitle1"
-                          color="primary.dark"
-                          sx={{ mb: 1.5, fontWeight: 500 }}
-                        >
-                          Memory Aids
-                        </Typography>
-                      </CardContent>
-                    </Card>
-                  )}
-                </Paper>
-              );
-            })}
-        </Masonry>
-      </Box>
-      {/* Annotation Dialog */}
-      <Dialog
-        open={annotationDialogOpen}
-        onClose={() => setAnnotationDialogOpen(false)}
-      >
-        <DialogTitle>Add Annotation</DialogTitle>
-        <DialogContent>
-          <TextField
-            fullWidth
-            multiline
-            rows={4}
-            variant="outlined"
-            placeholder="Write your annotation here..."
-            value={currentAnnotation?.text || ""}
-            onChange={(e) =>
-              setCurrentAnnotation((prev) =>
-                prev ? { ...prev, text: e.target.value } : null
-              )
-            }
-            sx={{ mt: 2 }}
-          />
-          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
-            <Button onClick={addAnnotation} variant="contained" color="primary">
-              Save Annotation
-            </Button>
-            <Button
-              onClick={() => setAnnotationDialogOpen(false)}
-              variant="outlined"
-            >
-              Cancel
-            </Button>
-          </Box>
-        </DialogContent>
-      </Dialog>
-
-      {/* Additional Marking Controls */}
-      <Box>
-        {/* ... previous marking buttons ... */}
-
-        <Tooltip
-          title={
-            markingMode === "highlight"
-              ? "Stop Highlighting"
-              : "Start Highlighting"
-          }
-        >
-          <IconButton
-            onClick={() => toggleMarkingMode("highlight")}
-            sx={{
-              backgroundColor:
-                markingMode === "highlight" ? "primary.main" : "white",
-              color: markingMode === "highlight" ? "white" : "primary.main",
-              "&:hover": {
-                backgroundColor:
-                  markingMode === "highlight" ? "primary.dark" : "grey.100",
-              },
-            }}
-          >
-            <Highlighter />
-          </IconButton>
-        </Tooltip>
-
-        <Tooltip
-          title={
-            markingMode === "underline"
-              ? "Stop Underlining"
-              : "Start Underlining"
-          }
-        >
-          <IconButton
-            onClick={() => toggleMarkingMode("underline")}
-            sx={{
-              backgroundColor:
-                markingMode === "underline" ? "primary.main" : "white",
-              color: markingMode === "underline" ? "white" : "primary.main",
-              "&:hover": {
-                backgroundColor:
-                  markingMode === "underline" ? "primary.dark" : "grey.100",
-              },
-            }}
-          >
-            <Underline />
-          </IconButton>
-        </Tooltip>
-
-        <Tooltip title="Choose Color">
-          <IconButton
-            onClick={(e) => setAnchorEl(e.currentTarget)}
-            sx={{
-              backgroundColor: "white",
-              "&:hover": { backgroundColor: "grey.100" },
-            }}
-          >
-            <div
-              style={{
-                width: 16,
-                height: 16,
-                backgroundColor: currentColor,
-                borderRadius: "50%",
+          {cheatsheetContent.map((section, index) => (
+            <Paper
+              key={index}
+              elevation={1}
+              sx={{
+                p: 1.5,
+                borderRadius: 2,
+                cursor: markingMode !== "none" ? "text" : "default",
+                "&:hover": {
+                  boxShadow: 3,
+                  transition: "box-shadow 0.3s ease-in-out",
+                },
               }}
-            />
-          </IconButton>
-        </Tooltip>
-        <Tooltip
-          title={
-            markingMode === "eraser" ? "Exit Eraser Mode" : "Enter Eraser Mode"
-          }
-        >
-          <IconButton
-            onClick={() => toggleMarkingMode("eraser")}
-            sx={{
-              backgroundColor:
-                markingMode === "eraser" ? "primary.main" : "white",
-              color: markingMode === "eraser" ? "white" : "primary.main",
-              "&:hover": {
-                backgroundColor:
-                  markingMode === "eraser" ? "primary.dark" : "grey.100",
-              },
-            }}
-          >
-            <Eraser />
-          </IconButton>
-        </Tooltip>
-
-        <Tooltip
-          title={markingMode === "annotate" ? "Stop Annotations" : "Add Note"}
-        >
-          <IconButton
-            onClick={() => toggleMarkingMode("annotate")}
-            sx={{
-              backgroundColor:
-                markingMode === "annotate" ? "primary.main" : "white",
-              color: markingMode === "annotate" ? "white" : "primary.main",
-              "&:hover": {
-                backgroundColor:
-                  markingMode === "annotate" ? "primary.dark" : "grey.100",
-              },
-            }}
-          >
-            <StickyNote />
-          </IconButton>
-        </Tooltip>
-
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={() => setAnchorEl(null)}
-        >
-          {MARK_COLORS.map((color) => (
-            <MenuItem
-              key={color.value}
-              onClick={() => handleColorChange(color.value)}
             >
-              <Box
-                sx={{
-                  width: 20,
-                  height: 20,
-                  backgroundColor: color.value,
-                  mr: 1,
-                  borderRadius: "50%",
-                }}
-              />
-              {color.name}
-            </MenuItem>
-          ))}
-        </Menu>
-      </Box>
-
-      <div></div>
-
-      {/* Annotations Sidebar */}
-      {annotations.length > 0 && (
-        <Box
-          sx={{
-            position: "fixed",
-            right: 0,
-            top: "50%",
-            transform: "translateY(-50%)",
-            width: "250px",
-            maxHeight: "70vh",
-            overflowY: "auto",
-            backgroundColor: "background.paper",
-            boxShadow: 3,
-            p: 2,
-            borderTopLeftRadius: 2,
-            borderBottomLeftRadius: 2,
-          }}
-        >
-          <Typography variant="h6" sx={{ mb: 2 }}>
-            Annotations
-          </Typography>
-          {annotations.map((annotation) => (
-            <Box key={annotation.id} sx={{ mb: 2 }}>
+              {/* Title */}
               <Typography
-                variant="body2"
+                variant="h6"
                 sx={{
-                  backgroundColor: annotation.color,
-                  p: 1,
-                  borderRadius: 1,
+                  color: "text.primary",
+                  fontSize: "1.1rem",
+                  fontWeight: 600,
                 }}
               >
-                {annotation.text}
-                <IconButton
-                  size="small"
-                  onClick={() => removeAnnotation(annotation.id)}
-                  sx={{ ml: 1 }}
-                >
-                  <X size={16} />
-                </IconButton>
+                {`${index + 1}. ${section.title}`}
               </Typography>
-            </Box>
+
+              {/* Explanation */}
+              {section.explanation && (
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "text.secondary",
+                    mb: 2,
+                    fontFamily: "Inter, sans-serif",
+                    fontSize: "0.875rem",
+                  }}
+                >
+                  <strong>Explanation:</strong> {section.explanation}
+                </Typography>
+              )}
+
+              {/* Subtopic */}
+              {section.subtopic && (
+                <Typography
+                  variant="subtitle2"
+                  sx={{
+                    color: "text.secondary",
+                    mb: 1,
+                    fontSize: "0.925rem",
+                    fontWeight: 500,
+                  }}
+                >
+                  <strong>Subtopic:</strong> {section.subtopic}
+                </Typography>
+              )}
+
+              {/* Details */}
+              <Box>
+                {Array.isArray(section.details) &&
+                  section.details.map((detail, idx) => (
+                    <Box
+                      key={idx}
+                      display="flex"
+                      alignItems="start"
+                      gap={1}
+                      sx={{ mb: 0.5 }}
+                    >
+                      <ChevronRight className="w-4 h-4 text-blue-600 mt-1 flex-shrink-0" />
+                      <Typography
+                        sx={{
+                          flex: 1,
+                          fontFamily: "Inter, sans-serif",
+                          fontSize: "0.875rem",
+                          lineHeight: 1.6,
+                        }}
+                      >
+                        {detail}
+                      </Typography>
+                    </Box>
+                  ))}
+              </Box>
+            </Paper>
           ))}
-        </Box>
-      )}
+        </Masonry>
+      </Box>
     </Box>
   );
 };

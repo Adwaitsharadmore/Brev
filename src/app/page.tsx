@@ -330,7 +330,7 @@ const HomePage =   () => {
 
         <section id="story" className="pt-40">
           <div className="w-full py-10">
-            <Timeline data={data} />
+           
           </div>
         </section>
         <section id="contact">

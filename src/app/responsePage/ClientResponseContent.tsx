@@ -24,6 +24,13 @@ interface ClientResponseProps {
   [key: string]: any; // For other potential props from authProps
 }
 
+interface CheatsheetSection {
+  title: string;
+  explanation: string;
+  subtopic: string;
+  details: string[];
+}
+
 // Client component with all the hooks and interactivity
 const ClientResponseContent = ({
   user,
@@ -32,9 +39,9 @@ const ClientResponseContent = ({
 }: ClientResponseProps) => {
   const [showingMnemonics, setShowingMnemonics] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [cheatsheetContent, setCheatsheetContent] = useState<string | null>(
-    null
-  );
+  const [cheatsheetContent, setCheatsheetContent] = useState<
+    CheatsheetSection[]
+  >([]);
   const [file, setFile] = useState<File | null>(null);
   const [textPrompt, setTextPrompt] = useState("");
   const [loadingCheatsheet, setLoadingCheatsheet] = useState(false);
@@ -121,7 +128,7 @@ const ClientResponseContent = ({
         throw new Error(fetchError.message);
       }
 
-      const document = documentsData[0]; // Assuming you want the first document
+      const document = documentsData[documentsData.length - 1]; // Assuming you want the first document
       if (!document) {
         alert("No document found.");
         return;
@@ -162,8 +169,9 @@ const ClientResponseContent = ({
         }
 
         const data = await response.json();
-        console.log("Generated content:", data.generatedText);
-        setCheatsheetContent(data.generatedText);
+        console.log("Generated content:", data);
+        // Updated to use the sections from the new API response format
+        setCheatsheetContent(data.sections || []);
         setTempFilePath(data.tempFilePath);
       } catch (error) {
         console.error("Error fetching generated content:", error);
@@ -192,8 +200,9 @@ const ClientResponseContent = ({
         }
 
         const data = await response.json();
-        console.log("Generated content:", data.generatedText);
-        setCheatsheetContent(data.generatedText);
+        console.log("Generated content:", data);
+        // Updated to use the sections from the new API response format
+        setCheatsheetContent(data.sections || []);
         setTempFilePath(data.tempFilePath);
       } catch (error) {
         console.error("Error fetching generated content:", error);
@@ -204,6 +213,7 @@ const ClientResponseContent = ({
       }
     }
   };
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
     if (selectedFile) {
@@ -266,7 +276,7 @@ const ClientResponseContent = ({
         throw new Error(fetchError.message);
       }
 
-      const document = documentsData[0]; // Assuming you want the first document
+      const document = documentsData[documentsData.length - 1]; // Assuming you want the first document
       if (!document) {
         alert("No document found.");
         return;
@@ -322,13 +332,15 @@ DETAIL_4: [Common pitfalls to avoid]
 DETAIL_5: [Best practices]
 --- 
 
-Note: Each section must be concise, focusing on key points to ensure the study guide fits within one to two pages.`;
+Note: Each section must be concise, focusing on key points to ensure the study guide fits within one to two pages.
+
+Call setStructuredCheatsheet({ sections: [...] }) with the structured content.`;
       } else if (option === "Precise") {
         customPrompt =
           customPrompt ||
           `Imagine you are a student and you need to prepare for an exam based on the provided document. It is essential to understand the key concepts and details to perform well. You need a cheatsheet to help you study effectively. Your task is to generate a concise cheatsheet summarizing the key points of the provided document and explaining the key concepts in minimum words. Structure the content as follows:
         
-        Generate a concise exam cheatsheet summarizing the key points of the provided document. Structure the content as follows:
+Generate a concise exam cheatsheet summarizing the key points of the provided document. Structure the content as follows:
 
 ## Content Organization Rules:
 1. Begin each major topic with "TITLE: " followed by the main concept.
@@ -348,7 +360,9 @@ DETAIL_4: [Common pitfalls to avoid]
 DETAIL_5: [Best practices]
 --- 
 
-Note: Each section must be concise, focusing on key points to ensure the study guide fits within one to two pages.`;
+Note: Each section must be concise, focusing on key points to ensure the study guide fits within one to two pages.
+
+Call setStructuredCheatsheet({ sections: [...] }) with the structured content.`;
       }
 
       const formData = new FormData();
@@ -366,8 +380,10 @@ Note: Each section must be concise, focusing on key points to ensure the study g
         }
 
         const data = await response.json();
-        console.log("Cheatsheet content set:", data.generatedText);
-        setCheatsheetContent(data.generatedText);
+      
+        console.log("Cheatsheet content set:", data);
+        // Updated to use the sections from the new API response format
+        setCheatsheetContent(data.sections);
         setTempFilePath(data.tempFilePath);
         setShowingMnemonics(false);
       } catch (error) {
@@ -411,13 +427,15 @@ DETAIL_4: [Common pitfalls to avoid]
 DETAIL_5: [Best practices]
 --- 
 
-Note: Each section must be concise, focusing on key points to ensure the study guide fits within one to two pages.`;
+Note: Each section must be concise, focusing on key points to ensure the study guide fits within one to two pages.
+
+Call setStructuredCheatsheet({ sections: [...] }) with the structured content.`;
       } else if (option === "Precise") {
         customPrompt =
           customPrompt ||
           `Imagine you are a student and you need to prepare for an exam based on the provided document. It is essential to understand the key concepts and details to perform well. You need a cheatsheet to help you study effectively. Your task is to generate a concise cheatsheet summarizing the key points of the provided document and explaining the key concepts in minimum words. Structure the content as follows:
         
-        Generate a concise exam cheatsheet summarizing the key points of the provided document. Structure the content as follows:
+Generate a concise exam cheatsheet summarizing the key points of the provided document. Structure the content as follows:
 
 ## Content Organization Rules:
 1. Begin each major topic with "TITLE: " followed by the main concept.
@@ -437,7 +455,9 @@ DETAIL_4: [Common pitfalls to avoid]
 DETAIL_5: [Best practices]
 --- 
 
-Note: Each section must be concise, focusing on key points to ensure the study guide fits within one to two pages.`;
+Note: Each section must be concise, focusing on key points to ensure the study guide fits within one to two pages.
+
+Call setStructuredCheatsheet({ sections: [...] }) with the structured content.`;
       }
 
       const formData = new FormData();
@@ -455,8 +475,10 @@ Note: Each section must be concise, focusing on key points to ensure the study g
         }
 
         const data = await response.json();
-        console.log("Cheatsheet content set:", data.generatedText);
-        setCheatsheetContent(data.generatedText);
+        console.log("Cheatsheet content set:", data);
+        // Updated to use the sections from the new API response format
+        setCheatsheetContent(data.sections);
+        console.log(data.sections);
         setTempFilePath(data.tempFilePath);
         setShowingMnemonics(false);
       } catch (error) {
@@ -746,7 +768,7 @@ Separate each question with three dashes (---).`;
                   Generating your study materials...
                 </p>
               </div>
-            ) : cheatsheetContent ? (
+            ) : cheatsheetContent && cheatsheetContent.length > 0 ? (
               selectedStudyMaterial === "Precise" ? (
                 <StudentNotes
                   loadingCheatsheet={loadingCheatsheet}
@@ -775,7 +797,7 @@ Separate each question with three dashes (---).`;
           </div>
         </div>
 
-        {cheatsheetContent && (
+        {cheatsheetContent && cheatsheetContent.length > 0 && (
           <button
             onClick={handleDownloadPDF}
             className="mt-4 px-4 py-2 bg-[#0023FF] text-white rounded-full hover:bg-[#172688] transition-colors"
