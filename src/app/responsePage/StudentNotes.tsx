@@ -8,20 +8,37 @@ interface CheatsheetSection {
   details: string[];
 }
 
+interface MnemonicsContent {
+  [topicTitle: string]: {
+    acronyms?: {
+      acronym: string;
+      letters: string[];
+      explanation: string;
+    };
+    rhymes?: {
+      rhyme: string;
+      explanation: string;
+    };
+    loci?: {
+      setting: string;
+      visualizations: string[];
+      connections: string;
+      instructions: string;
+    };
+    keywords?: {
+      keywords: string[];
+      significance: string;
+      connections: string;
+      usage: string;
+    };
+  };
+}
+
 interface CheatsheetListProps {
   loadingCheatsheet: boolean;
   isLoading: boolean;
   cheatsheetContent: CheatsheetSection[];
   isCustomPrompt: boolean;
-}
-
-interface MnemonicsContent {
-  [topicTitle: string]: {
-    acronyms: string;
-    rhymes: string;
-    loci: string;
-    keywords: string;
-  };
 }
 
 const StudentNotes = ({
@@ -74,7 +91,7 @@ const StudentNotes = ({
         ...prev,
         [selectedTitle]: {
           ...prev[selectedTitle],
-          [type]: data.generatedText,
+          [type]: data.result,
         },
       }));
     } catch (error) {
@@ -96,46 +113,41 @@ const StudentNotes = ({
     }
   };
 
-  const generateAllMnemonics = async (title: string) => {
-    setIsGeneratingAll(true);
-    setProgress(0);
-    const types = ["acronyms", "rhymes", "loci", "keywords"];
-    const newContent = {
-      acronyms: "",
-      rhymes: "",
-      loci: "",
-      keywords: "",
-    };
+   const generateAllMnemonics = async (title: string) => {
+     setIsGeneratingAll(true);
+     setProgress(0);
+     const types = ["acronyms", "rhymes", "loci", "keywords"];
+     const newContent: any = {};
 
-    for (let i = 0; i < types.length; i++) {
-      try {
-        const response = await fetch("/api/generate-mnemonics", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            title,
-            type: types[i],
-          }),
-        });
-        const data = await response.json();
-        newContent[types[i] as keyof typeof newContent] = data.generatedText;
-        setProgress((i + 1) * 25);
-      } catch (error) {
-        console.error(`Error generating ${types[i]}:`, error);
-        newContent[
-          types[i] as keyof typeof newContent
-        ] = `Error generating ${types[i]}`;
-      }
-    }
+     for (let i = 0; i < types.length; i++) {
+       try {
+         const response = await fetch("/api/generate-mnemonics", {
+           method: "POST",
+           headers: {
+             "Content-Type": "application/json",
+           },
+           body: JSON.stringify({
+             title,
+             type: types[i],
+             content: cheatsheetContent,
+           }),
+         });
+         const data = await response.json();
+         console.log("Generated data:", data);
+         newContent[types[i]] = data.result;
+         setProgress((i + 1) * 25);
+       } catch (error) {
+         console.error(`Error generating ${types[i]}:`, error);
+         newContent[types[i]] = { error: `Error generating ${types[i]}` };
+       }
+     }
 
-    setGeneratedContent((prev) => ({
-      ...prev,
-      [title]: newContent,
-    }));
-    setIsGeneratingAll(false);
-  };
+     setGeneratedContent((prev) => ({
+       ...prev,
+       [title]: newContent,
+     }));
+     setIsGeneratingAll(false);
+   };
 
   if (!cheatsheetContent || cheatsheetContent.length === 0) return null;
 
@@ -174,7 +186,7 @@ const StudentNotes = ({
               </div>
             </div>
 
-            {expandedSections[index] ?? true ? (
+            {(expandedSections[index] ?? true) && (
               <>
                 {section.explanation && (
                   <div className="mt-4 p-4 bg-purple-50 rounded-lg border-l-4 border-purple-400">
@@ -211,7 +223,151 @@ const StudentNotes = ({
                   ))}
                 </div>
               </>
-            ) : null}
+            )}
+
+            {isModalOpen && selectedTitle === section.title && (
+              <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+                <div className="bg-white rounded-xl w-[90%] md:w-[70%] max-h-[90%] overflow-y-auto relative">
+                  <div className="flex justify-between items-center p-4 border-b">
+                    <h3 className="text-xl font-semibold text-purple-600">
+                      Mnemonics for: {selectedTitle}
+                    </h3>
+                    <button onClick={() => setIsModalOpen(false)}>
+                      <X className="w-6 h-6 text-gray-500" />
+                    </button>
+                  </div>
+
+                  <div className="flex justify-around border-b text-sm font-medium">
+                    {["acronyms", "rhymes", "loci", "keywords"].map((tab) => (
+                      <button
+                        key={tab}
+                        onClick={() => setActiveTab(tab)}
+                        className={`py-3 px-4 ${
+                          activeTab === tab
+                            ? "text-purple-600 border-b-2 border-purple-600"
+                            : "text-gray-500"
+                        }`}
+                      >
+                        {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="p-6 text-sm text-gray-700 whitespace-pre-wrap">
+                    {isGeneratingAll ? (
+                      <div className="text-center">
+                        Generating mnemonics... {progress}%
+                      </div>
+                    ) : (
+                      <>
+                        {activeTab === "acronyms" &&
+                          generatedContent[selectedTitle]?.acronyms && (
+                            <>
+                              <p className="mb-2">
+                                <strong>Acronym:</strong>{" "}
+                                {
+                                  generatedContent[selectedTitle].acronyms!
+                                    .acronym
+                                }
+                              </p>
+                              <p className="mb-2">
+                                <strong>Letters:</strong>{" "}
+                                {generatedContent[
+                                  selectedTitle
+                                ]?.acronyms?.letters?.join(", ") || "N/A"}
+                              </p>
+                              <p>
+                                <strong>Explanation:</strong>{" "}
+                                {
+                                  generatedContent[selectedTitle].acronyms!
+                                    .explanation
+                                }
+                              </p>
+                            </>
+                          )}
+                        {activeTab === "rhymes" &&
+                          generatedContent[selectedTitle]?.rhymes && (
+                            <>
+                              <p className="mb-2">
+                                <strong>Rhyme:</strong>{" "}
+                                {generatedContent[selectedTitle].rhymes!.rhyme}
+                              </p>
+                              <p>
+                                <strong>Explanation:</strong>{" "}
+                                {
+                                  generatedContent[selectedTitle].rhymes!
+                                    .explanation
+                                }
+                              </p>
+                            </>
+                          )}
+                        {activeTab === "loci" &&
+                          generatedContent[selectedTitle]?.loci && (
+                            <>
+                              <p className="mb-2">
+                                <strong>Setting:</strong>{" "}
+                                {generatedContent[selectedTitle].loci!.setting}
+                              </p>
+                              <p className="mb-2">
+                                <strong>Visualizations:</strong>{" "}
+                                {generatedContent[
+                                  selectedTitle
+                                ].loci!.visualizations.join(", ")}
+                              </p>
+                              <p className="mb-2">
+                                <strong>Connections:</strong>{" "}
+                                {
+                                  generatedContent[selectedTitle].loci!
+                                    .connections
+                                }
+                              </p>
+                              <p>
+                                <strong>Instructions:</strong>{" "}
+                                {
+                                  generatedContent[selectedTitle].loci!
+                                    .instructions
+                                }
+                              </p>
+                            </>
+                          )}
+                        {activeTab === "keywords" &&
+                          generatedContent[selectedTitle]?.keywords && (
+                            <>
+                              <p className="mb-2">
+                                <strong>Keywords:</strong>{" "}
+                                {generatedContent[
+                                  selectedTitle
+                                ].keywords!.keywords.join(", ")}
+                              </p>
+                              <p className="mb-2">
+                                <strong>Significance:</strong>{" "}
+                                {
+                                  generatedContent[selectedTitle].keywords!
+                                    .significance
+                                }
+                              </p>
+                              <p className="mb-2">
+                                <strong>Connections:</strong>{" "}
+                                {
+                                  generatedContent[selectedTitle].keywords!
+                                    .connections
+                                }
+                              </p>
+                              <p>
+                                <strong>Usage:</strong>{" "}
+                                {
+                                  generatedContent[selectedTitle].keywords!
+                                    .usage
+                                }
+                              </p>
+                            </>
+                          )}
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       ))}
