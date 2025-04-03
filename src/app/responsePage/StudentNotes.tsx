@@ -1,39 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { BookOpen, CheckCircle2, AlertCircle, X } from "lucide-react";
-
-interface CustomContentItem {
-  type: "detail" | "text";
-  content: string;
-}
-
-// Helper functions moved outside component
-const formatMathText = (text: string) => {
-  let formattedText = text.replace(/([a-z])(\d)/gi, "$1$2");
-  formattedText = formattedText.replace(/\^(\d+)/g, "$1");
-  const symbolMap = {
-    ">=": "≥",
-    "<=": "≤",
-    "!=": "≠",
-    "->": "→",
-    N: "N",
-    Z: "Z",
-  };
-  Object.entries(symbolMap).forEach(([key, value]) => {
-    formattedText = formattedText.replace(new RegExp(key, "g"), value);
-  });
-  return formattedText;
-};
-
-const formatCodeBlock = (text: string) => {
-  if (text.includes("{") || text.includes("if") || text.includes("→")) {
-    return (
-      <pre className="bg-gray-800 p-4 rounded-md font-mono text-sm my-2 whitespace-pre-wrap text-gray-100">
-        {text}
-      </pre>
-    );
-  }
-  return formatMathText(text);
-};
 
 interface CheatsheetSection {
   title: string;
@@ -88,18 +54,6 @@ const StudentNotes = ({
     return !!generatedContent[title];
   };
 
-  const getContainerContent = (title: string) => {
-    const section = cheatsheetContent.find(
-      (section) => section.title === title
-    );
-    if (!section) return title;
-    return `TITLE: ${section.title}\nExplanation: ${
-      section.explanation
-    }\nSUBTOPIC: ${section.subtopic}\n${section.details
-      .map((detail, idx) => `DETAIL_${idx + 1}: ${detail}`)
-      .join("\n")}`;
-  };
-
   const generateMnemonic = async (type: string) => {
     setIsGenerating(true);
     try {
@@ -110,7 +64,6 @@ const StudentNotes = ({
         },
         body: JSON.stringify({
           title: selectedTitle,
-          content: getContainerContent(selectedTitle),
           type,
         }),
       });
@@ -163,7 +116,6 @@ const StudentNotes = ({
           },
           body: JSON.stringify({
             title,
-            content: getContainerContent(title),
             type: types[i],
           }),
         });
@@ -189,7 +141,80 @@ const StudentNotes = ({
 
   return (
     <div className="max-w-4xl mx-auto p-4 bg-gray-50">
-      {/* Rendering logic goes here, similar to what was previously done, mapping over cheatsheetContent */}
+      {cheatsheetContent.map((section, index) => (
+        <div
+          key={index}
+          className="mb-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300"
+        >
+          <div
+            className={`p-6 ${
+              expandedSections[index] ?? true ? "" : "cursor-pointer"
+            }`}
+          >
+            <div
+              className="flex items-center justify-between cursor-pointer"
+              onClick={() => toggleSection(index)}
+            >
+              <div className="flex items-center space-x-3">
+                <BookOpen className="w-6 h-6 text-purple-600" />
+                <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                  {section.title}
+                </h2>
+              </div>
+              <div className="flex items-center space-x-4">
+                <button
+                  className="px-4 py-2 text-sm font-medium text-purple-600 border border-purple-600 rounded-full hover:bg-purple-50 transition-colors"
+                  onClick={(e) => handleMnemonicsClick(section.title, e)}
+                >
+                  Generate Mnemonics
+                </button>
+                <div className="text-gray-400">
+                  {expandedSections[index] ?? true ? "▼" : "▶"}
+                </div>
+              </div>
+            </div>
+
+            {expandedSections[index] ?? true ? (
+              <>
+                {section.explanation && (
+                  <div className="mt-4 p-4 bg-purple-50 rounded-lg border-l-4 border-purple-400">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <AlertCircle className="w-5 h-5 text-purple-600" />
+                      <span className="font-semibold text-purple-800">
+                        Explanation:
+                      </span>
+                    </div>
+                    <p className="text-gray-700">{section.explanation}</p>
+                  </div>
+                )}
+
+                {section.subtopic && (
+                  <div className="mt-6 mb-3">
+                    <div className="flex items-center space-x-2">
+                      <CheckCircle2 className="w-5 h-5 text-green-500" />
+                      <h3 className="text-xl font-semibold text-gray-800">
+                        {section.subtopic}
+                      </h3>
+                    </div>
+                  </div>
+                )}
+
+                <div className="ml-8 mb-4">
+                  {section.details.map((detail, idx) => (
+                    <div
+                      key={idx}
+                      className="flex items-start space-x-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 mb-2"
+                    >
+                      <div className="w-2 h-2 rounded-full bg-blue-500 mt-2 flex-shrink-0" />
+                      <div className="text-gray-700">{detail}</div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : null}
+          </div>
+        </div>
+      ))}
     </div>
   );
 };
