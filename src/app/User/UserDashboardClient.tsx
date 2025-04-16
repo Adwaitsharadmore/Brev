@@ -259,7 +259,7 @@ export default function UserDashboardClient({
                 Dashboard
               </Link>
               <Link
-                href="/materials"
+                href="/DocumentList"
                 className="text-[#0023FF] hover:text-blue-700"
               >
                 My Materials
@@ -286,7 +286,7 @@ export default function UserDashboardClient({
               Dashboard
             </Link>
             <Link
-              href="/materials"
+              href="/DocumentList"
               className="block py-2 hover:text-[#0023FF] text-black"
             >
               My Materials
