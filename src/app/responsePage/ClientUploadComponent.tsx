@@ -75,7 +75,7 @@ export default function ClientUploadComponent({ userId }: ClientUploadProps) {
         className="my-4"
       />
       <button
-        className="mt-5 bg-green-600 hover:bg-opacity-80 text-white rounded-lg px-4 py-2 duration-200 w-full"
+        className="mt-5 bg-green-600 hover:bg-opacity-80 text-white rounded-lg px-4 py-2 duration-200"
         type="button"
         onClick={handleUpload}
       >
