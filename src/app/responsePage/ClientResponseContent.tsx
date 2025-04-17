@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import ClientUploadComponent from "./ClientUploadComponent";
 
 import Typewriter from "./p";
 import { Card, CardContent } from "@/components/ui/card";
@@ -380,7 +381,7 @@ Call setStructuredCheatsheet({ sections: [...] }) with the structured content.`;
         }
 
         const data = await response.json();
-      
+
         console.log("Cheatsheet content set:", data);
         // Updated to use the sections from the new API response format
         setCheatsheetContent(data.sections);
@@ -650,29 +651,7 @@ Separate each question with three dashes (---).`;
 
         <div className="w-full flex justify-center px-4 md:px-0">
           <form className="w-full md:w-3/4 bg-black border border-gray-700 shadow-md rounded-lg p-4 md:p-6 mt-6">
-            {/* <div className="mb-4">
-              <label className="block text-lg font-medium text-white">
-                Upload File
-              </label>
-              <input
-                type="file"
-                onChange={handleFileChange}
-                className="hidden"
-                id="file-upload"
-              />
-              <label
-                htmlFor="file-upload"
-                className="cursor-pointer mt-2 px-4 py-2 bg-white text-black border rounded-full inline-block text-center hover:bg-[#0023FF] hover:text-white transition-colors"
-              >
-                Choose File
-              </label>
-              {file && (
-                <p className="text-white mt-2">
-                  Selected file:{" "}
-                  <span className="font-semibold">{file.name}</span>
-                </p>
-              )}
-            </div> */}
+            <ClientUploadComponent userId={user.id} />
 
             <div className="mb-4 bg-black rounded-lg">
               <label className="block text-lg font-medium text-white">

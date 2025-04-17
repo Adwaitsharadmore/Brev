@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
 interface ClientUploadProps {
@@ -8,10 +8,15 @@ interface ClientUploadProps {
 }
 
 export default function ClientUploadComponent({ userId }: ClientUploadProps) {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [message, setMessage] = useState<string>("");
 
-  const handleUpload = async () => {
+  const triggerFileSelect = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
     if (!selectedFile) {
       setMessage("No file selected.");
       return;
@@ -33,20 +38,15 @@ export default function ClientUploadComponent({ userId }: ClientUploadProps) {
 
       if (uploadError) {
         console.error("Upload error:", uploadError);
-        setMessage(`Failed to upload file: ${uploadError.message}`);
+        setMessage(`❌ Failed to upload: ${uploadError.message}`);
         return;
       }
 
-      // Get public URL
       const { data } = supabase.storage
         .from("documents")
-            .getPublicUrl(filePath);
-        console.log(data);
+        .getPublicUrl(filePath);
+      const publicUrl = data.publicUrl;
 
-        const publicUrl = data.publicUrl;
-        console.log(publicUrl);
-
-      // Save file metadata
       const { error: dbError } = await supabase.from("users_documents").insert({
         id: crypto.randomUUID(),
         user_id: userId,
@@ -56,32 +56,35 @@ export default function ClientUploadComponent({ userId }: ClientUploadProps) {
 
       if (dbError) {
         console.error("Database error:", dbError);
-        setMessage(`Failed to save file metadata: ${dbError.message}`);
+        setMessage(`❌ Metadata save failed: ${dbError.message}`);
         return;
       }
 
-      setMessage("File uploaded successfully!");
+      setMessage("✅ File uploaded successfully!");
     } catch (err) {
       console.error("Unexpected error:", err);
-      setMessage("An unexpected error occurred while uploading.");
+      setMessage("⚠️ Unexpected error occurred.");
     }
   };
 
   return (
-    <>
+    <div className="mb-6">
       <input
         type="file"
-        onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-        className="my-4"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        className="hidden"
       />
       <button
-        className="mt-5 bg-green-600 hover:bg-opacity-80 text-white rounded-lg px-4 py-2 duration-200"
         type="button"
-        onClick={handleUpload}
+        className="bg-white text-black px-4 py-2 rounded-full hover:bg-[#0023FF] hover:text-white transition-colors"
+        onClick={triggerFileSelect}
       >
         Upload File
       </button>
-      {message && <p className="my-5 text-green-600">{message}</p>}
-    </>
+      {message && (
+        <p className="mt-4 text-sm text-white font-medium">{message}</p>
+      )}
+    </div>
   );
 }
