@@ -11,6 +11,14 @@ const handler = async (req: NextRequest) => {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const bucketName = process.env.NEXT_PUBLIC_SUPABASE_BUCKET_NAME;
+  if (!bucketName) {
+    return NextResponse.json(
+      { error: "Storage bucket name not configured" },
+      { status: 500 }
+    );
+  }
+
   const user_id = user.id; // Authenticated User ID from AuthKit
   const formData = await req.formData();
   const file = formData.get("file") as File;
@@ -27,7 +35,7 @@ const handler = async (req: NextRequest) => {
 
   // Upload file to Supabase Storage
   const { data, error } = await supabase.storage
-    .from(process.env.NEXT_PUBLIC_SUPABASE_BUCKET_NAME)
+    .from(bucketName)
     .upload(filePath, fileBuffer, { cacheControl: "3600", upsert: false });
 
   if (error) {
@@ -36,7 +44,7 @@ const handler = async (req: NextRequest) => {
 
   // Get public URL
   const { data: publicUrlData } = supabase.storage
-    .from(process.env.NEXT_PUBLIC_SUPABASE_BUCKET_NAME)
+    .from(bucketName)
     .getPublicUrl(filePath);
 
   // Save file info to Supabase database
