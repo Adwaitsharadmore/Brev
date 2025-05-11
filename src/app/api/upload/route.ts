@@ -1,15 +1,19 @@
 import { withAuth } from "@workos-inc/authkit-nextjs";
 import { supabase } from "../../../lib/supabase";
 import { NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 
-export const POST = withAuth(async (req, { user }) => {
+const handler = async (req: NextRequest) => {
+  const auth = await withAuth({ ensureSignedIn: true });
+  const user = auth.user;
+
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const user_id = user.id; // Authenticated User ID from AuthKit
   const formData = await req.formData();
-  const file = formData.get("file");
+  const file = formData.get("file") as File;
 
   if (!file) {
     return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
@@ -48,4 +52,6 @@ export const POST = withAuth(async (req, { user }) => {
   }
 
   return NextResponse.json({ document_url: publicUrlData.publicUrl }, { status: 200 });
-});
+};
+
+export { handler as POST };
