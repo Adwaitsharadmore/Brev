@@ -71,35 +71,35 @@ const StudentNotes = ({
     return !!generatedContent[title];
   };
 
-  const generateMnemonic = async (type: string) => {
-    setIsGenerating(true);
-    try {
-      const response = await fetch("/api/generate-mnemonics", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title: selectedTitle,
-          type,
-        }),
-      });
+  // const generateMnemonic = async (type: string) => {
+  //   setIsGenerating(true);
+  //   try {
+  //     const response = await fetch("/api/generate-mnemonics", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         title: selectedTitle,
+  //         type,
+  //       }),
+  //     });
 
-      const data = await response.json();
+  //     const data = await response.json();
 
-      setGeneratedContent((prev) => ({
-        ...prev,
-        [selectedTitle]: {
-          ...prev[selectedTitle],
-          [type]: data.result,
-        },
-      }));
-    } catch (error) {
-      console.error("Error generating mnemonic:", error);
-    } finally {
-      setIsGenerating(false);
-    }
-  };
+  //     setGeneratedContent((prev) => ({
+  //       ...prev,
+  //       [selectedTitle]: {
+  //         ...prev[selectedTitle],
+  //         [type]: data.result,
+  //       },
+  //     }));
+  //   } catch (error) {
+  //     console.error("Error generating mnemonic:", error);
+  //   } finally {
+  //     setIsGenerating(false);
+  //   }
+  // };
 
   const handleMnemonicsClick = (title: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -113,41 +113,40 @@ const StudentNotes = ({
     }
   };
 
-   const generateAllMnemonics = async (title: string) => {
-     setIsGeneratingAll(true);
-     setProgress(0);
-     const types = ["acronyms", "rhymes", "loci", "keywords"];
-     const newContent: any = {};
+  const generateAllMnemonics = async (title: string) => {
+    setIsGeneratingAll(true);
+    setProgress(0);
+    const types = ["acronyms", "rhymes", "loci", "keywords"];
+    const newContent: any = {};
 
-     for (let i = 0; i < types.length; i++) {
-       try {
-         const response = await fetch("/api/generate-mnemonics", {
-           method: "POST",
-           headers: {
-             "Content-Type": "application/json",
-           },
-           body: JSON.stringify({
-             title,
-             type: types[i],
-             content: cheatsheetContent,
-           }),
-         });
-         const data = await response.json();
-         console.log("Generated data:", data);
-         newContent[types[i]] = data.result;
-         setProgress((i + 1) * 25);
-       } catch (error) {
-         console.error(`Error generating ${types[i]}:`, error);
-         newContent[types[i]] = { error: `Error generating ${types[i]}` };
-       }
-     }
+    for (let i = 0; i < types.length; i++) {
+      try {
+        const response = await fetch("/api/generate-mnemonics", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title,
+            type: types[i],
+            content: cheatsheetContent,
+          }),
+        });
+        const data = await response.json();
+        newContent[types[i]] = data.result;
+        setProgress((i + 1) * 25);
+      } catch (error) {
+        console.error(`Error generating ${types[i]}:`, error);
+        newContent[types[i]] = { error: `Error generating ${types[i]}` };
+      }
+    }
 
-     setGeneratedContent((prev) => ({
-       ...prev,
-       [title]: newContent,
-     }));
-     setIsGeneratingAll(false);
-   };
+    setGeneratedContent((prev) => ({
+      ...prev,
+      [title]: newContent,
+    }));
+    setIsGeneratingAll(false);
+  };
 
   if (!cheatsheetContent || cheatsheetContent.length === 0) return null;
 
