@@ -121,7 +121,3 @@ This project is licensed under the **MIT License**. Feel free to use, modify, an
 Feel free to [open issues](https://github.com/Adwaitsharadmore/Brev/issues) for feature requests, bugs, or suggestions. If you build on top of Brev, we’d love to feature your work!
 
 ---
-
-> With Brev, your memory has a shortcut.
-
-```
