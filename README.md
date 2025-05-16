@@ -103,7 +103,11 @@ Brev is open to contributions! To get started:
 
 ## 📝 License
 
-This project is licensed under the **MIT License**. Feel free to use, modify, and distribute.
+Brev is licensed under the **Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International Public License**.
+
+ - You can use the code for personal projects, given appropriate attribution.
+ - For non-commercial use, the code must be open source.
+ - Please reach out to me if you want to use the code for commercial projects.
 
 ---
 
