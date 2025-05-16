@@ -21,12 +21,6 @@
 
 ---
 
-## 🖼 Demo
-
-![Demo Screenshot](./public/demo.png)
-
----
-
 ## 🛠 Tech Stack
 
 - **Frontend**: React + TypeScript + TailwindCSS
